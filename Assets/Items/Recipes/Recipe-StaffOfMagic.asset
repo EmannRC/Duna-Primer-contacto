@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30ea11c1d6d61244e9fcc50eb761f6f7, type: 3}
+  m_Name: Recipe-StaffOfMagic
+  m_EditorClassIdentifier: Assembly-CSharp::Recipe
+  ingredients:
+  - itemId: Ingredient_Magic_Glass
+    amount: 1
+  - itemId: Ingredient_Magic_Essence
+    amount: 1
+  - itemId: Ingredient_Magic_Rod
+    amount: 1
+  recipeId: Recipe_Staff_Magic
+  resultItemId: Weapon_Staff_Magic
+  resultAmount: 1

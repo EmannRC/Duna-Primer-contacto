@@ -8,8 +8,7 @@ public class PlayerEquipment : NetworkBehaviour
 {
     public Action OnEquipmentChanged;
 
-    //public Weapon weapon;
-    //public Armor armor;
+   
     public Weapon weapon { get; private set; }
     public Armor armor { get; private set; }
 
@@ -66,7 +65,6 @@ public class PlayerEquipment : NetworkBehaviour
     {
         Inventory inventory = ctx.inventory;
 
-        // validar que tenga el item
         bool hasItem = false;
 
         foreach (var slot in inventory.items)
@@ -82,19 +80,17 @@ public class PlayerEquipment : NetworkBehaviour
             return;
 
         Item item = itemDatabase.GetByItemId(itemId);
-
         if (item == null)
             return;
 
-        // sincronizar IDs
+        //consumir del inventario
+        inventory.RemoveItem(itemId, 1);
+
+        // sincronizar equipamiento
         if (item is Weapon)
-        {
             weaponId.Value = itemId;
-        }
         else if (item is Armor)
-        {
             armorId.Value = itemId;
-        }
     }
 
     //====================================================//

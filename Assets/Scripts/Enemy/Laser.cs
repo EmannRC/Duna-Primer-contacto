@@ -1,20 +1,8 @@
+using System;
+using Unity.Netcode;
 using UnityEngine;
 
-public class Laser : MonoBehaviour
+public class Laser : Projectile
 {
-    public float damage = 10f;
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            HealthController playerHealth = other.GetComponent<HealthController>();
-            if (playerHealth != null)
-            {
-                playerHealth.TakeDamage(damage);
-            }
-        }
-
-        Destroy(gameObject);
-    }
+     
 }

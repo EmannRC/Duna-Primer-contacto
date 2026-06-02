@@ -951,6 +951,16 @@ MonoBehaviour:
       MinSecondsBetweenUpdates: 0
       MaxSecondsBetweenUpdates: 0
     m_InternalValue: 0
+  Dead:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
+  ShootCounter:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
 --- !u!1 &2527804382087183097
 GameObject:
   m_ObjectHideFlags: 0
@@ -1119,6 +1129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 462730102094691570}
   - component: {fileID: 8712949918096041049}
+  - component: {fileID: 2689411319102060371}
   m_Layer: 0
   m_Name: Inventory
   m_TagString: Untagged
@@ -1160,6 +1171,20 @@ MonoBehaviour:
       MaxSecondsBetweenUpdates: 0
   itemDatabase: {fileID: 11400000, guid: 6a85018d77ef7d841bf8aeb9a7a8199d, type: 2}
   maxSlots: 20
+--- !u!114 &2689411319102060371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2988818018150349766}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ba1bc1393662b044a7803112d829f47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerActions
+  ShowTopMostFoldoutHeaderGroup: 1
+  inventory: {fileID: 8712949918096041049}
 --- !u!1 &3031412472868635195
 GameObject:
   m_ObjectHideFlags: 0
@@ -1255,6 +1280,9 @@ GameObject:
   - component: {fileID: 2593140643872428480}
   - component: {fileID: 5110169343690229765}
   - component: {fileID: 3829707799618151525}
+  - component: {fileID: 967707818647936657}
+  - component: {fileID: 956493243176364785}
+  - component: {fileID: 2087994293755261926}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1301,21 +1329,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d760af8ff5fc2c4438f1cbec38821daf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerContext
-  stats: {fileID: 0}
-  mana: {fileID: 0}
-  equipment: {fileID: 0}
-  inventory: {fileID: 0}
-  actions: {fileID: 0}
-  crafting: {fileID: 0}
-  targeting: {fileID: 0}
-  inputEvents: {fileID: 0}
-  levelSystem: {fileID: 0}
-  health: {fileID: 0}
-  movement: {fileID: 0}
-  rotation: {fileID: 0}
-  playerAnimation: {fileID: 0}
-  shooter: {fileID: 0}
-  animationSync: {fileID: 0}
+  stats: {fileID: 875005323832522928}
+  mana: {fileID: 2469992046821235202}
+  equipment: {fileID: 6376156663814525750}
+  inventory: {fileID: 8712949918096041049}
+  actions: {fileID: 2689411319102060371}
+  crafting: {fileID: 6319035005387410986}
+  targeting: {fileID: 642162550967021989}
+  inputEvents: {fileID: 6235707199556142277}
+  levelSystem: {fileID: 4631139290028927606}
+  health: {fileID: 956493243176364785}
+  movement: {fileID: 1095138380536831322}
+  rotation: {fileID: 2593140643872428480}
+  playerAnimation: {fileID: 8695892267718613478}
+  shooter: {fileID: 8912842762056898536}
+  animationSync: {fileID: 4746510533617133865}
   crosshair: {fileID: 0}
   craftingUI: {fileID: 0}
   mainCamera: {fileID: 0}
@@ -1356,7 +1384,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1019763042
+  GlobalObjectIdHash: 1954510190
   InScenePlacedSourceGlobalObjectIdHash: 3680711321
   DeferredDespawnTick: 0
   Ownership: 1
@@ -1407,6 +1435,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97c9a6fcb7f14b04aabe4fe1e3dd2525, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerRotation
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!114 &5110169343690229765
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1683,6 +1712,64 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!136 &967707818647936657
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3192926551893178601}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.2371378
+  m_Height: 1.8155394
+  m_Direction: 1
+  m_Center: {x: -0.0014448166, y: -0.0124435425, z: 0}
+--- !u!114 &956493243176364785
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3192926551893178601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebaf3c2b42dbd834886630dd16dc301a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
+  ShowTopMostFoldoutHeaderGroup: 1
+  maxHealth: 100
+  CurrentHealth:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
+--- !u!114 &2087994293755261926
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3192926551893178601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb8f1c237a7fe324ab25f267e83dd916, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeathController
+  disableMovement: 0
+  destroyOnDeath: 0
+  destroyDelay: 3
+  deathSound: {fileID: 0}
 --- !u!1 &3242942751607591813
 GameObject:
   m_ObjectHideFlags: 0
@@ -2601,7 +2688,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3782203899583841686
 Transform:
   m_ObjectHideFlags: 0
@@ -2631,13 +2718,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
   ShowTopMostFoldoutHeaderGroup: 1
   maxHealth: 100
-  currentHealth:
+  CurrentHealth:
     UpdateTraits:
       MinSecondsBetweenUpdates: 0
       MaxSecondsBetweenUpdates: 0
     m_InternalValue: 0
-  canRegenerate: 0
-  regenRate: 5
 --- !u!114 &3690448646117212495
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3102,7 +3187,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9cf63f3773d54549905001b3e61224d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TargetingSystem
-  isAiming: 0
 --- !u!1 &6078825939796012988
 GameObject:
   m_ObjectHideFlags: 0

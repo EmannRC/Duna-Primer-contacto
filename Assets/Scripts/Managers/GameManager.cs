@@ -24,9 +24,6 @@ public class GameManager : MonoBehaviour
         state = newState;
 
         if (state == GameState.PlayerDead)
-        {
             OnPlayerDeath?.Invoke();
-        }
     }
-
 }

@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 1385398945079904695}
   - component: {fileID: 1678456265152512655}
   - component: {fileID: 2763948645438556766}
-  - component: {fileID: 1168116117378832457}
   - component: {fileID: 7301886750513406657}
+  - component: {fileID: 6659377091346883450}
   m_Layer: 6
   m_Name: Laser
   m_TagString: Untagged
@@ -53,7 +53,7 @@ SphereCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Radius: 0.7921219
   m_Center: {x: 0, y: 0, z: 0.007896423}
@@ -81,22 +81,9 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 0
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 1
---- !u!114 &1168116117378832457
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3447868418335999650}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b541837185169134499cc3c9bdd70c4a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Laser
-  damage: 10
 --- !u!114 &7301886750513406657
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -109,7 +96,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 0
+  GlobalObjectIdHash: 744471799
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -122,6 +109,23 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
+--- !u!114 &6659377091346883450
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3447868418335999650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84b9e123269ec8b40b04ded283dc0bae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Projectile
+  ShowTopMostFoldoutHeaderGroup: 1
+  speed: 10
+  lifeTime: 3
+  damage: 10
+  radius: 0.2
 --- !u!1 &6710688523912557228
 GameObject:
   m_ObjectHideFlags: 0

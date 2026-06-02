@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class ItemPickup : NetworkBehaviour
 {
-    public string itemId;
-    public int amount = 1;
+    [SerializeField] private string itemId;
+    [SerializeField] private int amount = 1;
 
     [Header("Data Item")]
     [SerializeField] private ItemDatabase itemDatabase;
@@ -34,7 +34,7 @@ public class ItemPickup : NetworkBehaviour
     }
 
     //======================================================//
-    private void HandlePickup(PlayerContext ctx)
+    private void HandlePickup(PlayerContext player)
     {
         Item item = itemDatabase.GetByItemId(itemId);
 
@@ -46,20 +46,14 @@ public class ItemPickup : NetworkBehaviour
 
         if (item is Rune rune)
         {
-            rune.Consume(ctx.gameObject);
+            rune.Consume(player.gameObject);
         }
         else
         {
-            ctx.inventory.AddItem(itemId, amount);
+            player.inventory.AddItem(itemId, amount);
         }
 
-        DestroyPickupClientRpc();
+        NetworkObject.Despawn();
     }
 
-    //======================================================//
-    [ClientRpc]
-    private void DestroyPickupClientRpc()
-    {
-        Destroy(gameObject);
-    }
 }

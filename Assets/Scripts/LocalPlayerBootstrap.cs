@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 public class LocalPlayerBootstrap : MonoBehaviour
 {
     public static LocalPlayerBootstrap Instance;
-    [SerializeField] private GameObject mainCamera;
+    [SerializeField] private Camera mainCamera;
     [SerializeField] private CameraController cameraController;
 
     [SerializeField] private PlayerHUD hud;
@@ -14,7 +14,7 @@ public class LocalPlayerBootstrap : MonoBehaviour
     [SerializeField] private Transform crosshair;
 
     //==========================================================//
-    void Awake()
+    private void Awake()
     {
         if (Instance != null && Instance != this)
         {
@@ -28,20 +28,39 @@ public class LocalPlayerBootstrap : MonoBehaviour
     //==========================================================//
     public void Setup(Transform playerRoot)
     {
-        var ctx = playerRoot.GetComponent<PlayerContext>();
-        var net = playerRoot.GetComponent<NetworkObject>();
+        PlayerContext ctx =
+            playerRoot.GetComponent<PlayerContext>();
 
-        if (ctx == null || net == null) return;
-        if (!net.IsOwner) return;
+        NetworkObject net =
+            playerRoot.GetComponent<NetworkObject>();
 
-        // CAMERA + INPUT
+        if (ctx == null || net == null)
+            return;
+
+        if (!net.IsOwner)
+            return;
+
+        //=========================
+        // CAMERA
+        //=========================
+
         cameraController.SetTarget(playerRoot);
-        ctx.mainCamera = mainCamera;
+
+        ctx.movement.SetCameraTransform(
+            mainCamera.transform);
 
         ctx.targeting.Bind(cameraController);
+
+        //=========================
+        // INPUT
+        //=========================
+
         ctx.inputEvents.Bind(ctx);
 
+        //=========================
         // UI
+        //=========================
+
         hud.Bind(playerRoot);
 
         inventoryUI.Bind(
@@ -52,8 +71,8 @@ public class LocalPlayerBootstrap : MonoBehaviour
         );
 
         craftingUI.Bind(
-        ctx.inventory,
-        ctx.crafting
+            ctx.inventory,
+            ctx.crafting
         );
 
         ctx.crosshair = crosshair;

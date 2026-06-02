@@ -7,6 +7,10 @@ public class PlayerAnimation : MonoBehaviour
 
     private PlayerContext ctx;
 
+    private int lastShootCounter;
+
+    private bool deathPlayed;
+
     //============================================//
     void Awake()
     {
@@ -20,14 +24,14 @@ public class PlayerAnimation : MonoBehaviour
         UpdateLocomotion();
         UpdateAirState();
         UpdateCrouch();
+        UpdateShoot();
+        UpdateDeath();
     }
 
     //============================================//
     void UpdateLocomotion()
     {
-        //Vector3 move = ctx.movement.MoveDirection;
 
-        //Vector3 localMove = ctx.transform.InverseTransformDirection(move);
         float velX = ctx.animationSync.VelX.Value;
         float velY = ctx.animationSync.VelY.Value;
 
@@ -100,13 +104,28 @@ public class PlayerAnimation : MonoBehaviour
     }
 
     //============================================//
-    public void PlayShoot()
+    void UpdateShoot()
     {
+        int currentShootCounter =
+            ctx.animationSync.ShootCounter.Value;
+
+        if (currentShootCounter == lastShootCounter)
+            return;
+
+        lastShootCounter = currentShootCounter;
+
         animator.SetTrigger("Shoot");
     }
 
-    public void PlayDeath()
+    void UpdateDeath()
     {
-        animator.SetTrigger("Death");
+        if (deathPlayed)
+            return;
+
+        if (ctx.health.IsDead.Value)
+        {
+            deathPlayed = true;
+            animator.SetTrigger("Death");
+        }
     }
 }

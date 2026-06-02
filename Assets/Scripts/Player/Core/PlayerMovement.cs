@@ -27,11 +27,7 @@ public class PlayerMovement : NetworkBehaviour
 
     private Vector3 velocity;
     private Vector2 moveInput;
-    //private NetworkVariable<float> netAnimationSpeed = new NetworkVariable<float>(
-        //0,
-        //NetworkVariableReadPermission.Everyone,
-        //NetworkVariableWritePermission.Owner
-    //);
+    private Transform cameraTransform;
 
     bool jumpPressed;
     bool sprintHeld;
@@ -72,16 +68,19 @@ public class PlayerMovement : NetworkBehaviour
         Crouch();
     }
 
+    public void SetCameraTransform(Transform cam)
+    {
+        cameraTransform = cam;
+    }
+
     //==================================================================================//
     void Move()
     {
+        if (cameraTransform == null)
+            return;
 
-        //Vector3 camForward = Camera.main.transform.forward;
-        //Vector3 camRight = Camera.main.transform.right;
-        Transform cam = ctx.mainCamera.transform;
-
-        Vector3 camForward = cam.forward;
-        Vector3 camRight = cam.right;
+        Vector3 camForward = cameraTransform.forward;
+        Vector3 camRight = cameraTransform.right;
 
         camForward.y = 0;
         camRight.y = 0;

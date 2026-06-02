@@ -13,43 +13,42 @@ public class DeathController : MonoBehaviour
 
     private PlayerContext ctx;
 
-    //==================================================//
-    private void Awake()
+    private bool deathHandled;
+
+    void Awake()
     {
         ctx = GetComponentInParent<PlayerContext>();
     }
 
-    //==================================================//
     void Start()
     {
-        if (ctx.health != null)
-            ctx.health.OnDeath += Death;
+        ctx.health.OnDeath += HandleDeath;
     }
 
-    //==================================================//
-    void Death()
+    void HandleDeath()
     {
-        if (disableMovement && ctx.movement != null)
+        if (deathHandled) return;
+        deathHandled = true;
+
+        //  bloqueo local inmediato
+        if (ctx.movement != null)
         {
             ctx.movement.IsMovementLocked = true;
             ctx.movement.SetMoveInput(Vector2.zero);
-            ctx.movement.SetSprint(false);
-            ctx.movement.SetCrouch(false);
-
-            ctx.playerAnimation.PlayDeath();
         }
 
-        if (deathSound != null)
+        //  animación (solo una vez)
+        ctx.animationSync.Dead.Value = true;
+
+        if (deathSound)
             deathSound.Play();
 
-        if (destroyOnDeath)
-            Destroy(gameObject, destroyDelay);
+        Destroy(gameObject, destroyDelay);
     }
 
-    //==================================================//
     void OnDestroy()
     {
-        if (ctx.health != null)
-            ctx.health.OnDeath -= Death;
+        if (ctx?.health != null)
+            ctx.health.OnDeath -= HandleDeath;
     }
 }

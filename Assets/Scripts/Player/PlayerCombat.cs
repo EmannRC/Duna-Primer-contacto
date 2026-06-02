@@ -34,7 +34,7 @@ public class PlayerCombat : MonoBehaviour
 
         nextShootTime = Time.time + cooldown;
 
-        ctx.playerAnimation.PlayShoot();
+        ctx.animationSync.NotifyShoot();
 
         StartCoroutine(ShootRoutine());
     }

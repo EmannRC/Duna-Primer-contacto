@@ -6,9 +6,12 @@ public class PlayerActions : NetworkBehaviour
     [SerializeField] private Inventory inventory;
 
     //====================================================//
+    //====================================================//
     [ServerRpc]
     public void RequestConsumeItemServerRpc(string itemId)
     {
+        if (!IsServer) return;
+
         Item item = inventory.itemDatabase.GetByItemId(itemId);
         if (item == null) return;
 
@@ -22,6 +25,8 @@ public class PlayerActions : NetworkBehaviour
     [ServerRpc]
     public void RequestDropItemServerRpc(string itemId)
     {
+        if (!IsServer) return;
+
         Item item = inventory.itemDatabase.GetByItemId(itemId);
         if (item == null) return;
 
@@ -29,14 +34,12 @@ public class PlayerActions : NetworkBehaviour
 
         inventory.RemoveItem(itemId, 1);
 
-        SpawnDropClientRpc(itemId);
+        SpawnDrop(item);
     }
 
     //====================================================//
-    [ClientRpc]
-    private void SpawnDropClientRpc(string itemId)
+    private void SpawnDrop(Item item)
     {
-        Item item = inventory.itemDatabase.GetByItemId(itemId);
         if (item == null || item.pickupPrefab == null) return;
 
         Vector3 basePos = transform.position;
@@ -45,6 +48,10 @@ public class PlayerActions : NetworkBehaviour
 
         Vector3 spawnPos = basePos + offset + Vector3.up * 0.5f;
 
-        Instantiate(item.pickupPrefab, spawnPos, Quaternion.identity);
+        GameObject drop = Instantiate(item.pickupPrefab, spawnPos, Quaternion.identity);
+
+        var netObj = drop.GetComponent<NetworkObject>();
+        if (netObj != null)
+            netObj.Spawn(true);
     }
 }

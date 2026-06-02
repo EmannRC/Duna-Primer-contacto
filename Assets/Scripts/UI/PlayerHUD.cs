@@ -88,7 +88,7 @@ public class PlayerHUD : MonoBehaviour
     //=========================================================//
     void UpdateHealth()
     {
-        float value = health.currentHealth.Value / health.maxHealth;
+        float value = health.HealthPercent;
 
         healthFill.fillAmount = value;
 

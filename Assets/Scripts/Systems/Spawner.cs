@@ -1,8 +1,11 @@
-using System.Collections.Generic;
-using UnityEngine;
+using System;
 using System.Collections;
+using System.Collections.Generic;
+using Unity.Netcode;
+using UnityEngine;
+using Random = UnityEngine.Random;
 
-public class Spawner : MonoBehaviour
+public class Spawner : NetworkBehaviour
 {
     [Header("Spawn Objects")]
     [SerializeField] private GameObject[] prefabs;
@@ -15,7 +18,7 @@ public class Spawner : MonoBehaviour
     [Header("Limits")]
     [SerializeField] private bool loop = true;
     [SerializeField] private int maxAlive = 5;
-    [SerializeField] private int totalSpawnLimit = -1; //infinito
+    [SerializeField] private int totalSpawnLimit = -1; 
 
     [Header("Area")]
     [SerializeField] private float spawnRadius = 5f;
@@ -28,32 +31,28 @@ public class Spawner : MonoBehaviour
 
     //================================================//
 
-    private void Start()
+    public override void OnNetworkSpawn()
     {
+        if (!IsServer) return;
+
         if (autoStart)
-        {
             StartSpawning();
-        }
     }
 
     //================================================//
 
     public void StartSpawning()
     {
-        if (spawnRoutine != null)
-            return;
+        if (spawnRoutine != null) return;
 
-        spawnRoutine =
-            StartCoroutine(SpawnRoutine());
+        spawnRoutine = StartCoroutine(SpawnRoutine());
     }
 
     public void StopSpawning()
     {
-        if (spawnRoutine == null)
-            return;
+        if (spawnRoutine == null) return;
 
         StopCoroutine(spawnRoutine);
-
         spawnRoutine = null;
     }
 
@@ -61,26 +60,19 @@ public class Spawner : MonoBehaviour
 
     IEnumerator SpawnRoutine()
     {
-        if (startDelay > 0)
-        {
-            yield return
-                new WaitForSeconds(startDelay);
-        }
+        if (!IsServer) yield break;
 
-        while (true)
+        if (startDelay > 0)
+            yield return new WaitForSeconds(startDelay);
+
+        while (IsServer && loop)
         {
             CleanupDeadReferences();
 
             if (CanSpawn())
-            {
                 Spawn();
-            }
 
-            if (!loop)
-                break;
-
-            yield return
-                new WaitForSeconds(spawnInterval);
+            yield return new WaitForSeconds(spawnInterval);
         }
 
         spawnRoutine = null;
@@ -90,16 +82,13 @@ public class Spawner : MonoBehaviour
 
     bool CanSpawn()
     {
-        if (prefabs.Length == 0)
+        if (prefabs == null || prefabs.Length == 0)
             return false;
 
         if (aliveObjects.Count >= maxAlive)
             return false;
 
-        if (
-            totalSpawnLimit != -1 &&
-            totalSpawned >= totalSpawnLimit
-        )
+        if (totalSpawnLimit != -1 && totalSpawned >= totalSpawnLimit)
             return false;
 
         return true;
@@ -109,26 +98,23 @@ public class Spawner : MonoBehaviour
 
     void Spawn()
     {
-        GameObject prefab =
-            prefabs[
-                Random.Range(
-                    0,
-                    prefabs.Length
-                )
-            ];
+        if (!IsServer) return;
 
-        Vector3 spawnPosition =
-            GetRandomPosition();
+        GameObject prefab = prefabs[Random.Range(0, prefabs.Length)];
+        GameObject spawned = Instantiate(prefab, GetRandomPosition(), Quaternion.identity);
 
-        GameObject spawned =
-            Instantiate(
-                prefab,
-                spawnPosition,
-                Quaternion.identity
-            );
+        NetworkObject netObj = spawned.GetComponent<NetworkObject>();
+
+        if (netObj == null)
+        {
+            Debug.LogError("Spawner: prefab sin NetworkObject");
+            Destroy(spawned);
+            return;
+        }
+
+        netObj.Spawn(true);
 
         aliveObjects.Add(spawned);
-
         totalSpawned++;
     }
 
@@ -136,25 +122,21 @@ public class Spawner : MonoBehaviour
 
     Vector3 GetRandomPosition()
     {
-        Vector2 random =
-            Random.insideUnitCircle
-            * spawnRadius;
-
-        return transform.position +
-               new Vector3(
-                   random.x,
-                   0,
-                   random.y
-               );
+        Vector2 random = Random.insideUnitCircle * spawnRadius;
+        return transform.position + new Vector3(random.x, 0, random.y);
     }
 
     //================================================//
 
     void CleanupDeadReferences()
     {
-        aliveObjects.RemoveAll(
-            obj => obj == null
-        );
+        aliveObjects.RemoveAll(obj =>
+        {
+            if (obj == null) return true;
+
+            var net = obj.GetComponent<NetworkObject>();
+            return net != null && !net.IsSpawned;
+        });
     }
 
     //================================================//
@@ -162,10 +144,6 @@ public class Spawner : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.cyan;
-
-        Gizmos.DrawWireSphere(
-            transform.position,
-            spawnRadius
-        );
+        Gizmos.DrawWireSphere(transform.position, spawnRadius);
     }
 }

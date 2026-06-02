@@ -24,6 +24,12 @@ public class PlayerAnimationSync : NetworkBehaviour
     public NetworkVariable<bool> Crouching =
         new(false, default, NetworkVariableWritePermission.Owner);
 
+    public NetworkVariable<bool> Dead =
+        new(false, default, NetworkVariableWritePermission.Server);
+
+    public NetworkVariable<int> ShootCounter =
+        new(0, default, NetworkVariableWritePermission.Owner);
+
     void Awake()
     {
         ctx = GetComponentInParent<PlayerContext>();
@@ -39,15 +45,37 @@ public class PlayerAnimationSync : NetworkBehaviour
         Vector3 localMove =
             ctx.transform.InverseTransformDirection(move);
 
-        VelX.Value = localMove.x;
-        VelY.Value = localMove.z;
+        UpdateFloat(VelX, localMove.x);
+        UpdateFloat(VelY, localMove.z);
 
-        Speed.Value = ctx.movement.AnimationSpeed;
+        UpdateFloat(Speed, ctx.movement.AnimationSpeed);
 
-        Grounded.Value = ctx.movement.IsGrounded;
+        if (Grounded.Value != ctx.movement.IsGrounded)
+            Grounded.Value = ctx.movement.IsGrounded;
 
-        Vertical.Value = ctx.movement.VerticalVelocity;
+        UpdateFloat(
+            Vertical,
+            ctx.movement.VerticalVelocity);
 
-        Crouching.Value = ctx.movement.IsCrouching;
+        if (Crouching.Value != ctx.movement.IsCrouching)
+            Crouching.Value = ctx.movement.IsCrouching;
+    }
+
+    private void UpdateFloat(
+        NetworkVariable<float> variable,
+        float value)
+    {
+        if (Mathf.Abs(variable.Value - value) < 0.01f)
+            return;
+
+        variable.Value = value;
+    }
+
+    public void NotifyShoot()
+    {
+        if (!IsOwner)
+            return;
+
+        ShootCounter.Value++;
     }
 }

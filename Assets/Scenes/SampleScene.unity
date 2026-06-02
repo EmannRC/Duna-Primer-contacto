@@ -11533,7 +11533,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c65432293c04131439e6630db54f5c63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LocalPlayerBootstrap
-  mainCamera: {fileID: 5709241865018711624}
+  mainCamera: {fileID: 4595558350214262953}
   cameraController: {fileID: 6068877174909018369}
   hud: {fileID: 983007577}
   inventoryUI: {fileID: 1690398551}
@@ -14248,6 +14248,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1543453988}
   - component: {fileID: 1543453989}
+  - component: {fileID: 1543453990}
   m_Layer: 0
   m_Name: Spawner
   m_TagString: Untagged
@@ -14282,6 +14283,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e55782340cf91d49a8c3c4873abd213, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Spawner
+  ShowTopMostFoldoutHeaderGroup: 1
   prefabs:
   - {fileID: 7580337510858567418, guid: 6dd084eb97913684f82a079571b069e4, type: 3}
   autoStart: 1
@@ -14291,6 +14293,31 @@ MonoBehaviour:
   maxAlive: 5
   totalSpawnLimit: -1
   spawnRadius: 5
+--- !u!114 &1543453990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1543453987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 2681073526
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1 &1554320466
 GameObject:
   m_ObjectHideFlags: 0
@@ -17182,7 +17209,7 @@ MonoBehaviour:
   m_DisconnectTimeoutMS: 30000
   ConnectionData:
     Address: 127.0.0.1
-    Port: 7791
+    Port: 7796
     WebSocketPath: /
     ServerListenAddress: 127.0.0.1
     ClientBindPort: 0
@@ -18195,7 +18222,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1934679277
 Transform:
   m_ObjectHideFlags: 0
@@ -18346,7 +18373,6 @@ MonoBehaviour:
     Prefabs:
       NetworkPrefabsLists:
       - {fileID: 11400000, guid: b79439cbc7992a04da6f28ae80d8fe83, type: 2}
-      - {fileID: 11400000, guid: fad377516cb2dbd4f87d88d437f555bd, type: 2}
     TickRate: 30
     ClientConnectionBufferTimeout: 10
     ConnectionApproval: 0
@@ -20224,7 +20250,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.0007564989, g: 0.16037738, b: 0.13044253, a: 1}
+  m_Color: {r: 0.0007564989, g: 0.16037738, b: 0.13044253, a: 0.83137256}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

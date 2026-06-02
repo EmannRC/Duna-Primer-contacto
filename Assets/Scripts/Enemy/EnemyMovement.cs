@@ -1,188 +1,110 @@
+using System;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class EnemyMovement : MonoBehaviour
+public class EnemyMovement : NetworkBehaviour
 {
-    [Header("Movement")]
-    public float hoverHeight = 2f;
-    public float moveSpeed = 5f;
-    public float rotationSpeed = 5f;
-    public float hoverAmplitude = 0.5f; 
-    public float hoverFrequency = 1f;
-    public float stopDistance = 2f;
-    public float maxDistance = 10f;
+    [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private float orbitDistance = 3f;
+    [SerializeField] private float rotationSpeed = 8f;
 
-    [Header("Target")]
-    public Transform target;
+    private EnemyContext ctx;
 
-    [Header("Weapons")]
-    public GameObject laserPrefab;
-    public Transform leftCannon;
-    public Transform rightCannon;
-    public float fireRate = 1f;
-    public float laserSpeed = 20f;
-    public float attackRange = 8f;
-
-    private float hoverOffset;
-    private float lastFireTime;
-
-    public AudioSource audioSource;
-
-    //Orbita de ataque
-    private static List<EnemyMovement> allEnemies = new();
-    private int slotIndex;
-
-
-    //==========================================================================//
-    void Start()
+    //==============================================================================================================//
+    private void Awake()
     {
-        if (!target)
-            target = GameObject.FindGameObjectWithTag("Player").transform;
-        hoverOffset = Random.Range(0f, 2f * Mathf.PI); 
-    }
-    void OnEnable()
-    {
-        allEnemies.Add(this);
-        UpdateSlots();
+        ctx = GetComponent<EnemyContext>();
     }
 
-    void OnDisable()
+    //==============================================================================================================//
+    private void Update()
     {
-        allEnemies.Remove(this);
-        UpdateSlots();
-    }
-    void Update()
-    {
-        Movement();
-        Hover();
+        if (!IsServer)
+            return;
+
+        Move();
         RotateTowardsTarget();
-
-        if (!CanAct()) return;
-        FireLaser();
     }
 
-    static void UpdateSlots()
+    //==============================================================================================================//
+    private void Move()
     {
-        for (int i = 0; i < allEnemies.Count; i++)
-        {
-            allEnemies[i].slotIndex = i;
-        }
+        if (ctx.targeting.CurrentTarget == null)
+            return;
+
+        Vector3 desiredPosition = GetOrbitPosition();
+
+        Vector3 direction = desiredPosition - transform.position;
+
+        if (direction.sqrMagnitude < 0.04f)
+            return;
+
+        transform.position += direction.normalized * moveSpeed * Time.deltaTime;
     }
-
-    void Movement()
+    //==============================================================================================================//
+    private Vector3 GetOrbitPosition()
     {
-        if (!target) return;
+        int enemyCount =
+            EnemyFormation.ActiveEnemies.Count;
 
-        int enemyCount = allEnemies.Count;
+        if (enemyCount == 0) return ctx.targeting.CurrentTarget.position;
 
         float angleStep = 360f / enemyCount;
 
-        float angle = slotIndex * angleStep;
+        float angle = ctx.formation.SlotIndex * angleStep;
 
-        Vector3 offset =
-            Quaternion.Euler(0, angle, 0) *
-            Vector3.forward *
-            stopDistance;
+        Vector3 offset = Quaternion.Euler(0f, angle, 0f) * Vector3.forward * orbitDistance;
 
-        Vector3 desiredPosition =
-            target.position + offset;
-
-        float distance =
-            Vector3.Distance(transform.position, desiredPosition);
-
-        if (distance > 0.2f)
-        {
-            Vector3 direction =
-                (desiredPosition - transform.position).normalized;
-
-            transform.position +=
-                direction * moveSpeed * Time.deltaTime;
-        }
+        return ctx.targeting.CurrentTarget.position + offset;
     }
 
-    void Hover()
+    //==============================================================================================================//
+    private void RotateTowardsTarget()
     {
-        // Efecto de flote
-        Vector3 pos = transform.position;
-        pos.y = hoverHeight + Mathf.Sin(Time.time * hoverFrequency + hoverOffset) * hoverAmplitude;
-        transform.position = Vector3.Lerp(transform.position, pos, Time.deltaTime * 2f);
+        if (ctx.targeting.CurrentTarget == null)
+            return;
+
+        Vector3 dir = ctx.targeting.CurrentTarget.position - transform.position;
+
+        dir.y = 0f;
+
+        if (dir.sqrMagnitude < 0.01f)
+            return;
+
+        Quaternion targetRotation = Quaternion.LookRotation(dir);
+
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
     }
 
-    void RotateTowardsTarget()
-    {
-        if (!target) return;
-
-        Vector3 dir = target.position - transform.position;
-        dir.y = 0; 
-        if (dir.sqrMagnitude > 0.01f)
-        {
-            Quaternion lookRot = Quaternion.LookRotation(dir);
-            transform.rotation = Quaternion.Slerp(transform.rotation, lookRot, rotationSpeed * Time.deltaTime);
-        }
-    }
-
-    void FireLaser()
-    {
-        if (!laserPrefab || !target) return;
-
-        float distanceToTarget = Vector3.Distance(transform.position, target.position);
-
-        if (distanceToTarget > attackRange) return;
-
-        if (Time.time > lastFireTime + 1f / fireRate)
-        {
-            lastFireTime = Time.time;
-
-            ShootFromCannon(leftCannon);
-            ShootFromCannon(rightCannon);
-        }
-    }
-
-    void ShootFromCannon(Transform cannon)
-    {
-        if (!laserPrefab || !target) return;
-
-        GameObject laser = Instantiate(laserPrefab, cannon.position, Quaternion.identity);
-
-        // Diaparo hacia el jugador
-        Vector3 direction = (target.position + Vector3.up * 1f - cannon.position).normalized;
-
-        // Rotar el laser para que mire al jugador
-        laser.transform.rotation = Quaternion.LookRotation(direction);
-
-        // Velocidad
-        Rigidbody rb = laser.GetComponent<Rigidbody>();
-        if (rb)
-            rb.linearVelocity = direction * laserSpeed;
-
-        audioSource.Play();
-
-        Destroy(laser, 5f); 
-    }
-
-    bool CanAct()
-    {
-        return GameManager.Instance.state == GameState.Playing;
-    }
-
-    
-
-
-    //=====VISUALIZACION CON GIZMOS============
+    //==============================================================================================================//
     private void OnDrawGizmosSelected()
     {
-        // Stop distance
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, stopDistance);
+        if (ctx == null ||
+            ctx.targeting == null ||
+            ctx.targeting.CurrentTarget == null)
+            return;
 
-        // Max distance
+        Vector3 targetPos =
+            ctx.targeting.CurrentTarget.position;
+
+        Vector3 orbitPos =
+            GetOrbitPosition();
+
+        // Radio de órbita
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(targetPos, orbitDistance);
+
+        // Posición asignada
         Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(transform.position, maxDistance);
+        Gizmos.DrawWireSphere(orbitPos, 0.3f);
 
-        // Attack range
+        // Trayectoria hacia el slot
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(transform.position, orbitPos);
+
+        // Línea al objetivo
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, attackRange);
-
-       
+        Gizmos.DrawLine(transform.position, targetPos);
     }
 }

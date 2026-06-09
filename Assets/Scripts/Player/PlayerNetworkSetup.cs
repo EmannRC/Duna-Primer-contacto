@@ -1,6 +1,7 @@
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 public class PlayerNetworkSetup : NetworkBehaviour
 {
@@ -11,14 +12,19 @@ public class PlayerNetworkSetup : NetworkBehaviour
         if (!IsOwner)
         {
             playerInput.enabled = false;
-
             return;
         }
-        InitializeLocalPlayer();
 
+        StartCoroutine(InitializeWhenReady());
     }
-    private void InitializeLocalPlayer()
+
+    private IEnumerator InitializeWhenReady()
     {
+        while (LocalPlayerBootstrap.Instance == null)
+        {
+            yield return null;
+        }
+
         LocalPlayerBootstrap.Instance.Setup(transform.root);
     }
 }

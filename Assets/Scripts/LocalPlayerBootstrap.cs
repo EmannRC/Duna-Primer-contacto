@@ -28,6 +28,8 @@ public class LocalPlayerBootstrap : MonoBehaviour
     //==========================================================//
     public void Setup(Transform playerRoot)
     {
+        Debug.Log("LOCAL PLAYER SETUP");
+
         PlayerContext ctx =
             playerRoot.GetComponent<PlayerContext>();
 

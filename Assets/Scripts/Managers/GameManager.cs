@@ -2,28 +2,48 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System;
 
+public enum GameState
+{
+    Playing,
+    Victory,
+    Defeat,
+    Paused,
+    InMenu
+}
+
 public class GameManager : MonoBehaviour
 {
-    
-    public static event Action OnPlayerDeath;
-
     public static GameManager Instance;
 
-    public GameState state;
+    public static event Action OnVictory;
+    public static event Action OnDefeat;
+
+    public GameState State { get; private set; }
 
     private void Awake()
     {
-        if (Instance == null)
-            Instance = this;
-        else
+        if (Instance != null && Instance != this)
+        {
             Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
     }
 
     public void SetState(GameState newState)
     {
-        state = newState;
+        State = newState;
 
-        if (state == GameState.PlayerDead)
-            OnPlayerDeath?.Invoke();
+        switch (State)
+        {
+            case GameState.Victory:
+                OnVictory?.Invoke();
+                break;
+
+            case GameState.Defeat:
+                OnDefeat?.Invoke();
+                break;
+        }
     }
 }

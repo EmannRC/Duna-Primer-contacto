@@ -28,15 +28,14 @@ public class PlayerMana : NetworkBehaviour
     {
         CurrentMana.OnValueChanged += OnManaValueChanged;
 
-        if (IsServer)
-        {
-            RefreshStats();
-        }
+        RefreshStats();
     }
 
     void Start()
     {
         ctx.stats.OnStatsChanged += RefreshStats;
+
+        RefreshStats();
     }
 
     //===========================================================//

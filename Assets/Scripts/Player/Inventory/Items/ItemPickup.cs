@@ -24,11 +24,15 @@ public class ItemPickup : NetworkBehaviour
     //======================================================//
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log($"Trigger: {other.name}");
+
         if (!IsServer) return;
 
         PlayerContext ctx = other.GetComponent<PlayerContext>();
 
         if (ctx == null) return;
+
+        Debug.Log($"Pickup por: {ctx.name}");
 
         HandlePickup(ctx);
     }
@@ -36,7 +40,11 @@ public class ItemPickup : NetworkBehaviour
     //======================================================//
     private void HandlePickup(PlayerContext player)
     {
+        Debug.Log($"HandlePickup: {player.name}");
+
         Item item = itemDatabase.GetByItemId(itemId);
+
+        Debug.Log($"Item encontrado: {item}");
 
         if (item == null)
         {

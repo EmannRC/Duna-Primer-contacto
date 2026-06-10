@@ -9,6 +9,9 @@ public class PlayerNetworkSetup : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        Debug.Log(
+        $"Player Spawned | Scene: {gameObject.scene.name} | Pos: {transform.position}");
+
         if (!IsOwner)
         {
             playerInput.enabled = false;

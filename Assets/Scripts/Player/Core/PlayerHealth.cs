@@ -5,8 +5,11 @@ public class PlayerHealth : HealthController
 {
     public override void Die()
     {
+        if (IsDead.Value)
+            return;
+
         base.Die();
 
-        GameManager.Instance.SetState(GameState.PlayerDead);
+        CoopGameManager.Instance.CheckDefeat();
     }
 }

@@ -52,8 +52,7 @@ public class CameraController : MonoBehaviour
         if (target == null || targetingSystem == null)
             return;
 
-        if (GameManager.Instance.state != GameState.Playing)
-            return;
+        
 
         FollowTarget();
         RotateCamera();

@@ -33,17 +33,6 @@ public class UI_Manager : MonoBehaviour
         UpdateTabButtons(false);
     }
 
-    void OnEnable()
-    {
-        GameManager.OnPlayerDeath += ShowDefeatMenu;
-        
-    }
-
-    void OnDisable()
-    {
-        GameManager.OnPlayerDeath -= ShowDefeatMenu;
-        
-    }
 
     //=============================================================
     public void ToggleUI(GameObject ui)
@@ -77,7 +66,7 @@ public class UI_Manager : MonoBehaviour
     }
     void OpenUIState()
     {
-        GameManager.Instance.state = GameState.InMenu;
+        GameManager.Instance.SetState(GameState.InMenu);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         Time.timeScale = 0f;
@@ -85,7 +74,7 @@ public class UI_Manager : MonoBehaviour
 
     void CloseUIState()
     {
-        GameManager.Instance.state = GameState.Playing;
+        GameManager.Instance.SetState(GameState.Playing);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         Time.timeScale = 1f;

@@ -41,6 +41,8 @@ public class Inventory : NetworkBehaviour
     //==============================================================//
     public void AddItem(string itemId, int amount = 1)
     {
+        Debug.Log($"AddItem: {itemId} x{amount}");
+
         if (!IsServer)
             return;
 

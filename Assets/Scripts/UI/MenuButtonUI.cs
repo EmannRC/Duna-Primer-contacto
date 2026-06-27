@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 public class MenuButtonUI : MonoBehaviour
 {
 
+    public GameObject defeatMenu;
+
     public void Restart()
     {
         Time.timeScale = 1f;
@@ -12,7 +14,16 @@ public class MenuButtonUI : MonoBehaviour
         if (!NetworkManager.Singleton.IsServer)
             return;
 
-        NetworkManager.Singleton.SceneManager.LoadScene(SceneManager.GetActiveScene().name, LoadSceneMode.Single);
+        var spawner = FindFirstObjectByType<PlayerSpawner>();
+
+        if (spawner != null)
+        {
+            spawner.RespawnAllPlayers();
+        }
+
+        GameManager.Instance.SetState(GameState.Playing);
+
+        defeatMenu.SetActive(false);
     }
 
     public void BackToMenu()

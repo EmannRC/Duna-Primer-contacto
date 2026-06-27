@@ -3,8 +3,11 @@ using UnityEngine;
 public class EnemyContext : MonoBehaviour
 {
     [Header("Core")]
+    public EnemyStats stats;
     public EnemyHealth health;
-    public EnemyMovement movement;
+    public GroundEnemyMovement movement;
+    public FlyingEnemyMovement flyingMovement;
+    
     public EnemyCombat combat;
     public EnemyTargeting targeting;
     public EnemyFormation formation;
@@ -12,9 +15,11 @@ public class EnemyContext : MonoBehaviour
     private void Awake()
     {
         health = GetComponent<EnemyHealth>();
-        movement = GetComponent<EnemyMovement>();
+        movement = GetComponent<GroundEnemyMovement>();
+        flyingMovement = GetComponent<FlyingEnemyMovement>();
         combat = GetComponent<EnemyCombat>();
         targeting = GetComponent<EnemyTargeting>();
         formation = GetComponent<EnemyFormation>();
+        stats = GetComponent<EnemyStats>();
     }
 }

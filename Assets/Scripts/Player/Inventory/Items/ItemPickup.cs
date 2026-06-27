@@ -14,7 +14,16 @@ public class ItemPickup : NetworkBehaviour
     [Header("Rotation")]
     [SerializeField] private float rotationSpeed = 60f;
 
- 
+    private PickupSpawner spawner;
+
+
+    public override void OnNetworkSpawn()
+    {
+        if (!IsServer) return;
+
+        spawner = FindFirstObjectByType<PickupSpawner>();
+    }
+
     //======================================================//
     private void Update()
     {
@@ -60,6 +69,10 @@ public class ItemPickup : NetworkBehaviour
         {
             player.inventory.AddItem(itemId, amount);
         }
+
+        //  avisar al spawner
+        if (spawner != null)
+            spawner.OnPickupCollected(NetworkObject);
 
         NetworkObject.Despawn();
     }

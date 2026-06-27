@@ -118,7 +118,7 @@ Transform:
   m_GameObject: {fileID: 1630192125796716608}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.110710144, y: -0.06578994, z: -0.24298859}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.525, y: 0.525, z: 0.525}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -699,7 +699,7 @@ Transform:
   m_GameObject: {fileID: 6470707750820445160}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.22142029, y: 0.13157988, z: 0.48597717}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -732,13 +732,14 @@ GameObject:
   - component: {fileID: 826888458988050451}
   - component: {fileID: 2522387408000410794}
   - component: {fileID: 656690835660808204}
-  - component: {fileID: 3535888481873629682}
   - component: {fileID: 995366935344011818}
   - component: {fileID: 8594218847711774499}
   - component: {fileID: 2888231608811544742}
   - component: {fileID: 4040145666861132103}
   - component: {fileID: 6182463170461700}
   - component: {fileID: 6436537096856006042}
+  - component: {fileID: 3487113899354534646}
+  - component: {fileID: 8857862662849913094}
   m_Layer: 6
   m_Name: Drone
   m_TagString: Untagged
@@ -755,7 +756,7 @@ Transform:
   m_GameObject: {fileID: 7580337510858567418}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 29.34, y: 2.55, z: 43.96173}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -795,8 +796,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04e9aed161ce65e468ababd6b303f53f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyContext
+  stats: {fileID: 0}
   health: {fileID: 8594218847711774499}
-  movement: {fileID: 3535888481873629682}
+  movement: {fileID: 0}
   combat: {fileID: 2888231608811544742}
   targeting: {fileID: 4040145666861132103}
   formation: {fileID: 995366935344011818}
@@ -825,22 +827,6 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!114 &3535888481873629682
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7580337510858567418}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a8b8869faf71db043a9da84638f6ee13, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Drone
-  ShowTopMostFoldoutHeaderGroup: 1
-  moveSpeed: 3
-  orbitDistance: 3
-  rotationSpeed: 2
 --- !u!114 &995366935344011818
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -866,7 +852,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
   ShowTopMostFoldoutHeaderGroup: 1
-  maxHealth: 50
+  maxHealth: 10
   CurrentHealth:
     UpdateTraits:
       MinSecondsBetweenUpdates: 0
@@ -896,11 +882,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCombat
   ShowTopMostFoldoutHeaderGroup: 1
+  attackType: 0
+  fireRate: 1
+  attackRange: 8
   projectilePrefab: {fileID: 7301886750513406657, guid: b99a55da616403a45a002458aab03d08, type: 3}
   leftCannon: {fileID: 52119041162789197}
   rightCannon: {fileID: 3419864801679382883}
-  fireRate: 1
-  attackRange: 8
+  meleeDamage: 10
 --- !u!114 &4040145666861132103
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -926,7 +914,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0eaef722073bad4468e0ccc9d07c2e6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyReward
-  xpReward: 5
+  xpReward: 15
   playerLevel: {fileID: 0}
 --- !u!82 &6436537096856006042
 AudioSource:
@@ -1025,6 +1013,75 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &3487113899354534646
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7580337510858567418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkTransform
+  ShowTopMostFoldoutHeaderGroup: 1
+  NetworkTransformExpanded: 0
+  AutoOwnerAuthorityTickOffset: 1
+  PositionInterpolationType: 0
+  RotationInterpolationType: 0
+  ScaleInterpolationType: 0
+  PositionLerpSmoothing: 1
+  PositionMaxInterpolationTime: 0.1
+  RotationLerpSmoothing: 1
+  RotationMaxInterpolationTime: 0.1
+  ScaleLerpSmoothing: 1
+  ScaleMaxInterpolationTime: 0.1
+  AuthorityMode: 0
+  TickSyncChildren: 0
+  UseUnreliableDeltas: 0
+  SyncPositionX: 1
+  SyncPositionY: 1
+  SyncPositionZ: 1
+  SyncRotAngleX: 1
+  SyncRotAngleY: 1
+  SyncRotAngleZ: 1
+  SyncScaleX: 1
+  SyncScaleY: 1
+  SyncScaleZ: 1
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  UseQuaternionSynchronization: 0
+  UseQuaternionCompression: 0
+  UseHalfFloatPrecision: 0
+  InLocalSpace: 0
+  SwitchTransformSpaceWhenParented: 0
+  Interpolate: 1
+  SlerpPosition: 0
+--- !u!114 &8857862662849913094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7580337510858567418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc4bddd61adecfd4a994fcc037618f62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FlyingEnemyMovement
+  ShowTopMostFoldoutHeaderGroup: 1
+  moveSpeed: 4
+  stoppingDistance: 3
+  rotationSpeed: 8
+  hoverHeight: 3
+  heightLerpSpeed: 5
+  groundCheckDistance: 20
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 8
+  formationRadius: 3
 --- !u!1 &7584300324631172347
 GameObject:
   m_ObjectHideFlags: 0

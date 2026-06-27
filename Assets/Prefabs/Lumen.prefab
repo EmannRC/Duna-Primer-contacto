@@ -1747,7 +1747,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
   ShowTopMostFoldoutHeaderGroup: 1
-  maxHealth: 100
+  maxHealth: 5000
   CurrentHealth:
     UpdateTraits:
       MinSecondsBetweenUpdates: 0
@@ -3115,7 +3115,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   firePoint: {fileID: 4577949749204763847}
   cooldown: 1
-  shootSound: {fileID: 4383531568998895449}
+  shootSound: {fileID: 0}
 --- !u!114 &642162550967021989
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -19,6 +19,11 @@ public class EnemyHover : MonoBehaviour
 
     private void Update()
     {
+        Hover();
+    }
+
+    public void Hover()
+    {
         Vector3 pos = startLocalPosition;
 
         pos.y += Mathf.Sin(Time.time * frequency + offset) * amplitude;

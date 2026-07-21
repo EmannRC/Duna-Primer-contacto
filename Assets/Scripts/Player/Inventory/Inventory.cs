@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Duna.QuestSystem;
 
-public class Inventory : NetworkBehaviour
+public class Inventory : NetworkBehaviour, IQuestItemProvider
 {
     public NetworkList<InventorySlot> items;
 
@@ -88,6 +89,19 @@ public class Inventory : NetworkBehaviour
 
             return;
         }
+    }
+
+    public bool TryRemoveItem(string itemId, int amount)
+    {
+        if (!IsServer)
+            return false;
+
+        if (!HasItem(itemId, amount))
+            return false;
+
+        RemoveItem(itemId, amount);
+
+        return true;
     }
 
     //==============================================================//

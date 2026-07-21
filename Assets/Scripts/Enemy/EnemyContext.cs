@@ -8,7 +8,7 @@ public class EnemyContext : MonoBehaviour
     public GroundEnemyMovement movement;
     public FlyingEnemyMovement flyingMovement;
     
-    public EnemyCombat combat;
+    public EnemyRangeCombat combat;
     public EnemyTargeting targeting;
     public EnemyFormation formation;
 
@@ -17,7 +17,7 @@ public class EnemyContext : MonoBehaviour
         health = GetComponent<EnemyHealth>();
         movement = GetComponent<GroundEnemyMovement>();
         flyingMovement = GetComponent<FlyingEnemyMovement>();
-        combat = GetComponent<EnemyCombat>();
+        combat = GetComponent<EnemyRangeCombat>();
         targeting = GetComponent<EnemyTargeting>();
         formation = GetComponent<EnemyFormation>();
         stats = GetComponent<EnemyStats>();

@@ -168,6 +168,7 @@ MonoBehaviour:
   stats: {fileID: 0}
   health: {fileID: 6291622827339570393}
   movement: {fileID: 6370538591664598524}
+  flyingMovement: {fileID: 0}
   combat: {fileID: 0}
   targeting: {fileID: 6792967316759233825}
   formation: {fileID: 0}
@@ -261,6 +262,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
   ShowTopMostFoldoutHeaderGroup: 1
+  moveSpeed: 3.5
+  stoppingDistance: 1.5
 --- !u!114 &6792967316759233825
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -314,9 +317,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyMeleeCombat
   ShowTopMostFoldoutHeaderGroup: 1
-  damage: 10
-  attackRate: 1
-  attackRange: 1
+  damage: 50
+  attackRate: 0.5
+  attackRange: 1.5
 --- !u!1001 &5875932952739771392
 PrefabInstance:
   m_ObjectHideFlags: 0

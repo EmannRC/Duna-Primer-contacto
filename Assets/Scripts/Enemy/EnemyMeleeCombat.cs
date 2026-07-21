@@ -53,8 +53,7 @@ public class EnemyMeleeCombat : NetworkBehaviour
 
     private void Attack(Transform target)
     {
-        PlayerHealth health =
-            target.GetComponentInParent<PlayerHealth>();
+        PlayerHealth health = target.GetComponent<PlayerHealth>();
 
         if (health == null)
             return;

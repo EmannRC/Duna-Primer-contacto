@@ -59,4 +59,10 @@ public class GroundEnemyMovement : NetworkBehaviour
             targetRotation,
             8f * Time.deltaTime);
     }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, stoppingDistance);
+    }
 }

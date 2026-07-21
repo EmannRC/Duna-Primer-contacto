@@ -2,7 +2,7 @@ using System;
 using Unity.Netcode;
 using UnityEngine;
 
-public class EnemyCombat : NetworkBehaviour
+public class EnemyRangeCombat : NetworkBehaviour
 {
     [Header("Attack Settings")]
     [SerializeField] private float fireRate = 1f;

@@ -1,5 +1,6 @@
 using NUnit.Framework.Interfaces;
 using System;
+using Duna.QuestSystem;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -68,6 +69,7 @@ public class ItemPickup : NetworkBehaviour
         else
         {
             player.inventory.AddItem(itemId, amount);
+            QuestEvents.RaiseCollectItem(itemId, amount);
         }
 
         //  avisar al spawner

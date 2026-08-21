@@ -1,3 +1,5 @@
+using Duna.InteractionSystem;
+using Duna.QuestSystem;
 using System.Globalization;
 using UnityEngine;
 
@@ -13,6 +15,8 @@ public class PlayerContext : MonoBehaviour
     public TargetingSystem targeting;
     public PlayerInputEvents inputEvents;
     public PlayerLevelSystem levelSystem;
+    public PlayerInteraction interaction;
+    public QuestManager questManager;
 
     [Header("Health")]
     public PlayerHealth health;

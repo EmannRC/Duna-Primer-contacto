@@ -16,10 +16,10 @@ MonoBehaviour:
   questName: EL COSO DEL COSITO HM
   description: Ve y busca el coso del cosito
   objectives:
-  - objectiveType: 1
-    targetID: 
+  - objectiveType: 0
+    targetID: arbol-anciano
     requiredAmount: 1
-    description: 
+    description: Habla con el npc arbol ancestral
   rewards: []
   repeatable: 0
   autoComplete: 0

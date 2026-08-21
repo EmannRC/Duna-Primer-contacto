@@ -1,9 +1,12 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerInputEvents : MonoBehaviour
 {
     private PlayerContext ctx;
+
+    public event Action InteractPressed;
 
     //==============================================//
     public void Bind(PlayerContext playerContext)
@@ -98,5 +101,24 @@ public class PlayerInputEvents : MonoBehaviour
             return;
 
         ctx.targeting.Zoom(input.ReadValue<Vector2>().y);
+    }
+
+    public void OnInteract(
+        InputAction.CallbackContext input)
+    {
+        if (!input.performed)
+            return;
+
+        Debug.Log("E PRESIONADA");
+
+        if (ctx == null)
+            return;
+
+
+        if (ctx.health.IsDead.Value)
+            return;
+
+
+        InteractPressed?.Invoke();
     }
 }

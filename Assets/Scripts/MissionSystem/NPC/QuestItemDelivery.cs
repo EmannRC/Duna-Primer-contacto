@@ -1,11 +1,12 @@
+using Duna.InteractionSystem;
 using UnityEngine;
 
 namespace Duna.QuestSystem
 {
     /// <summary>
-    /// Permite a un NPC recibir un objeto relacionado con una misi�n.
+    /// Permite a un NPC recibir un objeto relacionado con una misión.
     /// </summary>
-    public class QuestItemDelivery : MonoBehaviour
+    public class QuestItemDelivery : MonoBehaviour, IInteractable
     {
         [Header("Quest")]
         [SerializeField] private QuestData quest;
@@ -21,15 +22,9 @@ namespace Duna.QuestSystem
 
         public int RequiredAmount => requiredAmount;
 
-        public bool CanDeliver()
+        public bool CanDeliver(QuestManager questManager, IQuestItemProvider inventory)
         {
-            if (quest == null)
-                return false;
-
-            QuestManager questManager =
-                FindFirstObjectByType<QuestManager>();
-
-            if (questManager == null)
+            if (quest == null || questManager == null || inventory == null || requiredAmount <= 0)
                 return false;
 
             QuestInstance questInstance =
@@ -50,21 +45,50 @@ namespace Duna.QuestSystem
             if (objective.Data.TargetID != itemID)
                 return false;
 
-            return true;
+            int amountToDeliver = Mathf.Min(
+                requiredAmount,
+                objective.Data.RequiredAmount - objective.CurrentAmount
+            );
+
+            return amountToDeliver > 0 && inventory.HasItem(itemID, amountToDeliver);
         }
 
-        public void Deliver()
+        public bool Deliver(QuestManager questManager, IQuestItemProvider inventory)
         {
-            if (!CanDeliver())
+            if (!CanDeliver(questManager, inventory))
             {
                 Debug.Log("No se puede entregar este objeto.");
-                return;
+                return false;
             }
+
+            QuestObjectiveRuntime objective = questManager.GetActiveQuest(quest.QuestID).CurrentObjective;
+            int amountToDeliver = Mathf.Min(
+                requiredAmount,
+                objective.Data.RequiredAmount - objective.CurrentAmount
+            );
+
+            if (!inventory.TryRemoveItem(itemID, amountToDeliver))
+                return false;
 
             QuestEvents.RaiseDeliverItem(
                 itemID,
-                requiredAmount
+                amountToDeliver
             );
+
+            return true;
+        }
+
+        public void Interact(GameObject player)
+        {
+            PlayerContext context = player != null ? player.GetComponent<PlayerContext>() : null;
+
+            if (context == null)
+            {
+                Debug.LogError("La entrega de misión requiere un PlayerContext válido.");
+                return;
+            }
+
+            Deliver(context.questManager, context.inventory);
         }
     }
 }

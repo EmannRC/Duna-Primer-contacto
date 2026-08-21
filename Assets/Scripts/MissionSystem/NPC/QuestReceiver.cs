@@ -15,7 +15,7 @@ namespace Duna.QuestSystem
 
 
         /// <summary>
-        /// Comprueba si este NPC puede recibir una misiÛn.
+        /// Comprueba si este NPC puede recibir una misi√≥n.
         /// </summary>
         public bool HasQuest()
         {
@@ -24,17 +24,11 @@ namespace Duna.QuestSystem
 
 
         /// <summary>
-        /// Comprueba si la misiÛn est· lista para entregar.
+        /// Comprueba si la misi√≥n est√° lista para entregar.
         /// </summary>
-        public bool CanTurnIn()
+        public bool CanTurnIn(QuestManager manager)
         {
-            if (quest == null)
-                return false;
-
-
-            QuestManager manager = FindFirstObjectByType<QuestManager>();
-
-            if (manager == null)
+            if (quest == null || manager == null)
                 return false;
 
 
@@ -51,23 +45,18 @@ namespace Duna.QuestSystem
 
 
         /// <summary>
-        /// Entrega la misiÛn y finaliza la recompensa.
+        /// Entrega la misi√≥n y finaliza la recompensa.
         /// </summary>
-        public void TurnInQuest()
+        public bool TurnInQuest(QuestManager manager)
         {
-            if (!CanTurnIn())
+            if (!CanTurnIn(manager))
             {
                 Debug.Log(
-                    "La misiÛn todavÌa no est· completada."
+                    "La misi√≥n todav√≠a no est√° completada."
                 );
 
-                return;
+                return false;
             }
-
-
-            QuestManager manager =
-                FindFirstObjectByType<QuestManager>();
-
 
             bool success =
                 manager.TurnInQuest(quest.QuestID);
@@ -76,31 +65,33 @@ namespace Duna.QuestSystem
             if (success)
             {
                 Debug.Log(
-                    $"MisiÛn entregada: {quest.QuestName}"
+                    $"Misi√≥n entregada: {quest.QuestName}"
                 );
             }
+
+            return success;
         }
 
 
         /// <summary>
-        /// MÈtodo pensado para el sistema de di·logo.
+        /// M√©todo pensado para el sistema de di√°logo.
         /// </summary>
-        public void Interact()
+        public bool Interact(QuestManager manager)
         {
             if (!HasQuest())
-                return;
+                return false;
 
 
-            if (CanTurnIn())
+            if (CanTurnIn(manager))
             {
-                TurnInQuest();
+                return TurnInQuest(manager);
             }
-            else
-            {
-                Debug.Log(
-                    "Este NPC no tiene nada para recibir."
-                );
-            }
+
+            Debug.Log(
+                "Este NPC no tiene nada para recibir."
+            );
+
+            return false;
         }
     }
 }

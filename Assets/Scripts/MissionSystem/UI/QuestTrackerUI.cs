@@ -1,119 +1,215 @@
+using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 
 namespace Duna.QuestSystem.UI
 {
-    /// <summary>
-    /// Muestra la misión activa actual en pantalla.
-    /// </summary>
     public class QuestTrackerUI : MonoBehaviour
     {
-        [Header("UI References")]
+        [Header("Quest Manager")]
+        [SerializeField]
+        private QuestManager questManager;
 
+
+        [Header("UI")]
         [SerializeField]
         private TextMeshProUGUI questTitle;
+
 
         [SerializeField]
         private TextMeshProUGUI questDescription;
 
+
         [SerializeField]
         private TextMeshProUGUI objectiveText;
 
+        private bool isBound;
 
-        private QuestManager questManager;
 
+        //==========================================================//
+        // BIND
+        //==========================================================//
 
-        private void Start()
+        public void Bind(
+            QuestManager manager)
         {
-            questManager =
-                FindFirstObjectByType<QuestManager>();
-
-
-            if (questManager == null)
+            if (manager == null)
             {
                 Debug.LogError(
-                    "No existe QuestManager en escena."
+                    "QuestTrackerUI recibió un QuestManager NULL."
                 );
 
                 return;
             }
 
-            questManager.OnObjectiveUpdated += RefreshUI;
 
-            questManager.OnQuestAccepted += RefreshUI;
-
-            questManager.OnQuestCompleted += RefreshUI;
-
-            questManager.OnQuestTurnedIn += RefreshUI;
+            if (isBound)
+            {
+                Unbind();
+            }
 
 
-            RefreshUI(null);
+            questManager =
+                manager;
+
+
+            SubscribeToEvents();
+
+
+            isBound =
+                true;
+
+
+            RefreshUI(
+                null
+            );
         }
 
 
-        private void OnDestroy()
+        //==========================================================//
+        // UNBIND
+        //==========================================================//
+
+        private void Unbind()
         {
             if (questManager == null)
                 return;
 
-            questManager.OnObjectiveUpdated -= RefreshUI;
 
-            questManager.OnQuestAccepted -= RefreshUI;
+            questManager.OnQuestAccepted
+                -= RefreshUI;
 
-            questManager.OnQuestCompleted -= RefreshUI;
 
-            questManager.OnQuestTurnedIn -= RefreshUI;
+            questManager.OnQuestCompleted
+                -= RefreshUI;
+
+
+            questManager.OnQuestTurnedIn
+                -= RefreshUI;
+
+
+            questManager.OnObjectiveUpdated
+                -= RefreshUI;
+
+
+            isBound =
+                false;
         }
 
 
-        private void RefreshUI(QuestInstance quest)
+        //==========================================================//
+        // DESTROY
+        //==========================================================//
+
+        private void OnDestroy()
         {
-            UpdateCurrentQuest();
+            Unbind();
         }
 
 
-        private void UpdateCurrentQuest()
+        //==========================================================//
+        // EVENTS
+        //==========================================================//
+
+        private void SubscribeToEvents()
         {
-            if (questManager.ActiveQuests.Count == 0)
+            questManager.OnQuestAccepted
+                += RefreshUI;
+
+
+            questManager.OnQuestCompleted
+                += RefreshUI;
+
+
+            questManager.OnQuestTurnedIn
+                += RefreshUI;
+
+
+            questManager.OnObjectiveUpdated
+                += RefreshUI;
+        }
+
+
+        //==========================================================//
+        // REFRESH UI
+        //==========================================================//
+
+        private void RefreshUI(
+            QuestInstance quest)
+        {
+            if (questManager == null)
+                return;
+
+
+            if (
+                questManager.ActiveQuests.Count
+                == 0
+            )
             {
                 ClearUI();
+
                 return;
             }
 
 
-            QuestInstance quest =
+            QuestInstance activeQuest =
                 questManager.ActiveQuests[0];
 
 
+            if (activeQuest == null)
+            {
+                ClearUI();
+
+                return;
+            }
+
+
             questTitle.text =
-                quest.Data.QuestName;
+                activeQuest.Data.QuestName;
 
 
             questDescription.text =
-                quest.Data.Description;
+                activeQuest.Data.Description;
 
 
-            if (quest.CurrentObjective != null)
+            QuestObjectiveRuntime objective =
+                activeQuest.CurrentObjective;
+
+
+            if (objective == null)
             {
-                var objective =
-                    quest.CurrentObjective;
+                ClearUI();
 
-
-                objectiveText.text =
-                    $"{objective.Data.Description}\n" +
-                    $"{objective.CurrentAmount}/" +
-                    $"{objective.Data.RequiredAmount}";
+                return;
             }
+
+
+            objectiveText.text =
+                $"{objective.Data.Description}\n" +
+                $"{objective.CurrentAmount}/" +
+                $"{objective.Data.RequiredAmount}";
         }
 
 
+        //==========================================================//
+        // CLEAR UI
+        //==========================================================//
+
         private void ClearUI()
         {
-            questTitle.text = "";
+            if (questTitle != null)
+                questTitle.text =
+                    "";
 
-            questDescription.text = "";
 
-            objectiveText.text = "";
+            if (questDescription != null)
+                questDescription.text =
+                    "";
+
+
+            if (objectiveText != null)
+                objectiveText.text =
+                    "";
         }
     }
 }

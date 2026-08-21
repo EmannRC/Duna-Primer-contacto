@@ -5,93 +5,189 @@ using System;
 namespace Duna.QuestSystem
 {
     /// <summary>
-    /// Administra todas las misiones del jugador.
-    /// No escucha eventos del juego; esa responsabilidad pertenece al QuestTracker.
+    /// Administra todas las misiones de un jugador.
     /// </summary>
     public class QuestManager : MonoBehaviour
     {
         [Header("Database")]
-        [SerializeField] private QuestDatabase questDatabase;
+        [SerializeField]
+        private QuestDatabase questDatabase;
+
+
+        [Header("Rewards")]
+        [SerializeField]
+        private QuestRewardManager rewardManager;
+
 
         private readonly List<QuestInstance> activeQuests = new();
+
         private readonly List<QuestInstance> completedQuests = new();
 
-        /// <summary>
-        /// Misiones activas.
-        /// </summary>
-        public IReadOnlyList<QuestInstance> ActiveQuests => activeQuests;
 
-        /// <summary>
-        /// Misiones completadas.
-        /// </summary>
-        public IReadOnlyList<QuestInstance> CompletedQuests => completedQuests;
+        public IReadOnlyList<QuestInstance>
+            ActiveQuests =>
+            activeQuests;
 
-        //------------------------------------------------//
-        // Events
-        //------------------------------------------------//
 
-        public event Action<QuestInstance> OnQuestAccepted;
-        public event Action<QuestInstance> OnQuestCompleted;
-        public event Action<QuestInstance> OnQuestTurnedIn;
-        public event Action<QuestInstance> OnQuestAbandoned;
+        public IReadOnlyList<QuestInstance>
+            CompletedQuests =>
+            completedQuests;
 
-        public event Action<QuestInstance> OnObjectiveUpdated;
 
-        //------------------------------------------------//
-        // Quest Management
-        //------------------------------------------------//
+        //================================================//
+        // EVENTS
+        //================================================//
 
-        /// <summary>
-        /// Acepta una misiÛn.
-        /// </summary>
-        public bool AcceptQuest(string questID)
+        public event Action<QuestInstance>
+            OnQuestAccepted;
+
+
+        public event Action<QuestInstance>
+            OnQuestCompleted;
+
+
+        public event Action<QuestInstance>
+            OnQuestTurnedIn;
+
+
+        public event Action<QuestInstance>
+            OnQuestAbandoned;
+
+
+        public event Action<QuestInstance>
+            OnObjectiveUpdated;
+
+
+        //================================================//
+        // ACCEPT QUEST
+        //================================================//
+
+        public bool AcceptQuest(
+            string questID)
         {
-            QuestData questData = questDatabase.GetQuest(questID);
+            if (questDatabase == null)
+            {
+                Debug.LogError("QuestManager no tiene una QuestDatabase asignada.");
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(questID))
+            {
+                Debug.LogWarning("No se puede aceptar una misi√≥n sin ID.");
+                return false;
+            }
+
+            QuestData questData =
+                questDatabase.GetQuest(
+                    questID
+                );
+
 
             if (questData == null)
             {
-                Debug.LogWarning($"Quest '{questID}' no existe.");
+                Debug.LogWarning(
+                    $"Quest '{questID}' no existe."
+                );
+
                 return false;
             }
+
 
             if (HasQuest(questID))
             {
-                Debug.LogWarning($"La misiÛn '{questID}' ya est· activa.");
+                Debug.LogWarning(
+                    $"La misi√≥n '{questID}' ya est√° activa."
+                );
+
                 return false;
             }
 
-            QuestInstance quest = new QuestInstance(questData);
+            if (!questData.Repeatable && IsQuestCompleted(questID))
+            {
+                Debug.LogWarning(
+                    $"La misi√≥n '{questID}' ya fue completada y no es repetible."
+                );
 
-            activeQuests.Add(quest);
+                return false;
+            }
 
-            OnQuestAccepted?.Invoke(quest);
+
+            QuestInstance quest =
+                new QuestInstance(
+                    questData
+                );
+
+
+            activeQuests.Add(
+                quest
+            );
+
+
+            OnQuestAccepted?.Invoke(
+                quest
+            );
+
+
+            // Una misi√≥n sin objetivos ya est√° completa desde su creaci√≥n.
+            // As√≠ las misiones autom√°ticas no quedan activas para siempre.
+            if (quest.IsCompleted)
+            {
+                OnQuestCompleted?.Invoke(quest);
+
+                if (quest.Data.AutoComplete)
+                {
+                    TurnInQuest(quest.Data.QuestID);
+                }
+            }
+
 
             return true;
         }
 
-        /// <summary>
-        /// Abandona una misiÛn activa.
-        /// </summary>
-        public bool AbandonQuest(string questID)
+
+        //================================================//
+        // ABANDON QUEST
+        //================================================//
+
+        public bool AbandonQuest(
+            string questID)
         {
-            QuestInstance quest = GetActiveQuest(questID);
+            QuestInstance quest =
+                GetActiveQuest(
+                    questID
+                );
+
 
             if (quest == null)
                 return false;
 
-            activeQuests.Remove(quest);
 
-            OnQuestAbandoned?.Invoke(quest);
+            activeQuests.Remove(
+                quest
+            );
+
+
+            OnQuestAbandoned?.Invoke(
+                quest
+            );
+
 
             return true;
         }
 
-        /// <summary>
-        /// Marca una misiÛn como entregada.
-        /// </summary>
-        public bool TurnInQuest(string questID)
+
+        //================================================//
+        // TURN IN QUEST
+        //================================================//
+
+        public bool TurnInQuest(
+            string questID)
         {
-            QuestInstance quest = GetActiveQuest(questID);
+            QuestInstance quest =
+                GetActiveQuest(
+                    questID
+                );
+
 
             if (quest == null)
                 return false;
@@ -99,10 +195,6 @@ namespace Duna.QuestSystem
 
             if (!quest.IsCompleted)
                 return false;
-
-
-            QuestRewardManager rewardManager =
-                FindFirstObjectByType<QuestRewardManager>();
 
 
             if (rewardManager != null)
@@ -116,75 +208,147 @@ namespace Duna.QuestSystem
             quest.TurnIn();
 
 
-            activeQuests.Remove(quest);
+            activeQuests.Remove(
+                quest
+            );
 
-            completedQuests.Add(quest);
+
+            completedQuests.Add(
+                quest
+            );
 
 
-            OnQuestTurnedIn?.Invoke(quest);
+            OnQuestTurnedIn?.Invoke(
+                quest
+            );
 
 
             return true;
         }
 
-        //------------------------------------------------//
-        // Update
-        //------------------------------------------------//
 
-        /// <summary>
-        /// Comprueba quÈ misiones han sido completadas.
-        /// Lo llamar· QuestTracker despuÈs de actualizar el progreso.
-        /// </summary>
+        //================================================//
+        // CHECK COMPLETED QUESTS
+        //================================================//
+
         public void CheckCompletedQuests()
         {
-            foreach (QuestInstance quest in activeQuests)
+            foreach (
+                QuestInstance quest
+                in activeQuests
+            )
             {
-                if (quest.State != QuestState.Completed)
+                if (
+                    quest.State
+                    != QuestState.Completed
+                )
+                {
                     continue;
+                }
 
-                OnQuestCompleted?.Invoke(quest);
+
+                OnQuestCompleted?.Invoke(
+                    quest
+                );
             }
         }
 
-        //------------------------------------------------//
-        // Queries
-        //------------------------------------------------//
 
-        public bool HasQuest(string questID)
+        //================================================//
+        // QUERIES
+        //================================================//
+
+        public bool HasQuest(
+            string questID)
         {
-            return GetActiveQuest(questID) != null;
+            return GetActiveQuest(
+                questID
+            ) != null;
         }
 
-        public QuestInstance GetActiveQuest(string questID)
+
+        public QuestInstance GetActiveQuest(
+            string questID)
         {
-            foreach (QuestInstance quest in activeQuests)
+            foreach (
+                QuestInstance quest
+                in activeQuests
+            )
             {
-                if (quest.Data.QuestID == questID)
+                if (
+                    quest.Data.QuestID
+                    == questID
+                )
+                {
                     return quest;
+                }
             }
+
 
             return null;
         }
 
-        public QuestInstance GetCompletedQuest(string questID)
+
+        public QuestInstance GetCompletedQuest(
+            string questID)
         {
-            foreach (QuestInstance quest in completedQuests)
+            foreach (
+                QuestInstance quest
+                in completedQuests
+            )
             {
-                if (quest.Data.QuestID == questID)
+                if (
+                    quest.Data.QuestID
+                    == questID
+                )
+                {
                     return quest;
+                }
             }
+
 
             return null;
         }
 
-        public bool IsQuestCompleted(string questID)
+
+        public bool IsQuestCompleted(
+            string questID)
         {
-            return GetCompletedQuest(questID) != null;
+            return GetCompletedQuest(
+                questID
+            ) != null;
         }
 
-        public void NotifyObjectiveUpdated(QuestInstance quest)
+
+        //================================================//
+        // OBJECTIVE UPDATED
+        //================================================//
+
+        public void NotifyObjectiveUpdated(
+            QuestInstance quest)
         {
-            OnObjectiveUpdated?.Invoke(quest);
+            if (quest == null)
+                return;
+
+            OnObjectiveUpdated?.Invoke(
+                quest
+            );
+
+
+            if (
+                quest.State
+                == QuestState.Completed
+            )
+            {
+                OnQuestCompleted?.Invoke(
+                    quest
+                );
+
+                if (quest.Data.AutoComplete)
+                {
+                    TurnInQuest(quest.Data.QuestID);
+                }
+            }
         }
     }
 }

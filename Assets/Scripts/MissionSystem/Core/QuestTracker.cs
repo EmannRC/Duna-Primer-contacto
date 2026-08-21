@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Duna.QuestSystem
 {
     /// <summary>
-    /// Escucha los eventos del juego y actualiza autom�ticamente
+    /// Escucha los eventos del juego y actualiza automáticamente
     /// el progreso de todas las misiones activas.
     /// </summary>
     public class QuestTracker : MonoBehaviour
@@ -53,8 +53,14 @@ namespace Duna.QuestSystem
 
         private void UpdateObjectives(ObjectiveType type, string targetID, int amount)
         {
-            IReadOnlyList<QuestInstance> activeQuests =
-                questManager.ActiveQuests;
+            if (questManager == null || string.IsNullOrWhiteSpace(targetID) || amount <= 0)
+                return;
+
+            // NotifyObjectiveUpdated puede completar y retirar una misión
+            // automática. Recorremos una copia para no modificar la
+            // colección mientras se la está enumerando.
+            QuestInstance[] activeQuests =
+                new List<QuestInstance>(questManager.ActiveQuests).ToArray();
 
 
             foreach (QuestInstance quest in activeQuests)

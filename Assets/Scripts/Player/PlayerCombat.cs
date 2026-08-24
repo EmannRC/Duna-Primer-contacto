@@ -5,6 +5,8 @@ using UnityEngine.InputSystem;
 public class PlayerCombat : MonoBehaviour
 {
     public float shootDelay = 0.5f;
+    [Tooltip("Mantiene el disparo ligado al modo de apuntado, como en un shooter sobre el hombro.")]
+    public bool requireAimToShoot = true;
    
     private float nextShootTime;
 
@@ -23,6 +25,9 @@ public class PlayerCombat : MonoBehaviour
             return;
 
         if (ctx.equipment.weapon == null)
+            return;
+
+        if (requireAimToShoot && (ctx.targeting == null || !ctx.targeting.isAiming))
             return;
 
         if (Time.time < nextShootTime)

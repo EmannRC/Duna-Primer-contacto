@@ -1,6 +1,9 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
+/// <summary>
+/// Cámara en tercera persona con un encuadre sobre el hombro al apuntar.
+/// El pivote sigue al personaje; la cámara siempre se mantiene detrás de él.
+/// </summary>
 public class CameraController : MonoBehaviour
 {
     [Header("Referencias")]
@@ -11,143 +14,128 @@ public class CameraController : MonoBehaviour
     [Header("Sensibilidad")]
     public float mouseSensitivity = 200f;
 
-    [Header("Rotaci�n")]
+    [Header("Rotación")]
     public float minVerticalAngle = -35f;
     public float maxVerticalAngle = 60f;
 
-    [Header("Distancia")]
+    [Header("Exploración")]
     public float distance = 4f;
     public float minDistance = 1.5f;
     public float maxDistance = 6f;
     public float zoomSpeed = 2f;
+    public Vector3 explorationOffset = new Vector3(0.35f, 0f, 0f);
+    public float explorationFov = 60f;
+
+    [Header("Apuntado sobre el hombro")]
+    public float aimDistance = 2.35f;
+    public Vector3 combatOffset = new Vector3(0.8f, 0f, 0f);
+    public float aimFov = 48f;
+    public float aimSensitivityMultiplier = 0.55f;
 
     [Header("Suavizado")]
-    public float rotationSmooth = 10f;
-    public float followSmooth = 8f;
-    public float collisionSmooth = 10f;
+    public float rotationSmooth = 14f;
+    public float followSmooth = 12f;
+    public float collisionSmooth = 16f;
+    public float offsetSmooth = 10f;
+    public float fovSmooth = 12f;
 
     [Header("Colisiones")]
     public LayerMask collisionMask;
-
-    private float yRotation;
-    private float xRotation;
-    private float currentDistance;
+    [Min(0f)] public float collisionPadding = 0.15f;
 
     [Header("Lock On")]
     public TargetingSystem targetingSystem;
     public float lockOnSmooth = 5f;
 
-    [Header("Offset Combate")]
-    public Vector3 combatOffset = new Vector3(0.8f, 0f, 0f); // Mueve la camara para ver mejor
-    public float offsetSmooth = 5f;
-
+    private float yRotation;
+    private float xRotation;
+    private float currentDistance;
     private Vector3 currentOffset;
-
-    // INPUT SYSTEM
     private Vector2 lookInput;
     private float zoomInput;
+    private Camera controlledCamera;
 
-    void LateUpdate()
+    private void Awake()
     {
-        if (target == null || targetingSystem == null)
-            return;
+        controlledCamera = cam != null ? cam.GetComponent<Camera>() : null;
+    }
 
-        
+    private void LateUpdate()
+    {
+        if (target == null || pivot == null || cam == null || targetingSystem == null)
+            return;
 
         FollowTarget();
         RotateCamera();
         Zoom();
         HandleCollision();
+        UpdateFieldOfView();
     }
 
     public void SetTarget(Transform newTarget)
     {
         target = newTarget;
-
         targetingSystem = newTarget.GetComponentInChildren<TargetingSystem>(true);
+
+        // Evita el salto al primer frame al tomar como referencia la orientación actual.
+        Vector3 euler = pivot.rotation.eulerAngles;
+        yRotation = euler.y;
+        xRotation = NormalizeAngle(euler.x);
+        currentDistance = distance;
     }
 
-    void FollowTarget()
+    private void FollowTarget()
     {
+        bool isAiming = targetingSystem.isAiming;
         Vector3 basePosition = target.position + Vector3.up * 1.6f;
+        Vector3 desiredLocalOffset = isAiming ? combatOffset : explorationOffset;
+        Vector3 desiredOffset = pivot.right * desiredLocalOffset.x + pivot.up * desiredLocalOffset.y;
 
-        if (targetingSystem.isAiming)
-        {
-            Vector3 right = pivot.right;currentOffset = Vector3.Lerp(currentOffset,right * combatOffset.x,offsetSmooth * Time.deltaTime);
-        }
-        else
-        {
-            currentOffset = Vector3.Lerp(currentOffset,Vector3.zero,offsetSmooth * Time.deltaTime);
-        }
-
-        pivot.position = Vector3.Lerp(pivot.position,basePosition + currentOffset,followSmooth * Time.deltaTime);
+        currentOffset = Vector3.Lerp(currentOffset, desiredOffset, offsetSmooth * Time.deltaTime);
+        pivot.position = Vector3.Lerp(pivot.position, basePosition + currentOffset, followSmooth * Time.deltaTime);
     }
 
-    void RotateCamera()
+    private void RotateCamera()
     {
-        if (targetingSystem.isAiming)
-        {
-            // Rotaci�n del mouse
-            float sens = targetingSystem.isAiming ? mouseSensitivity * 0.5f : mouseSensitivity;
+        float sensitivity = mouseSensitivity * (targetingSystem.isAiming ? aimSensitivityMultiplier : 1f);
+        yRotation += lookInput.x * sensitivity * Time.deltaTime;
+        xRotation = Mathf.Clamp(xRotation - lookInput.y * sensitivity * Time.deltaTime, minVerticalAngle, maxVerticalAngle);
 
-            float mouseX = lookInput.x * sens * Time.deltaTime;
-            float mouseY = lookInput.y * sens * Time.deltaTime;
+        Quaternion desiredRotation = Quaternion.Euler(xRotation, yRotation, 0f);
+        pivot.rotation = Quaternion.Slerp(pivot.rotation, desiredRotation, rotationSmooth * Time.deltaTime);
+    }
 
-            yRotation += mouseX;
-            xRotation -= mouseY;
-            xRotation = Mathf.Clamp(xRotation, minVerticalAngle, maxVerticalAngle);
-
-            Quaternion rotation = Quaternion.Euler(xRotation, yRotation, 0);
-
-            pivot.rotation = Quaternion.Lerp(pivot.rotation,rotation,rotationSmooth * Time.deltaTime);
-
+    private void Zoom()
+    {
+        if (Mathf.Approximately(zoomInput, 0f) || targetingSystem.isAiming)
             return;
-        }
 
-        // C�mara normal
-        float mx = lookInput.x * mouseSensitivity * Time.deltaTime;
-        float my = lookInput.y * mouseSensitivity * Time.deltaTime;
-
-        yRotation += mx;
-        xRotation -= my;
-        xRotation = Mathf.Clamp(xRotation, minVerticalAngle, maxVerticalAngle);
-
-        Quaternion rot = Quaternion.Euler(xRotation, yRotation, 0);
-
-        pivot.rotation = Quaternion.Lerp(pivot.rotation, rot, rotationSmooth * Time.deltaTime);
+        distance = Mathf.Clamp(distance - zoomInput * zoomSpeed, minDistance, maxDistance);
     }
 
-    void Zoom()
+    private void HandleCollision()
     {
-        if (zoomInput != 0)
-        {
-            distance -= zoomInput * zoomSpeed;
-            distance = Mathf.Clamp(distance, minDistance, maxDistance);
-        }
-    }
-
-    void HandleCollision()
-    {
-        float desiredDistance = targetingSystem.isAiming ? 2.2f : distance;
+        float desiredDistance = targetingSystem.isAiming ? aimDistance : distance;
         float targetDistance = desiredDistance;
 
-        if (Physics.Raycast(pivot.position, -pivot.forward, out RaycastHit hit, distance, collisionMask))
-        {
-            targetDistance = Mathf.Clamp(hit.distance, minDistance, distance);
-        }
+        if (Physics.Raycast(pivot.position, -pivot.forward, out RaycastHit hit, desiredDistance, collisionMask, QueryTriggerInteraction.Ignore))
+            targetDistance = Mathf.Clamp(hit.distance - collisionPadding, minDistance, desiredDistance);
 
-        currentDistance = Mathf.Lerp(currentDistance,targetDistance,collisionSmooth * Time.deltaTime);
-
-        cam.localPosition = new Vector3(0, 0, -currentDistance);
+        currentDistance = Mathf.Lerp(currentDistance, targetDistance, collisionSmooth * Time.deltaTime);
+        cam.localPosition = new Vector3(0f, 0f, -currentDistance);
     }
 
-    public void SetLookInput(Vector2 input)
+    private void UpdateFieldOfView()
     {
-        lookInput = input;
+        if (controlledCamera == null)
+            return;
+
+        float desiredFov = targetingSystem.isAiming ? aimFov : explorationFov;
+        controlledCamera.fieldOfView = Mathf.Lerp(controlledCamera.fieldOfView, desiredFov, fovSmooth * Time.deltaTime);
     }
 
-    public void SetZoomInput(float input)
-    {
-        zoomInput = input;
-    }
+    public void SetLookInput(Vector2 input) => lookInput = input;
+    public void SetZoomInput(float input) => zoomInput = input;
+
+    private static float NormalizeAngle(float angle) => angle > 180f ? angle - 360f : angle;
 }

@@ -99,6 +99,10 @@ public class LocalPlayerBootstrap : MonoBehaviour
             mainCamera.transform
         );
 
+        // PlayerRotation usa esta referencia para que el personaje mire hacia
+        // donde apunta la cámara mientras se mantiene el botón de apuntado.
+        ctx.mainCamera = mainCamera;
+
 
         ctx.targeting.Bind(
             cameraController

@@ -13504,71 +13504,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!1001 &1331007121
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 1231241095755832135, guid: e561e19450bddf447b7b55c279f52613, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 502.46942
-      objectReference: {fileID: 0}
-    - target: {fileID: 1231241095755832135, guid: e561e19450bddf447b7b55c279f52613, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 33.24
-      objectReference: {fileID: 0}
-    - target: {fileID: 1231241095755832135, guid: e561e19450bddf447b7b55c279f52613, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 459.6115
-      objectReference: {fileID: 0}
-    - target: {fileID: 1231241095755832135, guid: e561e19450bddf447b7b55c279f52613, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1231241095755832135, guid: e561e19450bddf447b7b55c279f52613, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1231241095755832135, guid: e561e19450bddf447b7b55c279f52613, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1231241095755832135, guid: e561e19450bddf447b7b55c279f52613, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1231241095755832135, guid: e561e19450bddf447b7b55c279f52613, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1231241095755832135, guid: e561e19450bddf447b7b55c279f52613, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1231241095755832135, guid: e561e19450bddf447b7b55c279f52613, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3020576651022130400, guid: e561e19450bddf447b7b55c279f52613, type: 3}
-      propertyPath: GlobalObjectIdHash
-      value: 2015791273
-      objectReference: {fileID: 0}
-    - target: {fileID: 3020576651022130400, guid: e561e19450bddf447b7b55c279f52613, type: 3}
-      propertyPath: InScenePlacedSourceGlobalObjectIdHash
-      value: 1908905261
-      objectReference: {fileID: 0}
-    - target: {fileID: 3192926551893178601, guid: e561e19450bddf447b7b55c279f52613, type: 3}
-      propertyPath: m_Name
-      value: Lumen Prototipo
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: e561e19450bddf447b7b55c279f52613, type: 3}
 --- !u!1 &1332465275
 GameObject:
   m_ObjectHideFlags: 0
@@ -23638,16 +23573,23 @@ MonoBehaviour:
   minDistance: 1.5
   maxDistance: 6
   zoomSpeed: 2
+  explorationOffset: {x: 0.35, y: 0, z: 0}
+  explorationFov: 60
+  aimDistance: 2.35
+  combatOffset: {x: 0.8, y: 0, z: 0}
+  aimFov: 48
+  aimSensitivityMultiplier: 0.55
   rotationSmooth: 10
   followSmooth: 8
   collisionSmooth: 10
+  offsetSmooth: 5
+  fovSmooth: 12
   collisionMask:
     serializedVersion: 2
     m_Bits: 64
+  collisionPadding: 0.15
   targetingSystem: {fileID: 0}
   lockOnSmooth: 5
-  combatOffset: {x: 0.8, y: 0, z: 0}
-  offsetSmooth: 5
 --- !u!1001 &6301090921225645847
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -24081,4 +24023,3 @@ SceneRoots:
   - {fileID: 1796539362}
   - {fileID: 690217191}
   - {fileID: 1105717173}
-  - {fileID: 1331007121}

@@ -51,7 +51,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -99,7 +99,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   itemId: Weapon_Staff_Ice
   amount: 1
-  itemDatabase: {fileID: 0}
+  itemDatabase: {fileID: 11400000, guid: 6a85018d77ef7d841bf8aeb9a7a8199d, type: 2}
   rotationSpeed: 60
 --- !u!54 &6874827732924944141
 Rigidbody:

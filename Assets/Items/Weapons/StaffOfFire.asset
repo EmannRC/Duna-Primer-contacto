@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Weapon
   itemName: Staff of fire
   itemId: Weapon_Staff_Fire
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: e1f29698d5e216f46a5e6cbcd7f3cdbb, type: 3}
   iconColor: {r: 1, g: 1, b: 1, a: 1}
   isStackable: 1
   pickupPrefab: {fileID: 4949203353481235137, guid: 7ab9e56c9a4d1ff47b8a3f9137086c01, type: 3}

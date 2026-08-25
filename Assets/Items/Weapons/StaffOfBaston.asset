@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb27b9c54646f8843b1468e2c61eed20, type: 3}
+  m_Name: StaffOfBaston
+  m_EditorClassIdentifier: Assembly-CSharp::Weapon
+  itemName: Staff of baston
+  itemId: Weapon_Staff_Baston
+  icon: {fileID: 0}
+  iconColor: {r: 1, g: 1, b: 1, a: 1}
+  isStackable: 1
+  pickupPrefab: {fileID: 6081653803375156985, guid: 32fc2695741802b4a9de5cd478bcc1da, type: 3}
+  modifiers: []
+  weaponPrefab: {fileID: 1029363520842978847, guid: d24bb57a82351a5458da5ccf75eb4258, type: 3}
+  projectilePrefab: {fileID: 0}
+  manaCost: 0

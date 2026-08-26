@@ -1,16 +1,58 @@
+using Duna.InteractionSystem;
 using UnityEngine;
 
-public class NPCInteractable : MonoBehaviour
+namespace Duna.Interaction
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public class NPCInteractable : MonoBehaviour
     {
-        
-    }
+        private IInteractable interactable;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        private void Awake()
+        {
+            interactable = GetComponent<IInteractable>();
+
+            if (interactable == null)
+            {
+                Debug.LogError(
+                    $"{gameObject.name} necesita un componente que implemente IInteractable."
+                );
+            }
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            TrySetInteractable(other);
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            if (!other.CompareTag("Player"))
+                return;
+
+            PlayerContext playerContext =
+                other.GetComponentInParent<PlayerContext>();
+
+            if (playerContext == null || playerContext.interaction == null)
+                return;
+
+            playerContext.interaction.ClearInteractable(interactable);
+        }
+
+        private void TrySetInteractable(Collider other)
+        {
+            if (interactable == null)
+                return;
+
+            if (!other.CompareTag("Player"))
+                return;
+
+            PlayerContext playerContext =
+                other.GetComponentInParent<PlayerContext>();
+
+            if (playerContext == null || playerContext.interaction == null)
+                return;
+
+            playerContext.interaction.SetInteractable(interactable);
+        }
     }
 }

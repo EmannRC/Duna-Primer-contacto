@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Duna.DialogueSystem.DialogueData
   dialogueID: buscar-coso
   lines:
-  - speakerName: El papu
-    text: Hola, busca el coso del cosito, fin
+  - speakerName: Arbol ancestral
+    text: Hola, busca el coso ese blanco que flota y traemelo.

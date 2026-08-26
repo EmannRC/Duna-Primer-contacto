@@ -442,50 +442,6 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   itemDatabase: {fileID: 11400000, guid: 6a85018d77ef7d841bf8aeb9a7a8199d, type: 2}
   weaponHolder: {fileID: 6114633852358088172}
---- !u!1 &3159963309761364718
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1582745739164545571}
-  - component: {fileID: 275681446438350705}
-  m_Layer: 0
-  m_Name: Interact
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1582745739164545571
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3159963309761364718}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.13609886, y: 0.029099941, z: 0.19317627}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1231241095755832135}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &275681446438350705
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3159963309761364718}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1dc0afc5f69a3284aa06653f5f5bc27b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Duna.InteractionSystem.PlayerInteraction
 --- !u!1 &3192926551893178601
 GameObject:
   m_ObjectHideFlags: 0
@@ -505,6 +461,7 @@ GameObject:
   - component: {fileID: 967707818647936657}
   - component: {fileID: 956493243176364785}
   - component: {fileID: 2087994293755261926}
+  - component: {fileID: 274392466181950171}
   m_Layer: 0
   m_Name: Lumen Prototipo
   m_TagString: Player
@@ -537,7 +494,6 @@ Transform:
   - {fileID: 3409365706538406327}
   - {fileID: 5652147229613945445}
   - {fileID: 164964073938159559}
-  - {fileID: 1582745739164545571}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1229422196978019760
@@ -561,7 +517,7 @@ MonoBehaviour:
   targeting: {fileID: 642162550967021989}
   inputEvents: {fileID: 6235707199556142277}
   levelSystem: {fileID: 4631139290028927606}
-  interaction: {fileID: 275681446438350705}
+  interaction: {fileID: 274392466181950171}
   questManager: {fileID: 6275100301816433050}
   health: {fileID: 956493243176364785}
   movement: {fileID: 1095138380536831322}
@@ -1017,6 +973,18 @@ MonoBehaviour:
   destroyOnDeath: 0
   destroyDelay: 3
   deathSound: {fileID: 0}
+--- !u!114 &274392466181950171
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3192926551893178601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1dc0afc5f69a3284aa06653f5f5bc27b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Duna.InteractionSystem.PlayerInteraction
 --- !u!1 &4910901091915930929
 GameObject:
   m_ObjectHideFlags: 0
@@ -1321,6 +1289,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCombat
   shootDelay: 0.5
+  requireAimToShoot: 1
 --- !u!114 &2469992046821235202
 MonoBehaviour:
   m_ObjectHideFlags: 0

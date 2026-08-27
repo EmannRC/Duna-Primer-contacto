@@ -58,6 +58,78 @@ namespace Duna.QuestSystem
             OnObjectiveUpdated;
 
 
+        private void OnEnable()
+        {
+            QuestEvents.OnTalkToNPC += HandleTalkToNPC;
+            QuestEvents.OnCollectItem += HandleCollectItem;
+            QuestEvents.OnDeliverItem += HandleDeliverItem;
+            QuestEvents.OnKillEnemy += HandleKillEnemy;
+        }
+
+        private void OnDisable()
+        {
+            QuestEvents.OnTalkToNPC -= HandleTalkToNPC;
+            QuestEvents.OnCollectItem -= HandleCollectItem;
+            QuestEvents.OnDeliverItem -= HandleDeliverItem;
+            QuestEvents.OnKillEnemy -= HandleKillEnemy;
+        }
+
+        private void HandleCollectItem(string itemID, int amount)
+        {
+            foreach (QuestInstance quest in activeQuests)
+            {
+                if (quest.TryProgress(
+                    ObjectiveType.Collect,
+                    itemID,
+                    amount))
+                {
+                    NotifyObjectiveUpdated(quest);
+                }
+            }
+        }
+
+        private void HandleTalkToNPC(string npcID)
+        {
+            foreach (QuestInstance quest in activeQuests)
+            {
+                if (quest.TryProgress(
+                    ObjectiveType.Talk,
+                    npcID))
+                {
+                    NotifyObjectiveUpdated(quest);
+                }
+            }
+        }
+
+        private void HandleDeliverItem(string itemID, int amount)
+        {
+            foreach (QuestInstance quest in activeQuests)
+            {
+                if (quest.TryProgress(
+                    ObjectiveType.Deliver,
+                    itemID,
+                    amount))
+                {
+                    NotifyObjectiveUpdated(quest);
+                }
+            }
+        }
+
+        private void HandleKillEnemy(string enemyID, int amount)
+        {
+            foreach (QuestInstance quest in activeQuests)
+            {
+                if (quest.TryProgress(
+                    ObjectiveType.Kill,
+                    enemyID,
+                    amount))
+                {
+                    NotifyObjectiveUpdated(quest);
+                }
+            }
+        }
+
+
         //================================================//
         // ACCEPT QUEST
         //================================================//

@@ -13,13 +13,18 @@ MonoBehaviour:
   m_Name: Quest collector
   m_EditorClassIdentifier: Assembly-CSharp::Duna.QuestSystem.QuestData
   questID: quest-collect-cosito
-  questName: EL COSO DEL COSITO HM
-  description: Ve y busca el coso del cosito
+  questName: El coso del cosito
+  description: El legendario coso del cosito se avisto por ultima vez en los caminos
+    del gran bosque
   objectives:
-  - objectiveType: 0
-    targetID: arbol-anciano
+  - objectiveType: 2
+    targetID: item-coso
     requiredAmount: 1
-    description: Habla con el npc arbol ancestral
+    description: Busca y haste con el coso del cosito
+  - objectiveType: 0
+    targetID: Ancient_tree
+    requiredAmount: 1
+    description: "Habla con el \xE1rbol ancestal"
   rewards: []
   repeatable: 0
   autoComplete: 0

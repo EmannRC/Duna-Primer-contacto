@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7d96623effd3db54bbc459042cc8a6ab, type: 3}
-  m_Name: NPC PRUEBA
+  m_Name: Collect-finish-dialogue
   m_EditorClassIdentifier: Assembly-CSharp::Duna.DialogueSystem.DialogueData
-  dialogueID: buscar-coso
+  dialogueID: buscar-coso-finich
   lines:
   - speakerName: Arbol ancestral
-    text: Hola, busca el coso ese blanco que flota y traemelo.
+    text: Muy bien nene, gracias por darme el coso del cosito

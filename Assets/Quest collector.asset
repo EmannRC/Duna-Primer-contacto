@@ -17,7 +17,7 @@ MonoBehaviour:
   description: El legendario coso del cosito se avisto por ultima vez en los caminos
     del gran bosque
   objectives:
-  - objectiveType: 2
+  - objectiveType: 1
     targetID: item-coso
     requiredAmount: 1
     description: Busca y haste con el coso del cosito

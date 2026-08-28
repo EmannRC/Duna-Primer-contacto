@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Duna.QuestSystem.QuestDatabase
   quests:
   - {fileID: 11400000, guid: 31e7f437f786ffd42bc71d69bda9d251, type: 2}
+  - {fileID: 11400000, guid: f5738dd79aa4f3e4591a48f7816db41e, type: 2}

@@ -53,6 +53,16 @@ namespace Duna.QuestSystem
             }
         }
 
+        public bool IsCurrentObjectiveTalkTo(string npcID)
+        {
+            if (CurrentObjective == null)
+                return false;
+
+            return CurrentObjective.Data.ObjectiveType == ObjectiveType.Talk &&
+                   CurrentObjective.Data.TargetID == npcID &&
+                   !CurrentObjective.IsCompleted;
+        }
+
         /// <summary>
         /// Intenta avanzar el objetivo activo.
         /// </summary>

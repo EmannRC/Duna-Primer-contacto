@@ -3,51 +3,181 @@ using UnityEngine;
 namespace Duna.QuestSystem
 {
     /// <summary>
-    /// Componente que permite a un NPC recibir misiones completadas.
+    /// Componente que permite a un NPC recibir misiones.
     /// </summary>
     public class QuestReceiver : MonoBehaviour
     {
         [Header("Quest Data")]
-        [SerializeField] private QuestData quest;
+        [SerializeField]
+        private QuestData quest;
 
 
         public QuestData Quest => quest;
 
 
-        /// <summary>
-        /// Comprueba si este NPC puede recibir una misión.
-        /// </summary>
+        //================================================//
+        // HAS QUEST
+        //================================================//
+
         public bool HasQuest()
         {
             return quest != null;
         }
 
 
+        //================================================//
+        // CAN DELIVER
+        //================================================//
+
         /// <summary>
-        /// Comprueba si la misión está lista para entregar.
+        /// Comprueba si el objetivo actual de la misión
+        /// consiste en entregar un objeto.
         /// </summary>
-        public bool CanTurnIn(QuestManager manager)
+        public bool CanDeliver(
+            QuestManager manager
+        )
         {
-            if (quest == null || manager == null)
+            if (
+                quest == null ||
+                manager == null
+            )
+            {
                 return false;
+            }
 
 
             QuestInstance instance =
-                manager.GetActiveQuest(quest.QuestID);
+                manager.GetActiveQuest(
+                    quest.QuestID
+                );
 
 
             if (instance == null)
                 return false;
 
 
-            return instance.State == QuestState.Completed;
+            QuestObjectiveRuntime objective =
+                instance.CurrentObjective;
+
+
+            if (objective == null)
+                return false;
+
+
+            return
+                objective.Data.ObjectiveType
+                == ObjectiveType.Deliver;
         }
 
 
+        //================================================//
+        // GET DELIVERY ITEM ID
+        //================================================//
+
+        public string GetDeliveryItemID(
+            QuestManager manager
+        )
+        {
+            if (!CanDeliver(manager))
+                return null;
+
+
+            QuestInstance instance =
+                manager.GetActiveQuest(
+                    quest.QuestID
+                );
+
+
+            return instance
+                .CurrentObjective
+                .Data
+                .TargetID;
+        }
+
+
+        //================================================//
+        // DELIVER QUEST ITEM
+        //================================================//
+
         /// <summary>
-        /// Entrega la misión y finaliza la recompensa.
+        /// Registra la entrega del objeto para completar
+        /// el objetivo Deliver.
         /// </summary>
-        public bool TurnInQuest(QuestManager manager)
+        public bool DeliverItem(
+            QuestManager manager
+        )
+        {
+            if (!CanDeliver(manager))
+                return false;
+
+
+            QuestInstance instance =
+                manager.GetActiveQuest(
+                    quest.QuestID
+                );
+
+
+            QuestObjectiveRuntime objective =
+                instance.CurrentObjective;
+
+
+            string itemID =
+                objective.Data.TargetID;
+
+
+            int amount =
+                objective.Data.RequiredAmount;
+
+
+            QuestEvents.RaiseDeliverItem(
+                itemID,
+                amount
+            );
+
+
+            return true;
+        }
+
+
+        //================================================//
+        // CAN TURN IN
+        //================================================//
+
+        public bool CanTurnIn(
+            QuestManager manager
+        )
+        {
+            if (
+                quest == null ||
+                manager == null
+            )
+            {
+                return false;
+            }
+
+
+            QuestInstance instance =
+                manager.GetActiveQuest(
+                    quest.QuestID
+                );
+
+
+            if (instance == null)
+                return false;
+
+
+            return instance.State ==
+                   QuestState.Completed;
+        }
+
+
+        //================================================//
+        // TURN IN QUEST
+        //================================================//
+
+        public bool TurnInQuest(
+            QuestManager manager
+        )
         {
             if (!CanTurnIn(manager))
             {
@@ -58,8 +188,11 @@ namespace Duna.QuestSystem
                 return false;
             }
 
+
             bool success =
-                manager.TurnInQuest(quest.QuestID);
+                manager.TurnInQuest(
+                    quest.QuestID
+                );
 
 
             if (success)
@@ -69,29 +202,8 @@ namespace Duna.QuestSystem
                 );
             }
 
+
             return success;
-        }
-
-
-        /// <summary>
-        /// Método pensado para el sistema de diálogo.
-        /// </summary>
-        public bool Interact(QuestManager manager)
-        {
-            if (!HasQuest())
-                return false;
-
-
-            if (CanTurnIn(manager))
-            {
-                return TurnInQuest(manager);
-            }
-
-            Debug.Log(
-                "Este NPC no tiene nada para recibir."
-            );
-
-            return false;
         }
     }
 }

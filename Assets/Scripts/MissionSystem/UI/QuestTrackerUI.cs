@@ -134,8 +134,7 @@ namespace Duna.QuestSystem.UI
         // REFRESH UI
         //==========================================================//
 
-        private void RefreshUI(
-            QuestInstance quest)
+        private void RefreshUI(QuestInstance quest)
         {
             if (questManager == null)
                 return;

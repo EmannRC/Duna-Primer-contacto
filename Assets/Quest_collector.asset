@@ -10,21 +10,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 03b6b5ad6ba69b945a4292c794841dc2, type: 3}
-  m_Name: Quest collector
+  m_Name: Quest_collector
   m_EditorClassIdentifier: Assembly-CSharp::Duna.QuestSystem.QuestData
   questID: quest-collect-cosito
   questName: El coso del cosito
-  description: El legendario coso del cosito se avisto por ultima vez en los caminos
-    del gran bosque
+  description: "Ad\xE9ntrate en el bosque elfico y ayuda al \xE1rbol ancestral"
   objectives:
-  - objectiveType: 1
-    targetID: item-coso
-    requiredAmount: 1
-    description: Busca y haste con el coso del cosito
   - objectiveType: 0
     targetID: Ancient_tree
-    requiredAmount: 1
-    description: "Habla con el \xE1rbol ancestal"
+    requiredAmount: 0
+    description: "B\xFAsca al \xE1rbol ancestral y habla con \xE9l"
+  - objectiveType: 1
+    targetID: item-coso
+    requiredAmount: 0
+    description: Haste con el coso del cosito
+  - objectiveType: 0
+    targetID: Ancient_tree
+    requiredAmount: 0
+    description: "Regresa con el \xE1rbol ancestral y habla con \xE9l para entregarle
+      el coso del cosito"
   rewards: []
   repeatable: 0
   autoComplete: 0

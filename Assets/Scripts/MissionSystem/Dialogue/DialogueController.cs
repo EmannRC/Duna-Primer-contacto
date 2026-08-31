@@ -110,8 +110,10 @@ namespace Duna.DialogueSystem
             // COMPROBAR ESTADO DE LA MISIÓN
             //================================================//
 
-            if (questGiver != null &&
-                questGiver.Quest != null)
+            if (
+                questGiver != null &&
+                questGiver.Quest != null
+            )
             {
                 string questID =
                     questGiver.Quest.QuestID;
@@ -124,12 +126,13 @@ namespace Duna.DialogueSystem
 
 
                 //================================================//
-                // 1. MISIÓN COMPLETADA → DIÁLOGO FINAL
+                // 1. OBJETIVO DE ENTREGA → DIÁLOGO FINAL
                 //================================================//
 
                 if (
                     activeQuest != null &&
-                    activeQuest.State == QuestState.Completed
+                    questReceiver != null &&
+                    questReceiver.CanDeliver(questManager)
                 )
                 {
                     StartCompletionDialogue();
@@ -144,6 +147,22 @@ namespace Duna.DialogueSystem
 
                 if (activeQuest != null)
                 {
+                    NPCIdentity identity =
+                        GetComponent<NPCIdentity>();
+
+                    if (identity != null)
+                    {
+                        // Si el objetivo actual es hablar con este NPC
+                        // y todavía no está completado, mostrar diálogo inicial.
+                        if (activeQuest.IsCurrentObjectiveTalkTo(identity.NPCID))
+                        {
+                            StartQuestDialogue();
+
+                            return;
+                        }
+                    }
+
+                    // Si ya habló con este NPC, mostrar diálogo de progreso.
                     StartInProgressDialogue();
 
                     return;
@@ -154,11 +173,7 @@ namespace Duna.DialogueSystem
                 // 3. MISIÓN NO ACEPTADA → DIÁLOGO INICIAL
                 //================================================//
 
-                if (
-                    !questManager.IsQuestCompleted(
-                        questID
-                    )
-                )
+                if (!questManager.IsQuestCompleted(questID))
                 {
                     StartQuestDialogue();
 
@@ -329,14 +344,10 @@ namespace Duna.DialogueSystem
             // DIÁLOGO INICIAL
             //================================================//
 
-            if (
-                currentDialogueState ==
-                DialogueState.Quest
-            )
+            if (currentDialogueState == DialogueState.Quest)
             {
                 QuestGiver questGiver =
                     GetComponent<QuestGiver>();
-
 
                 if (questGiver != null)
                 {
@@ -345,15 +356,10 @@ namespace Duna.DialogueSystem
                     );
                 }
 
-
-                // También registra conversación
-                // para objetivos TalkToNPC.
                 RaiseTalkEvent();
-
 
                 currentDialogueState =
                     DialogueState.None;
-
 
                 return;
             }

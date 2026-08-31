@@ -156,6 +156,20 @@ public class LocalPlayerBootstrap : MonoBehaviour
 
         ctx.crosshair =
             crosshair;
+
+        //=========================
+        // NPC Marker
+        //=========================
+
+        QuestMarker[] markers =
+        FindObjectsByType<QuestMarker>(
+            FindObjectsSortMode.None
+        );
+
+        foreach (QuestMarker marker in markers)
+        {
+            marker.Initialize(questManager);
+        }
     }
 
 }

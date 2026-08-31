@@ -1504,6 +1504,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Duna.QuestSystem.QuestManager
   questDatabase: {fileID: 11400000, guid: 41eb5b8cdc0159f4a8e2e4edc5643a75, type: 2}
+  startingQuestID: quest-collect-cosito
   rewardManager: {fileID: 0}
 --- !u!1 &7700987592149778687
 GameObject:

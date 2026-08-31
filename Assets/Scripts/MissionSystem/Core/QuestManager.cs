@@ -13,6 +13,7 @@ namespace Duna.QuestSystem
         [SerializeField]
         private QuestDatabase questDatabase;
 
+        [SerializeField] private string startingQuestID;
 
         [Header("Rewards")]
         [SerializeField]
@@ -32,6 +33,12 @@ namespace Duna.QuestSystem
         public IReadOnlyList<QuestInstance>
             CompletedQuests =>
             completedQuests;
+
+
+        private void Start()
+        {
+            AcceptQuest(startingQuestID);
+        }
 
 
         //================================================//

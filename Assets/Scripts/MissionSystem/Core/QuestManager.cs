@@ -34,12 +34,12 @@ namespace Duna.QuestSystem
             CompletedQuests =>
             completedQuests;
 
-
+        
         private void Start()
         {
             AcceptQuest(startingQuestID);
         }
-
+        
 
         //================================================//
         // EVENTS

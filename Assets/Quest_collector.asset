@@ -24,11 +24,13 @@ MonoBehaviour:
     targetID: item-coso
     requiredAmount: 0
     description: Haste con el coso del cosito
-  - objectiveType: 0
-    targetID: Ancient_tree
+  - objectiveType: 2
+    targetID: item-coso
     requiredAmount: 0
-    description: "Regresa con el \xE1rbol ancestral y habla con \xE9l para entregarle
-      el coso del cosito"
-  rewards: []
+    description: "Regresa con el \xE1rbol ancestral y entregale el coso del cosito"
+  rewards:
+  - rewardType: 2
+    amount: 1
+    itemID: Weapon_Staff_Nature
   repeatable: 0
   autoComplete: 0

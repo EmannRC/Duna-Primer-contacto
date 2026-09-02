@@ -29,6 +29,12 @@ namespace Duna.QuestSystem
         /// </summary>
         public static event Action<string, int> OnKillEnemy;
 
+        /// <summary>
+        /// El jugador alcanzo un area.
+        /// </summary>
+        public static event Action<string> OnReachArea;
+
+
         //------------------------------------------------//
 
         public static void RaiseTalkToNPC(string npcID)
@@ -49,6 +55,11 @@ namespace Duna.QuestSystem
         public static void RaiseKillEnemy(string enemyID, int amount = 1)
         {
             OnKillEnemy?.Invoke(enemyID, amount);
+        }
+
+        public static void RaiseReachArea(string areaID)
+        {
+            OnReachArea?.Invoke(areaID);
         }
     }
 }

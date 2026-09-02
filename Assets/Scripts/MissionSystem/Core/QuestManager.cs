@@ -71,6 +71,7 @@ namespace Duna.QuestSystem
             QuestEvents.OnCollectItem += HandleCollectItem;
             QuestEvents.OnDeliverItem += HandleDeliverItem;
             QuestEvents.OnKillEnemy += HandleKillEnemy;
+            QuestEvents.OnReachArea += HandleReachArea;
         }
 
         private void OnDisable()
@@ -79,6 +80,7 @@ namespace Duna.QuestSystem
             QuestEvents.OnCollectItem -= HandleCollectItem;
             QuestEvents.OnDeliverItem -= HandleDeliverItem;
             QuestEvents.OnKillEnemy -= HandleKillEnemy;
+            QuestEvents.OnReachArea -= HandleReachArea;
         }
 
         private void HandleCollectItem(string itemID, int amount)
@@ -136,6 +138,18 @@ namespace Duna.QuestSystem
             }
         }
 
+        private void HandleReachArea(string areaID)
+        {
+            foreach (QuestInstance quest in activeQuests)
+            {
+                if (quest.TryProgress(
+                    ObjectiveType.ReachArea,
+                    areaID))
+                {
+                    NotifyObjectiveUpdated(quest);
+                }
+            }
+        }
 
         //================================================//
         // ACCEPT QUEST

@@ -15,4 +15,5 @@ MonoBehaviour:
   dialogueID: buscar-coso-progress
   lines:
   - speakerName: Arbol ancestral
-    text: "Eh papi, \xBFAun no tenes el coso del cosito? Dale buscalo conchetumare"
+    text: "\xBFAun no encontraste el coso del cosito? Sigue buscando, confio en que
+      podr\xE1s tu solo"

@@ -7,6 +7,9 @@ namespace Duna.QuestSystem
     /// </summary>
     public class QuestRewardManager : MonoBehaviour
     {
+        [Header("Player Inventory")]
+        [SerializeField] private Inventory inventory;
+
         /// <summary>
         /// Entrega todas las recompensas de una misión.
         /// </summary>
@@ -71,18 +74,21 @@ namespace Duna.QuestSystem
             );
 
 
-            // Aquí conectaremos economía
+            // Aquí conectaremos economía si es necesario
         }
 
 
         private void GiveItem(string itemID, int amount)
         {
-            Debug.Log(
-                $"Jugador recibe {amount}x {itemID}"
-            );
+            if (inventory == null)
+            {
+                Debug.LogError("QuestRewardManager: No hay Inventory asignado.");
+                return;
+            }
 
+            inventory.AddItem(itemID, amount);
 
-            // Aquí conectaremos InventorySystem
+            Debug.Log($"Recompensa entregada: {amount}x {itemID}");
         }
     }
 }

@@ -4,14 +4,11 @@ using UnityEngine;
 public class EnemyMeleeCombat : NetworkBehaviour
 {
     [SerializeField] private int damage = 10;
-    [SerializeField] private float attackRate = 1f;
+    [SerializeField] private float attackCooldown = 1f;
     [SerializeField] private float attackRange = 1.5f;
 
     private float nextAttackTime;
-
     private EnemyContext ctx;
-
-    //================================================//
 
     private void Awake()
     {
@@ -23,49 +20,24 @@ public class EnemyMeleeCombat : NetworkBehaviour
         if (!IsServer)
             return;
 
-        TryAttack();
-    }
-
-    //================================================//
-
-    private void TryAttack()
-    {
         Transform target = ctx.targeting.CurrentTarget;
 
-        if (target == null)
+        if (target == null || Time.time < nextAttackTime)
             return;
 
-        float distance = Vector3.Distance(
-            transform.position,
-            target.position);
-
-        if (distance > attackRange)
+        if (Vector3.Distance(transform.position, target.position) > attackRange)
             return;
 
-        if (Time.time < nextAttackTime)
-            return;
-
-        nextAttackTime =
-            Time.time + (1f / attackRate);
-
-        Attack(target);
+        if (target.TryGetComponent<PlayerHealth>(out var health))
+        {
+            health.TakeDamage(damage);
+            nextAttackTime = Time.time + attackCooldown;
+        }
     }
 
-    private void Attack(Transform target)
-    {
-        PlayerHealth health = target.GetComponent<PlayerHealth>();
-
-        if (health == null)
-            return;
-
-        health.TakeDamage(damage);
-    }
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
-
-        Gizmos.DrawWireSphere(
-            transform.position,
-            attackRange);
+        Gizmos.DrawWireSphere(transform.position, attackRange);
     }
 }

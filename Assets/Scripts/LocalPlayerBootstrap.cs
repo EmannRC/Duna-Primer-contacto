@@ -19,10 +19,7 @@ public class LocalPlayerBootstrap : MonoBehaviour
     //==========================================================//
     private void Awake()
     {
-        if (
-            Instance != null &&
-            Instance != this
-        )
+        if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
 
@@ -35,30 +32,22 @@ public class LocalPlayerBootstrap : MonoBehaviour
 
 
     //==========================================================//
-    public void Setup(
-        Transform playerRoot)
+    public void Setup(Transform playerRoot)
     {
-        Debug.Log(
-            "LOCAL PLAYER SETUP"
-        );
+        Debug.Log("LOCAL PLAYER SETUP");
 
 
-        PlayerContext ctx =
-            playerRoot.GetComponent<PlayerContext>();
+        PlayerContext ctx = playerRoot.GetComponent<PlayerContext>();
 
 
-        NetworkObject net =
-            playerRoot.GetComponent<NetworkObject>();
+        NetworkObject net = playerRoot.GetComponent<NetworkObject>();
 
 
        // QuestManager questManager =
             //ctx.questManager;
 
 
-        if (
-            ctx == null ||
-            net == null
-        )
+        if (ctx == null || net == null)
         {
             Debug.LogError(
                 "El Player no tiene PlayerContext " +

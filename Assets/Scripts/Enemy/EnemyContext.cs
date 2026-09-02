@@ -9,6 +9,7 @@ public class EnemyContext : MonoBehaviour
     public FlyingEnemyMovement flyingMovement;
     
     public EnemyRangeCombat combat;
+    public EnemyMeleeCombat meleeCombat;
     public EnemyTargeting targeting;
     public EnemyFormation formation;
 
@@ -18,6 +19,7 @@ public class EnemyContext : MonoBehaviour
         movement = GetComponent<GroundEnemyMovement>();
         flyingMovement = GetComponent<FlyingEnemyMovement>();
         combat = GetComponent<EnemyRangeCombat>();
+        meleeCombat = GetComponent<EnemyMeleeCombat>();
         targeting = GetComponent<EnemyTargeting>();
         formation = GetComponent<EnemyFormation>();
         stats = GetComponent<EnemyStats>();

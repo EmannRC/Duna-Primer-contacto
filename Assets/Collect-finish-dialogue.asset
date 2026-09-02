@@ -15,4 +15,4 @@ MonoBehaviour:
   dialogueID: buscar-coso-finich
   lines:
   - speakerName: Arbol ancestral
-    text: Muy bien nene, gracias por darme el coso del cosito
+    text: "Oh, \xA1Lo has encontrado! Buen trabajo, toma este obsequio "

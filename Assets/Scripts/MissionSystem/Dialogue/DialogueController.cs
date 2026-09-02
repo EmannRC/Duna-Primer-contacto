@@ -316,25 +316,32 @@ namespace Duna.DialogueSystem
             //================================================//
 
             if (
-                currentDialogueState ==
-                DialogueState.Completion
-            )
+    currentDialogueState ==
+    DialogueState.Completion
+)
             {
                 QuestReceiver questReceiver =
                     GetComponent<QuestReceiver>();
 
-
                 if (questReceiver != null)
                 {
-                    questReceiver.TurnInQuest(
-                        questManager
-                    );
-                }
+                    // Primero completa el objetivo Deliver
+                    bool delivered =
+                        questReceiver.DeliverItem(
+                            questManager
+                        );
 
+                    if (delivered)
+                    {
+                        // Ahora la misión debería estar Completed
+                        questReceiver.TurnInQuest(
+                            questManager
+                        );
+                    }
+                }
 
                 currentDialogueState =
                     DialogueState.None;
-
 
                 return;
             }

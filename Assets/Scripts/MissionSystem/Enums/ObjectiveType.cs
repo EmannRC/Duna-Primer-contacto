@@ -10,6 +10,7 @@ namespace Duna.QuestSystem
         Talk,
         Collect,
         Deliver,
-        Kill
+        Kill,
+        ReachArea
     }
 }

@@ -565,7 +565,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1908905261
+  GlobalObjectIdHash: 428777726
   InScenePlacedSourceGlobalObjectIdHash: 3680711321
   DeferredDespawnTick: 0
   Ownership: 1
@@ -1456,6 +1456,8 @@ GameObject:
   - component: {fileID: 164964073938159559}
   - component: {fileID: 1172522448367628622}
   - component: {fileID: 6275100301816433050}
+  - component: {fileID: 6954860556080031979}
+  - component: {fileID: 2126300929332817876}
   m_Layer: 0
   m_Name: Mission
   m_TagString: Untagged
@@ -1505,7 +1507,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Duna.QuestSystem.QuestManager
   questDatabase: {fileID: 11400000, guid: 41eb5b8cdc0159f4a8e2e4edc5643a75, type: 2}
   startingQuestID: quest-collect-cosito
-  rewardManager: {fileID: 0}
+  rewardManager: {fileID: 6954860556080031979}
+--- !u!114 &6954860556080031979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7102538055632316251}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78f909e34a625f744a829aa376af5ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Duna.QuestSystem.QuestRewardManager
+--- !u!114 &2126300929332817876
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7102538055632316251}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bbd06f4849efd04abaedb1150ce65a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Duna.QuestSystem.QuestSequenceManager
+  questManager: {fileID: 6275100301816433050}
+  sequences:
+  - completedQuestID: quest-collect-cosito
+    nextQuestID: quest_extermination
 --- !u!1 &7700987592149778687
 GameObject:
   m_ObjectHideFlags: 0

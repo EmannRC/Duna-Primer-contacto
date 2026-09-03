@@ -14,18 +14,12 @@ public class GroundEnemyMovement : NetworkBehaviour
     private EnemyContext ctx;
     private NavMeshAgent agent;
 
+    public Vector3 Velocity => agent.velocity;
+
     private void Awake()
     {
         ctx = GetComponent<EnemyContext>();
         agent = GetComponent<NavMeshAgent>();
-    }
-
-    private void Start()
-    {
-        agent.speed = moveSpeed;
-        agent.stoppingDistance = stoppingDistance;
-        agent.angularSpeed = 720f;
-        agent.updateRotation = false;
     }
 
     private void Update()
@@ -33,10 +27,20 @@ public class GroundEnemyMovement : NetworkBehaviour
         if (!IsServer)
             return;
 
+        agent.speed = moveSpeed;
+        agent.stoppingDistance = stoppingDistance;
+        agent.angularSpeed = 720f;
+
+        // La rotación la controlamos nosotros.
+        agent.updateRotation = false;
+
         Transform target = ctx.targeting.CurrentTarget;
 
         if (target == null || !agent.isOnNavMesh)
+        {
+            agent.ResetPath();
             return;
+        }
 
         agent.SetDestination(target.position);
 
@@ -63,6 +67,9 @@ public class GroundEnemyMovement : NetworkBehaviour
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(transform.position, stoppingDistance);
+
+        Gizmos.DrawWireSphere(
+            transform.position,
+            stoppingDistance);
     }
 }

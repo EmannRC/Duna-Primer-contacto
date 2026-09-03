@@ -9,19 +9,11 @@ public class Projectile : NetworkBehaviour
     [SerializeField] protected int damage = 10;
     [SerializeField] protected float radius = 0.2f;
 
-    protected Rigidbody rb;
-    protected Vector3 direction;
+    private Vector3 direction;
 
-    //======================================================//
-    protected virtual void Awake()
+    public void Initialize(Vector3 direction)
     {
-        rb = GetComponent<Rigidbody>();
-    }
-
-    //======================================================//
-    public void Initialize(Vector3 dir)
-    {
-        direction = dir.normalized;
+        this.direction = direction.normalized;
 
         if (IsServer)
             Invoke(nameof(Despawn), lifeTime);
@@ -31,26 +23,27 @@ public class Projectile : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        Vector3 move = direction * speed * Time.fixedDeltaTime;
+        float distance = speed * Time.fixedDeltaTime;
 
-        if (Physics.SphereCast(transform.position, radius, direction, out RaycastHit hit, move.magnitude))
+        if (Physics.SphereCast(
+            transform.position,
+            radius,
+            direction,
+            out RaycastHit hit,
+            distance))
         {
             if (hit.collider.TryGetComponent(out HealthController health))
-            {
                 health.TakeDamage(damage);
-            }
 
             Despawn();
             return;
         }
 
-        transform.position += move;
+        transform.position += direction * distance;
     }
 
     private void Despawn()
     {
-        if (!IsServer) return;
-
         if (NetworkObject.IsSpawned)
             NetworkObject.Despawn();
     }
@@ -59,14 +52,6 @@ public class Projectile : NetworkBehaviour
     {
         Gizmos.color = Color.red;
 
-        Vector3 dir = Application.isPlaying ? direction : transform.forward;
-        float step = speed * Time.fixedDeltaTime;
-
-        Vector3 start = transform.position;
-        Vector3 end = start + dir * step;
-
-        Gizmos.DrawWireSphere(start, radius);
-        Gizmos.DrawWireSphere(end, radius);
-        Gizmos.DrawLine(start, end);
+        Gizmos.DrawWireSphere(transform.position, radius);
     }
 }

@@ -38,7 +38,9 @@ public class GroundEnemyMovement : NetworkBehaviour
 
         if (target == null || !agent.isOnNavMesh)
         {
-            agent.ResetPath();
+            if (agent.isActiveAndEnabled && agent.isOnNavMesh)
+                agent.ResetPath();
+
             return;
         }
 

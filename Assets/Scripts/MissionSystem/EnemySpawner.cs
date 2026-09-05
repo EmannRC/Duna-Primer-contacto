@@ -5,8 +5,15 @@ namespace Duna.QuestSystem
 {
     public class EnemySpawner : NetworkBehaviour
     {
+        [System.Serializable]
+        public class EnemySpawnData
+        {
+            public NetworkObject enemyPrefab;
+            public int amount;
+        }
+
         [SerializeField]
-        private NetworkObject enemyPrefab;
+        private EnemySpawnData[] enemies;
 
         [SerializeField]
         private Transform[] spawnPoints;
@@ -17,16 +24,31 @@ namespace Duna.QuestSystem
             if (!IsServer)
                 return;
 
-            foreach (Transform spawnPoint in spawnPoints)
+            int spawnIndex = 0;
+
+            foreach (EnemySpawnData enemyData in enemies)
             {
-                NetworkObject enemy =
-                    Instantiate(
-                        enemyPrefab,
+                for (int i = 0; i < enemyData.amount; i++)
+                {
+                    // Si no quedan puntos disponibles, dejamos de spawnear
+                    if (spawnIndex >= spawnPoints.Length)
+                    {
+                        Debug.LogWarning("No hay suficientes Spawn Points.");
+                        return;
+                    }
+
+                    Transform spawnPoint = spawnPoints[spawnIndex];
+
+                    NetworkObject enemy = Instantiate(
+                        enemyData.enemyPrefab,
                         spawnPoint.position,
                         spawnPoint.rotation
                     );
 
-                enemy.Spawn();
+                    enemy.Spawn();
+
+                    spawnIndex++;
+                }
             }
         }
     }

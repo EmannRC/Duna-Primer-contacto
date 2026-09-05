@@ -5651,7 +5651,6 @@ Transform:
   - {fileID: 2124832745}
   - {fileID: 389503231}
   - {fileID: 1259398789}
-  - {fileID: 647105414}
   - {fileID: 1775240478}
   - {fileID: 328854613}
   - {fileID: 10337862}
@@ -7468,68 +7467,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4586df050571fb444aa2da1c916476a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventorySlotUI
---- !u!1001 &647105413
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 448835640}
-    m_Modifications:
-    - target: {fileID: 2660584164998878014, guid: 95fdadcf52448c64abb0f3ba842342b3, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -147.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2660584164998878014, guid: 95fdadcf52448c64abb0f3ba842342b3, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -1.0946381
-      objectReference: {fileID: 0}
-    - target: {fileID: 2660584164998878014, guid: 95fdadcf52448c64abb0f3ba842342b3, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -239.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 2660584164998878014, guid: 95fdadcf52448c64abb0f3ba842342b3, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.9997777
-      objectReference: {fileID: 0}
-    - target: {fileID: 2660584164998878014, guid: 95fdadcf52448c64abb0f3ba842342b3, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2660584164998878014, guid: 95fdadcf52448c64abb0f3ba842342b3, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0.02108818
-      objectReference: {fileID: 0}
-    - target: {fileID: 2660584164998878014, guid: 95fdadcf52448c64abb0f3ba842342b3, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2660584164998878014, guid: 95fdadcf52448c64abb0f3ba842342b3, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2660584164998878014, guid: 95fdadcf52448c64abb0f3ba842342b3, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: -2.417
-      objectReference: {fileID: 0}
-    - target: {fileID: 2660584164998878014, guid: 95fdadcf52448c64abb0f3ba842342b3, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3433884349093235076, guid: 95fdadcf52448c64abb0f3ba842342b3, type: 3}
-      propertyPath: m_Name
-      value: Elf_House_1 (4)
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 95fdadcf52448c64abb0f3ba842342b3, type: 3}
---- !u!4 &647105414 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2660584164998878014, guid: 95fdadcf52448c64abb0f3ba842342b3, type: 3}
-  m_PrefabInstance: {fileID: 647105413}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &648698153
 GameObject:
   m_ObjectHideFlags: 0
@@ -18837,7 +18774,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: 5a821dca3a830ec4caa29a5538ede3fd, type: 2}
+  m_NavMeshData: {fileID: 0}
   m_BuildHeightMesh: 0
 --- !u!1 &1792233453
 GameObject:

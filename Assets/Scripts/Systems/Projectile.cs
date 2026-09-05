@@ -4,10 +4,14 @@ using UnityEngine;
 
 public class Projectile : NetworkBehaviour
 {
+    [Header("Projectile")]
     [SerializeField] protected float speed = 10f;
     [SerializeField] protected float lifeTime = 3f;
     [SerializeField] protected int damage = 10;
     [SerializeField] protected float radius = 0.2f;
+
+    [Header("Damage")]
+    [SerializeField] private LayerMask damageLayers;
 
     private Vector3 direction;
 
@@ -21,7 +25,8 @@ public class Projectile : NetworkBehaviour
 
     private void FixedUpdate()
     {
-        if (!IsServer) return;
+        if (!IsServer)
+            return;
 
         float distance = speed * Time.fixedDeltaTime;
 
@@ -30,7 +35,8 @@ public class Projectile : NetworkBehaviour
             radius,
             direction,
             out RaycastHit hit,
-            distance))
+            distance,
+            damageLayers))
         {
             if (hit.collider.TryGetComponent(out HealthController health))
                 health.TakeDamage(damage);
@@ -51,7 +57,6 @@ public class Projectile : NetworkBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-
         Gizmos.DrawWireSphere(transform.position, radius);
     }
 }

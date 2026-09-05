@@ -192,9 +192,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Projectile
   ShowTopMostFoldoutHeaderGroup: 1
   speed: 10
-  lifeTime: 3
+  lifeTime: 1
   damage: 20
   radius: 0.3
+  damageLayers:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!114 &6829827621205371161
 MonoBehaviour:
   m_ObjectHideFlags: 0

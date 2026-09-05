@@ -15,4 +15,6 @@ MonoBehaviour:
   dialogueID: buscar-coso
   lines:
   - speakerName: Arbol ancestral
-    text: Hola, busca el coso ese blanco que flota y traemelo.
+    text: "Hola, te estaba esperando Lumen. Necesito que me ayudes a encontrar el
+      legendario nucleo m\xE1gico. Notar\xE1s que emite una luz rosada. Confio en
+      ti para esta importante misi\xF3n"

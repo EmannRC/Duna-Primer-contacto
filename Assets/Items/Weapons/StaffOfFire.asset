@@ -20,5 +20,5 @@ MonoBehaviour:
   pickupPrefab: {fileID: 4949203353481235137, guid: 7ab9e56c9a4d1ff47b8a3f9137086c01, type: 3}
   modifiers: []
   weaponPrefab: {fileID: 1205396210360087128, guid: b89b81882705fc24482d44bf78b52ccd, type: 3}
-  projectilePrefab: {fileID: 0}
+  projectilePrefab: {fileID: 1815716524939777628, guid: 6f287b9f54c45434a81bb9bcfb357b98, type: 3}
   manaCost: 0

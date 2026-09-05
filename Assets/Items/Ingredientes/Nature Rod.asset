@@ -17,4 +17,4 @@ MonoBehaviour:
   icon: {fileID: 0}
   iconColor: {r: 1, g: 1, b: 1, a: 1}
   isStackable: 1
-  pickupPrefab: {fileID: 0}
+  pickupPrefab: {fileID: 8690047095278471079, guid: 6ba928ec8a2cc534191a77dba15de69d, type: 3}

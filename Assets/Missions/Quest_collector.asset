@@ -19,15 +19,15 @@ MonoBehaviour:
   - objectiveType: 0
     targetID: Ancient_tree
     requiredAmount: 0
-    description: "B\xFAsca al \xE1rbol ancestral y habla con \xE9l"
+    description: "B\xFAsca al \xE1rbol ancestral y habla con \xE9l."
   - objectiveType: 1
     targetID: item-coso
     requiredAmount: 0
-    description: Haste con el coso del cosito
+    description: "Encuentra y haste con el legendario n\xFAcleo m\xE1gico."
   - objectiveType: 2
     targetID: item-coso
     requiredAmount: 0
-    description: "Regresa con el \xE1rbol ancestral y entregale el coso del cosito"
+    description: "Regresa con el \xE1rbol ancestral y entregale el n\xFAcleo m\xE1gico."
   rewards:
   - rewardType: 2
     amount: 1

@@ -15,6 +15,12 @@ public class ItemPickup : NetworkBehaviour
     [Header("Rotation")]
     [SerializeField] private float rotationSpeed = 60f;
 
+    [Header("Grounding")]
+    [SerializeField] private float groundOffset = 1f;
+    [SerializeField] private float raycastHeight = 5f;
+    [SerializeField] private float raycastDistance = 20f;
+    [SerializeField] private LayerMask groundLayer;
+
     private PickupSpawner spawner;
 
 
@@ -23,12 +29,30 @@ public class ItemPickup : NetworkBehaviour
         if (!IsServer) return;
 
         spawner = FindFirstObjectByType<PickupSpawner>();
+
+        SnapToGround();
     }
 
     //======================================================//
     private void Update()
     {
         transform.Rotate(Vector3.up,rotationSpeed * Time.deltaTime,Space.World);
+    }
+
+    //======================================================//
+    private void SnapToGround()
+    {
+        Vector3 rayOrigin = transform.position + Vector3.up * raycastHeight;
+
+        if (Physics.Raycast(
+            rayOrigin,
+            Vector3.down,
+            out RaycastHit hit,
+            raycastDistance,
+            groundLayer))
+        {
+            transform.position = hit.point + Vector3.up * groundOffset;
+        }
     }
 
     //======================================================//

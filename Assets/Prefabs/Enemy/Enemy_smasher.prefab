@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 9193243368075713811}
   - component: {fileID: 7356638292224768656}
   - component: {fileID: 4952323103554228072}
+  - component: {fileID: -4485702869038451152}
   - component: {fileID: 6737502161468156323}
   - component: {fileID: 3333912315767043015}
   - component: {fileID: 9181602100196363287}
@@ -20,7 +21,6 @@ GameObject:
   - component: {fileID: 1089934668010810431}
   - component: {fileID: 254239871229958863}
   - component: {fileID: 371874749220830056}
-  - component: {fileID: -4485702869038451152}
   m_Layer: 6
   m_Name: Enemy_smasher
   m_TagString: Untagged
@@ -42,6 +42,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6550171289042818512}
+  - {fileID: 3743706927994978619}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7356638292224768656
@@ -57,8 +58,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyContext
   stats: {fileID: 9145693481012405201}
-  health: {fileID: 0}
-  groundMovement: {fileID: 0}
+  health: {fileID: -4485702869038451152}
+  groundMovement: {fileID: 3333912315767043015}
   flyingMovement: {fileID: 0}
   rangedCombat: {fileID: 0}
   meleeCombat: {fileID: 9181602100196363287}
@@ -91,6 +92,56 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
+--- !u!114 &-4485702869038451152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5380689604958732842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6e46e121f5de7444af80aeed24a9eae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
+  ShowTopMostFoldoutHeaderGroup: 1
+  maxHealth: 10
+  CurrentHealth:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 100
+  IsDead:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
+  DeathTrigger:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
+  reward: {fileID: 1089934668010810431}
+  possibleDrops:
+  - prefab: {fileID: 7657548515417732486, guid: ffade861ef406084eb10e9d260d4b171, type: 3}
+    weight: 0
+  - prefab: {fileID: 1679491564838946477, guid: 195a12ed20e80164c83cab9f38c8bbb2, type: 3}
+    weight: 0
+  - prefab: {fileID: -4294227757254934880, guid: 047bb487815d1ed47974aee8e36ed981, type: 3}
+    weight: 0
+  - prefab: {fileID: 2646410275566159743, guid: 7c08c62a883a55a499e6b4d05ccb5359, type: 3}
+    weight: 0
+  - prefab: {fileID: 2646410275566159743, guid: 90489fce8af91b94ab89d5c1c245ac9c, type: 3}
+    weight: 0
+  - prefab: {fileID: -5405766417531995736, guid: d3fe9e42e1a4aad4aba5cfe3214998d9, type: 3}
+    weight: 0
+  - prefab: {fileID: -3468917201845883158, guid: 4a752c015df4c7f4fadb61af658f7ed0, type: 3}
+    weight: 0
+  - prefab: {fileID: -3468917201845883158, guid: e2da4fe007d2a4c44affe827303dae6f, type: 3}
+    weight: 0
+  - prefab: {fileID: -5616703389811089946, guid: 6ba928ec8a2cc534191a77dba15de69d, type: 3}
+    weight: 0
+  dropPoint: {fileID: 3743706927994978619}
 --- !u!195 &6737502161468156323
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -250,36 +301,37 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &-4485702869038451152
-MonoBehaviour:
+--- !u!1 &9016892307898226259
+GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5380689604958732842}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6e46e121f5de7444af80aeed24a9eae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
-  ShowTopMostFoldoutHeaderGroup: 1
-  maxHealth: 10
-  CurrentHealth:
-    UpdateTraits:
-      MinSecondsBetweenUpdates: 0
-      MaxSecondsBetweenUpdates: 0
-    m_InternalValue: 100
-  IsDead:
-    UpdateTraits:
-      MinSecondsBetweenUpdates: 0
-      MaxSecondsBetweenUpdates: 0
-    m_InternalValue: 0
-  DeathTrigger:
-    UpdateTraits:
-      MinSecondsBetweenUpdates: 0
-      MaxSecondsBetweenUpdates: 0
-    m_InternalValue: 0
-  reward: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3743706927994978619}
+  m_Layer: 0
+  m_Name: DropPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 3306451490063965843, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3743706927994978619
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9016892307898226259}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.42463, y: 0.96, z: 0.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9193243368075713811}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &6731856046251405883
 PrefabInstance:
   m_ObjectHideFlags: 0

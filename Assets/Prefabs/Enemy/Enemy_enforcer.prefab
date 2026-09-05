@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &42399575049382093
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2600144279418139401}
+  m_Layer: 6
+  m_Name: Drop point
+  m_TagString: Untagged
+  m_Icon: {fileID: 3306451490063965843, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2600144279418139401
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 42399575049382093}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5637896016385456233}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5029188010892583067
 GameObject:
   m_ObjectHideFlags: 0
@@ -42,6 +73,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8967371624040449442}
+  - {fileID: 2600144279418139401}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4415078855215627018
@@ -58,14 +90,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyContext
   stats: {fileID: 0}
   health: {fileID: 7646577446763397831}
-  groundMovement: {fileID: 0}
+  groundMovement: {fileID: 6203022585917907852}
   flyingMovement: {fileID: 0}
   rangedCombat: {fileID: 0}
-  meleeCombat: {fileID: 0}
+  meleeCombat: {fileID: 6613548246444193388}
   targeting: {fileID: 1539724883744062499}
   formation: {fileID: 0}
   animator: {fileID: 3067703616717758424}
-  animationSync: {fileID: 0}
+  animationSync: {fileID: 8594678103689615150}
 --- !u!114 &475998959779334991
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -78,7 +110,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2091079953
+  GlobalObjectIdHash: 1855574444
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -121,6 +153,22 @@ MonoBehaviour:
       MaxSecondsBetweenUpdates: 0
     m_InternalValue: 0
   reward: {fileID: 7680477722212220428}
+  possibleDrops:
+  - prefab: {fileID: 7657548515417732486, guid: ffade861ef406084eb10e9d260d4b171, type: 3}
+    weight: 0
+  - prefab: {fileID: 1679491564838946477, guid: 195a12ed20e80164c83cab9f38c8bbb2, type: 3}
+    weight: 0
+  - prefab: {fileID: -4294227757254934880, guid: 047bb487815d1ed47974aee8e36ed981, type: 3}
+    weight: 0
+  - prefab: {fileID: -5405766417531995736, guid: d3fe9e42e1a4aad4aba5cfe3214998d9, type: 3}
+    weight: 0
+  - prefab: {fileID: 2646410275566159743, guid: 7c08c62a883a55a499e6b4d05ccb5359, type: 3}
+    weight: 0
+  - prefab: {fileID: -3468917201845883158, guid: 4a752c015df4c7f4fadb61af658f7ed0, type: 3}
+    weight: 0
+  - prefab: {fileID: -5616703389811089946, guid: 9e4feaaf542737740ab982f7f848639b, type: 3}
+    weight: 0
+  dropPoint: {fileID: 2600144279418139401}
 --- !u!195 &2672155966052293101
 NavMeshAgent:
   m_ObjectHideFlags: 0

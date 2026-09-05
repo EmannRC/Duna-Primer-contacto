@@ -15,8 +15,9 @@ MonoBehaviour:
   itemName: AgilityRune
   itemId: Consumable_Rune_Agility
   icon: {fileID: 0}
+  iconColor: {r: 1, g: 1, b: 1, a: 1}
   isStackable: 1
   pickupPrefab: {fileID: 0}
   modifiers:
   - stat: 2
-    value: 10
+    value: 0.1

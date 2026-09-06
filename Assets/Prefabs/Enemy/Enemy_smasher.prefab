@@ -16,7 +16,6 @@ GameObject:
   - component: {fileID: 3333912315767043015}
   - component: {fileID: 9181602100196363287}
   - component: {fileID: 3079263357289275601}
-  - component: {fileID: 9145693481012405201}
   - component: {fileID: 1544584619796742886}
   - component: {fileID: 1089934668010810431}
   - component: {fileID: 254239871229958863}
@@ -57,7 +56,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04e9aed161ce65e468ababd6b303f53f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyContext
-  stats: {fileID: 9145693481012405201}
+  stats: {fileID: 0}
   health: {fileID: -4485702869038451152}
   groundMovement: {fileID: 3333912315767043015}
   flyingMovement: {fileID: 0}
@@ -178,7 +177,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GroundEnemyMovement
   ShowTopMostFoldoutHeaderGroup: 1
   moveSpeed: 3.5
-  stoppingDistance: 1.5
+  stoppingDistance: 1.7
 --- !u!114 &9181602100196363287
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -192,8 +191,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyMeleeCombat
   ShowTopMostFoldoutHeaderGroup: 1
-  damage: 30
-  attackRange: 1.5
+  damage: 5
+  attackRange: 1.7
   animator: {fileID: 0}
   attackStateName: Attack
   animationWaitTime: 0.5
@@ -210,22 +209,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyTargeting
   ShowTopMostFoldoutHeaderGroup: 1
---- !u!114 &9145693481012405201
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5380689604958732842}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d2a8cff796a740b45904a592d8b132c3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
-  ShowTopMostFoldoutHeaderGroup: 1
-  <MoveSpeed>k__BackingField: 3.5
-  <AttackDamage>k__BackingField: 10
-  <AttackRange>k__BackingField: 1.5
 --- !u!114 &1544584619796742886
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -251,7 +234,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0eaef722073bad4468e0ccc9d07c2e6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyReward
-  xpReward: 25
+  xpReward: 5
   playerLevel: {fileID: 0}
 --- !u!54 &254239871229958863
 Rigidbody:

@@ -168,7 +168,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FlyingEnemyMovement
   ShowTopMostFoldoutHeaderGroup: 1
   moveSpeed: 4
-  stoppingDistance: 6
+  stoppingDistance: 8
   rotationSpeed: 8
   hoverHeight: 2
   heightLerpSpeed: 5
@@ -191,7 +191,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyRangeCombat
   ShowTopMostFoldoutHeaderGroup: 1
   fireRate: 1
-  attackRange: 8
+  attackRange: 10
   projectilePrefab: {fileID: 7301886750513406657, guid: b99a55da616403a45a002458aab03d08, type: 3}
   leftCannon: {fileID: 4781679777967216200}
   rightCannon: {fileID: 5349987796008826557}

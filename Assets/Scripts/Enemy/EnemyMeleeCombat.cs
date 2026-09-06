@@ -41,27 +41,32 @@ public class EnemyMeleeCombat : NetworkBehaviour
     {
         isAttacking = true;
 
-        // Inicia la animación sincronizada
-        ctx.animationSync.NotifyAttack();
-
-        // Esperamos un frame para que el Animator
-        // entre en el estado Attack
-        yield return null;
-
-        // Esperamos hasta que la animación termine
-        while (true)
+        // Si tiene sistema de animación, reproducimos el ataque
+        if (ctx.animationSync != null && ctx.animator != null)
         {
-            AnimatorStateInfo stateInfo = ctx.animator.GetCurrentAnimatorStateInfo(0);
+            // Inicia la animación sincronizada
+            ctx.animationSync.NotifyAttack();
 
-            if (stateInfo.IsName(attackStateName) && stateInfo.normalizedTime >= animationWaitTime)
-            {
-                break;
-            }
-
+            // Esperamos un frame para que el Animator entre en Attack
             yield return null;
+
+            // Esperamos hasta llegar al momento del golpe
+            while (true)
+            {
+                AnimatorStateInfo stateInfo =
+                    ctx.animator.GetCurrentAnimatorStateInfo(0);
+
+                if (stateInfo.IsName(attackStateName) &&
+                    stateInfo.normalizedTime >= animationWaitTime)
+                {
+                    break;
+                }
+
+                yield return null;
+            }
         }
 
-        // Cuando la snimacion termine, ataca.
+        // Si no tiene animación, llega directamente acá
         DealDamage(target);
 
         isAttacking = false;

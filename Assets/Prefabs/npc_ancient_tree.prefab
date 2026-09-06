@@ -120,6 +120,7 @@ GameObject:
   - component: {fileID: 341371949655342739}
   - component: {fileID: 3128651027650818312}
   - component: {fileID: 7766555142302427788}
+  - component: {fileID: 4366585093276316246}
   m_Layer: 0
   m_Name: npc_ancient_tree
   m_TagString: Untagged
@@ -286,6 +287,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Duna.QuestSystem.UI.QuestMarker
   markerVisual: {fileID: 1868356422726854057}
+--- !u!136 &4366585093276316246
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1248061856631207402}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 1.3858618
+  m_Height: 5.6109533
+  m_Direction: 1
+  m_Center: {x: 0.104235336, y: 1.2680162, z: 0}
 --- !u!1 &1868356422726854057
 GameObject:
   m_ObjectHideFlags: 0
@@ -399,8 +423,8 @@ Transform:
   m_GameObject: {fileID: 2712847215770455997}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 34, z: -0.000015258789}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 9.44, z: -0.000015258789}
+  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3781687639280006453}

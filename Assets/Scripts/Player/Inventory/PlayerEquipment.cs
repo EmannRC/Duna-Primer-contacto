@@ -20,7 +20,10 @@ public class PlayerEquipment : NetworkBehaviour
     [Header("Visual")]
     [SerializeField] private Transform weaponHolder;
 
+    public Transform CurrentFirePoint => currentWeapon != null ? currentWeapon.FirePoint : null;
+
     private GameObject currentWeaponInstance;
+    private WeaponInstance currentWeapon;
     private PlayerContext ctx;
 
     //====================================================//
@@ -139,17 +142,29 @@ public class PlayerEquipment : NetworkBehaviour
         if (currentWeaponInstance != null)
             Destroy(currentWeaponInstance);
 
+        currentWeaponInstance = null;
+        currentWeapon = null;
+
         if (weapon == null)
             return;
 
-        if (weapon.weaponPrefab != null &&
-            weaponHolder != null)
+        if (weapon.weaponPrefab != null && weaponHolder != null)
         {
-            currentWeaponInstance = Instantiate(weapon.weaponPrefab, weaponHolder);
+            currentWeaponInstance =
+                Instantiate(weapon.weaponPrefab, weaponHolder);
 
             currentWeaponInstance.transform.localPosition = Vector3.zero;
-
             currentWeaponInstance.transform.localRotation = Quaternion.identity;
+
+            currentWeapon =
+                currentWeaponInstance.GetComponent<WeaponInstance>();
+
+            if (currentWeapon == null)
+            {
+                Debug.LogError(
+                    $"El prefab del arma {weapon.name} no tiene WeaponInstance."
+                );
+            }
         }
     }
 }

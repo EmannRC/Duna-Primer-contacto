@@ -69,9 +69,14 @@ public class PlayerCombat : MonoBehaviour
     {
         Ray ray = Camera.main.ScreenPointToRay(ctx.crosshair.position);
 
+        Transform firePoint = ctx.equipment.CurrentFirePoint;
+
+        if (firePoint == null)
+            return ray.direction;
+
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            return (hit.point - ctx.shooter.firePoint.position).normalized;
+            return (hit.point - firePoint.position).normalized;
         }
 
         return ray.direction;

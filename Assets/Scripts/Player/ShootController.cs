@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ShootController : NetworkBehaviour
 {
-    public Transform firePoint;
+   //public Transform firePoint;
     public float cooldown = 1f;
     public AudioSource shootSound;
 
@@ -32,19 +32,35 @@ public class ShootController : NetworkBehaviour
         if (ctx.equipment.weapon == null)
             return;
 
-        float attackSpeed = ctx.stats.GetStat(StatType.AttackSpeed);
+        Transform firePoint = ctx.equipment.CurrentFirePoint;
 
-        float cooldown = 1f / attackSpeed;
+        if (firePoint == null)
+        {
+            Debug.LogError("No se encontró el FirePoint del arma equipada.");
+            return;
+        }
+
+        float attackSpeed =
+            ctx.stats.GetStat(StatType.AttackSpeed);
+
+        float cooldown =
+            1f / attackSpeed;
 
         if (Time.time < lastShotTime + cooldown)
             return;
 
-        if (!ctx.mana.TryUse(ctx.equipment.weapon.manaCost))
+        if (!ctx.mana.TryUse(
+                ctx.equipment.weapon.manaCost))
             return;
 
         lastShotTime = Time.time;
 
-        GameObject projectile = Instantiate(ctx.equipment.weapon.projectilePrefab, firePoint.position, Quaternion.identity);
+        GameObject projectile =
+            Instantiate(
+                ctx.equipment.weapon.projectilePrefab,
+                firePoint.position,
+                Quaternion.LookRotation(direction)
+            );
 
         projectile
             .GetComponent<Projectile>()

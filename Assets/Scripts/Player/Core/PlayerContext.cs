@@ -30,6 +30,7 @@ public class PlayerContext : MonoBehaviour
     public ShootController shooter;
 
     [Header("Visual / UI")]
+    public Animator animator;
     public PlayerAnimationSync animationSync;
     public Transform crosshair;
     public CraftingUI craftingUI;

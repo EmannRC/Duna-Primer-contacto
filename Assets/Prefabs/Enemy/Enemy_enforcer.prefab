@@ -52,6 +52,7 @@ GameObject:
   - component: {fileID: 7680477722212220428}
   - component: {fileID: 9157681933946727567}
   - component: {fileID: 5134537729358781099}
+  - component: {fileID: 3579838487160565425}
   m_Layer: 6
   m_Name: Enemy_enforcer
   m_TagString: Untagged
@@ -241,6 +242,11 @@ MonoBehaviour:
       MinSecondsBetweenUpdates: 0
       MaxSecondsBetweenUpdates: 0
     m_InternalValue: 0
+  SpecialAttackCounter:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
 --- !u!114 &1539724883744062499
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -347,6 +353,30 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 2.2782125, z: 1}
   m_Center: {x: 0, y: 1.2337396, z: 0}
+--- !u!114 &3579838487160565425
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5029188010892583067}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48b43bc8d35b58e40b52c3d3312124b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnforcerSpecialAttack
+  ShowTopMostFoldoutHeaderGroup: 1
+  cooldown: 8
+  minTriggerDistance: 3
+  maxTriggerDistance: 15
+  jumpTrigger: JumpAttack
+  attackDuration: 1.5
+  navMeshSearchRadius: 3
+  damageRadius: 4
+  damage: 30
+  damageLayers:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!1001 &8932953110278840905
 PrefabInstance:
   m_ObjectHideFlags: 0

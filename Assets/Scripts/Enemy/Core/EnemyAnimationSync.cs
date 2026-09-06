@@ -27,6 +27,13 @@ public class EnemyAnimationSync : NetworkBehaviour
         NetworkVariableWritePermission.Server
     );
 
+    public NetworkVariable<int> SpecialAttackCounter =
+        new(
+            0,
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Server
+        );
+
     private GroundEnemyMovement movement;
 
     private static readonly int VelXHash =
@@ -37,6 +44,9 @@ public class EnemyAnimationSync : NetworkBehaviour
 
     private static readonly int AttackHash =
         Animator.StringToHash("Attack");
+
+    private static readonly int SpecialAttackHash =
+        Animator.StringToHash("JumpAttack");
 
     //============================================================//
     private void Awake()
@@ -54,6 +64,7 @@ public class EnemyAnimationSync : NetworkBehaviour
         VelX.OnValueChanged += OnVelXChanged;
         VelY.OnValueChanged += OnVelYChanged;
         AttackCounter.OnValueChanged += OnAttackChanged;
+        SpecialAttackCounter.OnValueChanged += OnSpecialAttackChanged;
 
         UpdateAnimator();
     }
@@ -63,6 +74,7 @@ public class EnemyAnimationSync : NetworkBehaviour
         VelX.OnValueChanged -= OnVelXChanged;
         VelY.OnValueChanged -= OnVelYChanged;
         AttackCounter.OnValueChanged -= OnAttackChanged;
+        SpecialAttackCounter.OnValueChanged -= OnSpecialAttackChanged;
 
         base.OnNetworkDespawn();
     }
@@ -75,12 +87,14 @@ public class EnemyAnimationSync : NetworkBehaviour
         UpdateVelocity();
     }
 
+    //============================================================//
+    // VELOCIDAD
+    //============================================================//
+
     private void UpdateVelocity()
     {
         Vector3 velocity = movement.Velocity;
 
-        // Convertimos la velocidad mundial
-        // a velocidad relativa al enemigo.
         Vector3 localVelocity =
             transform.InverseTransformDirection(velocity);
 
@@ -97,6 +111,11 @@ public class EnemyAnimationSync : NetworkBehaviour
 
         variable.Value = value;
     }
+
+    //============================================================//
+    // ATAQUE NORMAL
+    //============================================================//
+
     public void NotifyAttack()
     {
         if (!IsServer)
@@ -106,16 +125,38 @@ public class EnemyAnimationSync : NetworkBehaviour
     }
 
     //============================================================//
-    private void OnVelXChanged(float previous, float current)
+    // ATAQUE ESPECIAL
+    //============================================================//
+
+    public void NotifySpecialAttack()
+    {
+        if (!IsServer)
+            return;
+
+        SpecialAttackCounter.Value++;
+    }
+
+    //============================================================//
+    // NETWORK VARIABLES
+    //============================================================//
+
+    private void OnVelXChanged(
+        float previous,
+        float current)
     {
         UpdateAnimator();
     }
 
-    private void OnVelYChanged(float previous, float current)
+    private void OnVelYChanged(
+        float previous,
+        float current)
     {
         UpdateAnimator();
     }
-    private void OnAttackChanged(int previous, int current)
+
+    private void OnAttackChanged(
+        int previous,
+        int current)
     {
         if (animator == null)
             return;
@@ -123,15 +164,29 @@ public class EnemyAnimationSync : NetworkBehaviour
         animator.SetTrigger(AttackHash);
     }
 
+    private void OnSpecialAttackChanged(
+        int previous,
+        int current)
+    {
+        if (animator == null)
+            return;
+
+        animator.SetTrigger(SpecialAttackHash);
+    }
 
     private void UpdateAnimator()
     {
         if (animator == null)
             return;
 
-        animator.SetFloat(VelXHash, VelX.Value);
-        animator.SetFloat(VelYHash, VelY.Value);
-    }
+        animator.SetFloat(
+            VelXHash,
+            VelX.Value
+        );
 
-   
+        animator.SetFloat(
+            VelYHash,
+            VelY.Value
+        );
+    }
 }

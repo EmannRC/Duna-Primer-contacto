@@ -22,7 +22,7 @@ MonoBehaviour:
   - stat: 0
     value: 10
   - stat: 3
-    value: 1
+    value: 2
   weaponPrefab: {fileID: 5788136192794371768, guid: 102df29755bb2ac4a8d27f22e527658e, type: 3}
   projectilePrefab: {fileID: 5795984549116863565, guid: aa3ca816d47cf87428898ad31a34fb9e, type: 3}
   manaCost: 5

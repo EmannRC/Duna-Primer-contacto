@@ -14,12 +14,18 @@ public class GroundEnemyMovement : NetworkBehaviour
     private EnemyContext ctx;
     private NavMeshAgent agent;
 
+    private EnforcerSpecialAttack specialAttack;
+
     public Vector3 Velocity => agent.velocity;
 
     private void Awake()
     {
         ctx = GetComponent<EnemyContext>();
+
         agent = GetComponent<NavMeshAgent>();
+
+        specialAttack =
+            GetComponent<EnforcerSpecialAttack>();
     }
 
     private void Update()
@@ -27,19 +33,32 @@ public class GroundEnemyMovement : NetworkBehaviour
         if (!IsServer)
             return;
 
+        // No ejecutar movimiento durante
+        // el ataque especial
+        if (specialAttack != null &&
+            specialAttack.IsPerformingSpecialAttack)
+        {
+            return;
+        }
+
         agent.speed = moveSpeed;
         agent.stoppingDistance = stoppingDistance;
         agent.angularSpeed = 720f;
 
-        // La rotación la controlamos nosotros.
+        // La rotación la controlamos nosotros
         agent.updateRotation = false;
 
-        Transform target = ctx.targeting.CurrentTarget;
+        Transform target =
+            ctx.targeting.CurrentTarget;
 
-        if (target == null || !agent.isOnNavMesh)
+        if (target == null ||
+            !agent.isOnNavMesh)
         {
-            if (agent.isActiveAndEnabled && agent.isOnNavMesh)
+            if (agent.isActiveAndEnabled &&
+                agent.isOnNavMesh)
+            {
                 agent.ResetPath();
+            }
 
             return;
         }
@@ -51,7 +70,9 @@ public class GroundEnemyMovement : NetworkBehaviour
 
     private void LookAtTarget(Transform target)
     {
-        Vector3 direction = target.position - transform.position;
+        Vector3 direction =
+            target.position - transform.position;
+
         direction.y = 0f;
 
         if (direction.sqrMagnitude < 0.01f)
@@ -60,10 +81,12 @@ public class GroundEnemyMovement : NetworkBehaviour
         Quaternion targetRotation =
             Quaternion.LookRotation(direction);
 
-        transform.rotation = Quaternion.Slerp(
-            transform.rotation,
-            targetRotation,
-            8f * Time.deltaTime);
+        transform.rotation =
+            Quaternion.Slerp(
+                transform.rotation,
+                targetRotation,
+                8f * Time.deltaTime
+            );
     }
 
     private void OnDrawGizmosSelected()
@@ -72,6 +95,7 @@ public class GroundEnemyMovement : NetworkBehaviour
 
         Gizmos.DrawWireSphere(
             transform.position,
-            stoppingDistance);
+            stoppingDistance
+        );
     }
 }

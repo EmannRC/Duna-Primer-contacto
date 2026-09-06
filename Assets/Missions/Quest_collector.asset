@@ -31,6 +31,6 @@ MonoBehaviour:
   rewards:
   - rewardType: 2
     amount: 1
-    itemID: Weapon_Staff_Nature
+    itemID: Weapon_Staff_Magic
   repeatable: 0
   autoComplete: 0

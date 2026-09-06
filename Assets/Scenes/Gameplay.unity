@@ -5132,6 +5132,75 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 420302563}
   m_CullTransparentMesh: 1
+--- !u!1001 &421881905
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4895689932009585535, guid: e56ec1423f52c2842b4d8582fbd0b470, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 164
+      objectReference: {fileID: 0}
+    - target: {fileID: 4895689932009585535, guid: e56ec1423f52c2842b4d8582fbd0b470, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 4895689932009585535, guid: e56ec1423f52c2842b4d8582fbd0b470, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 179.46
+      objectReference: {fileID: 0}
+    - target: {fileID: 4895689932009585535, guid: e56ec1423f52c2842b4d8582fbd0b470, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4895689932009585535, guid: e56ec1423f52c2842b4d8582fbd0b470, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4895689932009585535, guid: e56ec1423f52c2842b4d8582fbd0b470, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4895689932009585535, guid: e56ec1423f52c2842b4d8582fbd0b470, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4895689932009585535, guid: e56ec1423f52c2842b4d8582fbd0b470, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4895689932009585535, guid: e56ec1423f52c2842b4d8582fbd0b470, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4895689932009585535, guid: e56ec1423f52c2842b4d8582fbd0b470, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6766032273963205602, guid: e56ec1423f52c2842b4d8582fbd0b470, type: 3}
+      propertyPath: m_Name
+      value: StaffOfNature (Pickup)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7653401715403314351, guid: e56ec1423f52c2842b4d8582fbd0b470, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2690946182
+      objectReference: {fileID: 0}
+    - target: {fileID: 7653401715403314351, guid: e56ec1423f52c2842b4d8582fbd0b470, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7653401715403314351, guid: e56ec1423f52c2842b4d8582fbd0b470, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2311628647
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e56ec1423f52c2842b4d8582fbd0b470, type: 3}
 --- !u!1 &423892741
 GameObject:
   m_ObjectHideFlags: 0
@@ -24502,3 +24571,4 @@ SceneRoots:
   - {fileID: 3148827047093129776}
   - {fileID: 1472362055}
   - {fileID: 1225654615293454375}
+  - {fileID: 421881905}

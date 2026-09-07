@@ -69,13 +69,19 @@ public class PlayerCombat : MonoBehaviour
     {
         Ray ray = Camera.main.ScreenPointToRay(ctx.crosshair.position);
 
+        // Dibujar el rayo en la Scene
+        Debug.DrawRay(ray.origin, ray.direction * 100f, Color.red);
+
         Transform firePoint = ctx.equipment.CurrentFirePoint;
 
         if (firePoint == null)
             return ray.direction;
 
-        if (Physics.Raycast(ray, out RaycastHit hit))
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f))
         {
+            // Dibujar también hasta el punto de impacto
+            Debug.DrawLine(firePoint.position, hit.point, Color.green);
+
             return (hit.point - firePoint.position).normalized;
         }
 

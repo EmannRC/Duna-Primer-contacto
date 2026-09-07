@@ -15,48 +15,123 @@ public class Projectile : NetworkBehaviour
 
     private Vector3 direction;
 
+    //================================================//
+    // INITIALIZE
+    //================================================//
+
     public void Initialize(Vector3 direction)
     {
         this.direction = direction.normalized;
 
-        if (IsServer)
-            Invoke(nameof(Despawn), lifeTime);
+        // Orientar el proyectil hacia su dirección de movimiento.
+        if (this.direction.sqrMagnitude > 0.001f)
+        {
+            transform.rotation =
+                Quaternion.LookRotation(this.direction);
+        }
     }
+
+    //================================================//
+    // NETWORK SPAWN
+    //================================================//
+
+    public override void OnNetworkSpawn()
+    {
+        if (!IsServer)
+            return;
+
+        Invoke(
+            nameof(Despawn),
+            lifeTime
+        );
+    }
+
+    //================================================//
+    // FIXED UPDATE
+    //================================================//
 
     private void FixedUpdate()
     {
         if (!IsServer)
             return;
 
-        float distance = speed * Time.fixedDeltaTime;
+        if (direction.sqrMagnitude < 0.001f)
+            return;
 
+        float distance =
+            speed * Time.fixedDeltaTime;
+
+        // Detectar impacto antes de mover.
         if (Physics.SphereCast(
             transform.position,
             radius,
             direction,
             out RaycastHit hit,
             distance,
-            damageLayers))
+            damageLayers,
+            QueryTriggerInteraction.Ignore))
         {
-            if (hit.collider.TryGetComponent(out HealthController health))
+            if (hit.collider.TryGetComponent(
+                out HealthController health))
+            {
                 health.TakeDamage(damage);
+            }
 
             Despawn();
             return;
         }
 
-        transform.position += direction * distance;
+        // Movimiento recto.
+        transform.position +=
+            direction * distance;
     }
+
+    //================================================//
+    // DESPAWN
+    //================================================//
 
     private void Despawn()
     {
+        if (!IsServer)
+            return;
+
         if (NetworkObject.IsSpawned)
+        {
             NetworkObject.Despawn();
+        }
     }
+
+    //================================================//
+    // NETWORK DESPAWN
+    //================================================//
+
+    public override void OnNetworkDespawn()
+    {
+        CancelInvoke(nameof(Despawn));
+    }
+
+    //================================================//
+    // GIZMOS
+    //================================================//
 
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, radius);
+
+        Gizmos.DrawWireSphere(
+            transform.position,
+            radius
+        );
+
+        if (Application.isPlaying &&
+            direction.sqrMagnitude > 0.001f)
+        {
+            Gizmos.color = Color.yellow;
+
+            Gizmos.DrawRay(
+                transform.position,
+                direction * 2f
+            );
+        }
     }
 }

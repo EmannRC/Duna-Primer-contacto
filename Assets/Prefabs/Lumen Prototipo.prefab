@@ -1289,7 +1289,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a423748d551801e4e84799680e11c362, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCombat
-  shootAnimationPoint: 0.4
+  shootDelay: 0.6
   requireAimToShoot: 1
 --- !u!114 &2469992046821235202
 MonoBehaviour:
@@ -1325,7 +1325,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileShooter
   ShowTopMostFoldoutHeaderGroup: 1
-  cooldown: 1
+  cooldown: 1.5
   shootSound: {fileID: 0}
 --- !u!114 &642162550967021989
 MonoBehaviour:

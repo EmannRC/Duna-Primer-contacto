@@ -102,7 +102,6 @@ GameObject:
   - component: {fileID: 1019650312300827744}
   - component: {fileID: 7189172518424242776}
   - component: {fileID: 5735439097278197361}
-  - component: {fileID: 7230397359687937840}
   - component: {fileID: 6392499666131139740}
   m_Layer: 0
   m_Name: FireProjectile
@@ -193,33 +192,6 @@ MonoBehaviour:
   damageLayers:
     serializedVersion: 2
     m_Bits: 64
---- !u!54 &7230397359687937840
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1815716524939777628}
-  serializedVersion: 5
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 1
 --- !u!114 &6392499666131139740
 MonoBehaviour:
   m_ObjectHideFlags: 0

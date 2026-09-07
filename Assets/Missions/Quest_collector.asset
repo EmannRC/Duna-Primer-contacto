@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Quest_collector
   m_EditorClassIdentifier: Assembly-CSharp::Duna.QuestSystem.QuestData
   questID: quest-collect-cosito
-  questName: El coso del cosito
+  questName: "El n\xFAcleo m\xE1gico"
   description: "Ad\xE9ntrate en el bosque elfico y ayuda al \xE1rbol ancestral"
   objectives:
   - objectiveType: 0

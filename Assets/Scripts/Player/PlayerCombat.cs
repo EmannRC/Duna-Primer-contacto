@@ -4,88 +4,139 @@ using UnityEngine.InputSystem;
 
 public class PlayerCombat : MonoBehaviour
 {
-    public float shootDelay = 0.5f;
-    [Tooltip("Mantiene el disparo ligado al modo de apuntado, como en un shooter sobre el hombro.")]
-    public bool requireAimToShoot = true;
-   
+    [Header("Shooting")]
+    [Tooltip("Mantiene el disparo ligado al modo de apuntado.")]
+    [SerializeField] private bool requireAimToShoot = true;
+
     private float nextShootTime;
+    private bool isAttacking;
 
     private PlayerContext ctx;
 
+
     //========================================================//
-    void Awake()
+    // AWAKE
+    //========================================================//
+
+    private void Awake()
     {
         ctx = GetComponentInParent<PlayerContext>();
     }
 
+
     //========================================================//
-    public void OnShoot(InputAction.CallbackContext context)
+    // TRY SHOOT
+    //========================================================//
+
+    public void TryShoot()
     {
-        if (!context.performed)
+        if (ctx == null)
             return;
 
         if (ctx.equipment.weapon == null)
             return;
 
-        if (requireAimToShoot && (ctx.targeting == null || !ctx.targeting.isAiming))
+        // No permitir otro ataque mientras
+        // la animación actual está ejecutándose.
+        if (isAttacking)
             return;
+
+        //====================================================//
+        // AIM
+        //====================================================//
+
+        if (requireAimToShoot &&
+            (ctx.targeting == null ||
+             !ctx.targeting.isAiming))
+        {
+            return;
+        }
+
+        //====================================================//
+        // ATTACK SPEED
+        //====================================================//
+
+        float attackSpeed =
+            ctx.stats.GetStat(StatType.AttackSpeed);
+
+        if (attackSpeed <= 0f)
+            return;
+
+        float cooldown =
+            1f / attackSpeed;
 
         if (Time.time < nextShootTime)
             return;
 
-        float attackSpeed = ctx.stats.GetStat(StatType.AttackSpeed);
+        nextShootTime =
+            Time.time + cooldown;
 
-        float cooldown = 1f / attackSpeed;
+        //====================================================//
+        // START ATTACK
+        //====================================================//
 
-        nextShootTime = Time.time + cooldown;
+        isAttacking = true;
 
-        ctx.animationSync.NotifyShoot();
-
-        StartCoroutine(ShootRoutine());
-    }
-
-    //========================================================//
-    IEnumerator ShootRoutine()
-    {
-        ctx.movement.IsMovementLocked = true;
-
-        yield return new WaitForSeconds(shootDelay);
-
-        Vector3 direction = GetShootDirection();
-
-        ctx.rotation.LookAt(direction);
-
-        ctx.shooter.Shoot(direction);
-
-        ctx.movement.IsMovementLocked = false;
-
-        yield return new WaitForSeconds(0.1f);
-
-        ctx.rotation.StopAttackRotation();
-    }
-
-    //========================================================//
-    Vector3 GetShootDirection()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(ctx.crosshair.position);
-
-        // Dibujar el rayo en la Scene
-        Debug.DrawRay(ray.origin, ray.direction * 100f, Color.red);
-
-        Transform firePoint = ctx.equipment.CurrentFirePoint;
-
-        if (firePoint == null)
-            return ray.direction;
-
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f))
+        if (ctx.movement != null)
         {
-            // Dibujar también hasta el punto de impacto
-            Debug.DrawLine(firePoint.position, hit.point, Color.green);
-
-            return (hit.point - firePoint.position).normalized;
+            //ctx.movement.IsMovementLocked = true;
         }
 
-        return ray.direction;
+        Debug.Log("DISPARO: NotifyShoot llamado");
+
+        ctx.animationSync.NotifyShoot();
+    }
+
+
+    //========================================================//
+    // ANIMATION EVENT - FIRE
+    //========================================================//
+
+    public void FireProjectile()
+    {
+        if (ctx == null)
+            return;
+
+        if (ctx.equipment.weapon == null)
+            return;
+
+        if (ctx.shooter == null)
+        {
+            Debug.LogError(
+                "PlayerCombat: No se encontró ShootController."
+            );
+
+            return;
+        }
+
+        // Este método es llamado directamente
+        // desde un Animation Event.
+        ctx.shooter.Shoot();
+    }
+
+
+    //========================================================//
+    // ANIMATION EVENT - END ATTACK
+    //========================================================//
+
+    public void EndAttack()
+    {
+        isAttacking = false;
+
+        if (ctx == null)
+            return;
+
+        // Liberar movimiento.
+        if (ctx.movement != null)
+        {
+            ctx.movement.IsMovementLocked = false;
+        }
+
+        // Finalizar rotación de ataque.
+        if (ctx.rotation != null)
+        {
+            ctx.rotation.StopAttackRotation();
+        }
     }
 }
 

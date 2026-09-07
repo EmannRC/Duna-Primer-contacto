@@ -121,4 +121,27 @@ public class PlayerInputEvents : MonoBehaviour
 
         InteractPressed?.Invoke();
     }
+
+    //=====================//
+    //=====  COMBAT  ======//
+    //=====================//
+
+    public void OnShoot(InputAction.CallbackContext input)
+    {
+        if (!input.performed)
+            return;
+
+        if (ctx == null)
+            return;
+
+        if (ctx.health.IsDead.Value)
+            return;
+
+        if (ctx.combat == null)
+            return;
+
+        Debug.Log("SHOOT INPUT RECIBIDO");
+
+        ctx.combat.TryShoot();
+    }
 }

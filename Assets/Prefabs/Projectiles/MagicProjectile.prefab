@@ -260,6 +260,7 @@ MonoBehaviour:
   damageLayers:
     serializedVersion: 2
     m_Bits: 64
+  destroyEffect: {fileID: 6155210867353427163, guid: ed131e803ff7d9446988752b34f94cf4, type: 3}
 --- !u!114 &6829827621205371161
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -13,6 +13,9 @@ public class Projectile : NetworkBehaviour
     [Header("Damage")]
     [SerializeField] private LayerMask damageLayers;
 
+    [Header("Effects")]
+    [SerializeField] private GameObject destroyEffect;
+
     private Vector3 direction;
 
     //================================================//
@@ -23,7 +26,6 @@ public class Projectile : NetworkBehaviour
     {
         this.direction = direction.normalized;
 
-        // Orientar el proyectil hacia su dirección de movimiento.
         if (this.direction.sqrMagnitude > 0.001f)
         {
             transform.rotation =
@@ -40,10 +42,7 @@ public class Projectile : NetworkBehaviour
         if (!IsServer)
             return;
 
-        Invoke(
-            nameof(Despawn),
-            lifeTime
-        );
+        Invoke(nameof(Despawn), lifeTime);
     }
 
     //================================================//
@@ -61,7 +60,10 @@ public class Projectile : NetworkBehaviour
         float distance =
             speed * Time.fixedDeltaTime;
 
-        // Detectar impacto antes de mover.
+        //================================================//
+        // DETECTAR IMPACTO
+        //================================================//
+
         if (Physics.SphereCast(
             transform.position,
             radius,
@@ -77,13 +79,44 @@ public class Projectile : NetworkBehaviour
                 health.TakeDamage(damage);
             }
 
+            SpawnDestroyEffectClientRpc(hit.point, Quaternion.LookRotation(hit.normal));
+
             Despawn();
             return;
         }
 
-        // Movimiento recto.
+        //================================================//
+        // MOVIMIENTO
+        //================================================//
+
         transform.position +=
             direction * distance;
+
+        // Mantener visualmente el proyectil orientado
+        // hacia su dirección de movimiento.
+        transform.rotation =
+            Quaternion.LookRotation(direction);
+    }
+
+    //================================================//
+    // EFFECT
+    //================================================//
+
+    [ClientRpc]
+    private void SpawnDestroyEffectClientRpc(
+        Vector3 position,
+        Quaternion rotation)
+    {
+        if (destroyEffect == null)
+            return;
+
+        GameObject effect = Instantiate(
+            destroyEffect,
+            position,
+            rotation
+        );
+
+        Destroy(effect, 3f);
     }
 
     //================================================//

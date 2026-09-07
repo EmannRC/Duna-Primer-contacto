@@ -6,7 +6,7 @@ public class PlayerStatsManager : MonoBehaviour
     public float basePower = 10;
     public float baseMoveSpeed = 5;
     public float baseMana = 100;
-    public float baseAttackSpeed = 1f;
+    public float baseAttackSpeed = 0f;
 
     private Dictionary<StatType, float> finalStats = new();
 

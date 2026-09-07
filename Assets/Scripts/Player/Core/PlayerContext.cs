@@ -27,6 +27,7 @@ public class PlayerContext : MonoBehaviour
     public PlayerAnimation playerAnimation;
 
     [Header("Combat")]
+    public PlayerCombat combat;
     public ShootController shooter;
 
     [Header("Visual / UI")]

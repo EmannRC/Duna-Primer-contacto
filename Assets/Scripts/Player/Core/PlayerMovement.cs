@@ -8,6 +8,12 @@ public class PlayerMovement : NetworkBehaviour
     public float sprintMultiplier = 2f;
     public float jumpHeight = 1.5f;
 
+    [Header("Acceleration")]
+    public float acceleration = 12f;
+    public float deceleration = 16f;
+
+    private float currentSpeed;
+
     [Header("Gravity")]
     public float gravity = -9.81f;
     public float fallMultiplier = 2.5f;
@@ -95,11 +101,41 @@ public class PlayerMovement : NetworkBehaviour
 
         float moveSpeed = ctx.stats.GetStat(StatType.MoveSpeed);
 
-        float speed = isCrouching ? crouchSpeed : sprintHeld ? moveSpeed * sprintMultiplier : moveSpeed;
+        float targetSpeed;
 
-        AnimationSpeed = moveInput.magnitude * (sprintHeld ? 1f : 0.5f);
+        if (isCrouching)
+            targetSpeed = crouchSpeed;
+        else if (sprintHeld)
+            targetSpeed = moveSpeed * sprintMultiplier;
+        else
+            targetSpeed = moveSpeed;
 
-        controller.Move(MoveDirection * speed * Time.deltaTime);
+        // Si el jugador está moviéndose, acelera
+        if (moveInput.sqrMagnitude > 0.01f)
+        {
+            currentSpeed = Mathf.MoveTowards(
+                currentSpeed,
+                targetSpeed,
+                acceleration * Time.deltaTime
+            );
+        }
+        else
+        {
+            // Si deja de moverse, desacelera
+            currentSpeed = Mathf.MoveTowards(
+                currentSpeed,
+                0f,
+                deceleration * Time.deltaTime
+            );
+        }
+
+        AnimationSpeed = currentSpeed / (moveSpeed * sprintMultiplier);
+
+        controller.Move(
+            MoveDirection.normalized *
+            currentSpeed *
+            Time.deltaTime
+        );
     }
 
     //==================================================================================//

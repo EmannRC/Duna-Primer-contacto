@@ -3,74 +3,152 @@ using UnityEngine;
 
 public class ShootController : NetworkBehaviour
 {
-   //public Transform firePoint;
-    public float cooldown = 1f;
-    public AudioSource shootSound;
+    [Header("Aim")]
+    [SerializeField] private float aimDistance = 100f;
+    [SerializeField] private LayerMask aimLayers = ~0;
 
-    private float lastShotTime;
+    [Header("Audio")]
+    [SerializeField] private AudioSource shootSound;
+
     private PlayerContext ctx;
 
-    //=======================================================//
-    void Awake()
+
+    //========================================================//
+    // AWAKE
+    //========================================================//
+
+    private void Awake()
     {
         ctx = GetComponentInParent<PlayerContext>();
     }
 
-    //=======================================================//
-    public void Shoot(Vector3 direction)
+
+    //========================================================//
+    // SHOOT
+    //========================================================//
+
+    public void Shoot()
     {
-        if (!IsOwner)
+        if (!IsOwner || ctx == null)
             return;
 
-        ShootServerRpc(direction);
-    }
-
-    //=======================================================//
-    [ServerRpc]
-    private void ShootServerRpc(Vector3 direction)
-    {
         if (ctx.equipment.weapon == null)
             return;
 
         Transform firePoint = ctx.equipment.CurrentFirePoint;
 
         if (firePoint == null)
+            return;
+
+        Vector3 direction = GetDirection(firePoint);
+
+        if (direction.sqrMagnitude < 0.001f)
+            return;
+
+        ShootServerRpc(direction);
+    }
+
+
+    //========================================================//
+    // GET DIRECTION
+    //========================================================//
+
+    private Vector3 GetDirection(Transform firePoint)
+    {
+        Camera cam = Camera.main;
+
+        if (cam == null || ctx.crosshair == null)
+            return firePoint.forward;
+
+        // Ray desde el centro de la mira.
+        Ray ray = cam.ScreenPointToRay(
+            ctx.crosshair.position
+        );
+
+        Vector3 targetPoint;
+
+        // Buscamos exactamente qué está apuntando la mira.
+        if (Physics.Raycast(
+            ray,
+            out RaycastHit hit,
+            aimDistance,
+            aimLayers,
+            QueryTriggerInteraction.Ignore))
         {
-            Debug.LogError("No se encontró el FirePoint del arma equipada.");
+            targetPoint = hit.point;
+        }
+        else
+        {
+            targetPoint = ray.origin + ray.direction * aimDistance;
+        }
+
+        // El proyectil sale del FirePoint
+        // hacia el punto donde apunta la mira.
+        return (targetPoint - firePoint.position).normalized;
+    }
+
+
+    //========================================================//
+    // SERVER
+    //========================================================//
+
+    [ServerRpc]
+    private void ShootServerRpc(Vector3 direction)
+    {
+        if (ctx == null)
+            return;
+
+        if (ctx.equipment.weapon == null)
+            return;
+
+        if (direction.sqrMagnitude < 0.001f)
+            return;
+
+        Transform firePoint = ctx.equipment.CurrentFirePoint;
+
+        if (firePoint == null)
+            return;
+
+        // Consumir maná.
+        if (!ctx.mana.TryUse(
+            ctx.equipment.weapon.manaCost))
+        {
             return;
         }
 
-        float attackSpeed =
-            ctx.stats.GetStat(StatType.AttackSpeed);
+        // Crear proyectil.
+        GameObject projectile = Instantiate(
+            ctx.equipment.weapon.projectilePrefab,
+            firePoint.position,
+            Quaternion.LookRotation(direction)
+        );
 
-        float cooldown =
-            1f / attackSpeed;
+        Projectile projectileComponent =
+            projectile.GetComponent<Projectile>();
 
-        if (Time.time < lastShotTime + cooldown)
+        if (projectileComponent == null)
+        {
+            Destroy(projectile);
             return;
+        }
 
-        if (!ctx.mana.TryUse(
-                ctx.equipment.weapon.manaCost))
+        projectileComponent.Initialize(direction);
+
+        NetworkObject networkObject =
+            projectile.GetComponent<NetworkObject>();
+
+        if (networkObject == null)
+        {
+            Destroy(projectile);
             return;
+        }
 
-        lastShotTime = Time.time;
-
-        GameObject projectile =
-            Instantiate(
-                ctx.equipment.weapon.projectilePrefab,
-                firePoint.position,
-                Quaternion.LookRotation(direction)
-            );
-
-        projectile
-            .GetComponent<Projectile>()
-            .Initialize(direction);
-
-        projectile
-            .GetComponent<NetworkObject>()
-            .Spawn();
+        networkObject.Spawn();
+    
 
         if (shootSound != null)
+        {
             shootSound.Play();
+        }
     }
 }

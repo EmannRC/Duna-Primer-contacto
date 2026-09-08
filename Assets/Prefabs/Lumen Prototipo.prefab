@@ -528,6 +528,8 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   sprintMultiplier: 4
   jumpHeight: 1.7
+  acceleration: 12
+  deceleration: 16
   gravity: -9.81
   fallMultiplier: 2.5
   groundCheck: {fileID: 5652147229613945445}
@@ -639,8 +641,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb8f1c237a7fe324ab25f267e83dd916, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DeathController
-  disableMovement: 0
-  destroyOnDeath: 0
+  disableMovement: 1
+  destroyOnDeath: 1
   destroyDelay: 3
   deathSound: {fileID: 0}
 --- !u!114 &274392466181950171
@@ -1255,7 +1257,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileShooter
   ShowTopMostFoldoutHeaderGroup: 1
-  aimRayDistance: 100
+  aimDistance: 100
   aimLayers:
     serializedVersion: 2
     m_Bits: 4294967295

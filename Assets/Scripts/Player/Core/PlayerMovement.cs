@@ -2,7 +2,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerMovement : NetworkBehaviour
+public class PlayerMovement : NetworkBehaviour, IDeathMovement
 {
     [Header("Movement")]
     public float sprintMultiplier = 2f;
@@ -136,6 +136,17 @@ public class PlayerMovement : NetworkBehaviour
             currentSpeed *
             Time.deltaTime
         );
+    }
+
+    //==================================================================================//
+    public void SetMovementLocked(bool locked)
+    {
+        IsMovementLocked = locked;
+
+        if (locked)
+        {
+            SetMoveInput(Vector2.zero);
+        }
     }
 
     //==================================================================================//

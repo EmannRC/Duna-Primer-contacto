@@ -1,7 +1,7 @@
 using Unity.Netcode;
 using UnityEngine;
 
-public class EnemyAnimationSync : NetworkBehaviour
+public class EnemyAnimationSync : NetworkBehaviour, IDeathAnimation
 {
     [Header("Animation")]
     [SerializeField] private Animator animator;
@@ -34,6 +34,15 @@ public class EnemyAnimationSync : NetworkBehaviour
             NetworkVariableWritePermission.Server
         );
 
+    public NetworkVariable<bool> Dead =
+    new(
+        false,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server
+    );
+
+
+
     private GroundEnemyMovement movement;
 
     private static readonly int VelXHash =
@@ -47,6 +56,10 @@ public class EnemyAnimationSync : NetworkBehaviour
 
     private static readonly int SpecialAttackHash =
         Animator.StringToHash("JumpAttack");
+
+    private static readonly int DeadHash =
+    Animator.StringToHash("Dead");
+
 
     //============================================================//
     private void Awake()
@@ -63,6 +76,7 @@ public class EnemyAnimationSync : NetworkBehaviour
 
         VelX.OnValueChanged += OnVelXChanged;
         VelY.OnValueChanged += OnVelYChanged;
+        Dead.OnValueChanged += OnDeadChanged;
         AttackCounter.OnValueChanged += OnAttackChanged;
         SpecialAttackCounter.OnValueChanged += OnSpecialAttackChanged;
 
@@ -73,6 +87,7 @@ public class EnemyAnimationSync : NetworkBehaviour
     {
         VelX.OnValueChanged -= OnVelXChanged;
         VelY.OnValueChanged -= OnVelYChanged;
+        Dead.OnValueChanged -= OnDeadChanged;
         AttackCounter.OnValueChanged -= OnAttackChanged;
         SpecialAttackCounter.OnValueChanged -= OnSpecialAttackChanged;
 
@@ -164,6 +179,16 @@ public class EnemyAnimationSync : NetworkBehaviour
         animator.SetTrigger(AttackHash);
     }
 
+    private void OnDeadChanged(
+    bool previous,
+    bool current)
+    {
+        if (animator == null)
+            return;
+
+        animator.SetBool(DeadHash, current);
+    }
+
     private void OnSpecialAttackChanged(
         int previous,
         int current)
@@ -188,5 +213,13 @@ public class EnemyAnimationSync : NetworkBehaviour
             VelYHash,
             VelY.Value
         );
+    }
+
+    public void PlayDeathAnimation()
+    {
+        if (!IsServer)
+            return;
+
+        Dead.Value = true;
     }
 }

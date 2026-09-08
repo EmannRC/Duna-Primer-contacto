@@ -22726,7 +22726,7 @@ MonoBehaviour:
   explorationOffset: {x: 0.4, y: -1.35, z: 0}
   explorationFov: 60
   aimDistance: 1.3
-  combatOffset: {x: 0.8, y: -0.9, z: 0}
+  combatOffset: {x: 0.5, y: -0.9, z: 0}
   aimFov: 48
   aimSensitivityMultiplier: 0.3
   rotationSmooth: 10

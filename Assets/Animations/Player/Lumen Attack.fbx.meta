@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 8aaf9bd29ce5b3c4e8dd361c7a054c1a
+guid: 745a47ccc9ea5b745a2ce0e63741b5f1
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
@@ -31,11 +31,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Standing 1H Magic Attack 01
+      name: mixamo.com
       takeName: mixamo.com
       internalID: -203655887218126122
       firstFrame: 0
-      lastFrame: 69
+      lastFrame: 85
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

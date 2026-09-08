@@ -7,7 +7,8 @@ public class EnemyContext : MonoBehaviour
     public EnemyHealth health;
     public GroundEnemyMovement groundMovement;
     public FlyingEnemyMovement flyingMovement;
-    
+    public EnemyMovementBase movement { get; private set; }
+
     public EnemyRangeCombat rangedCombat;
     public EnemyMeleeCombat meleeCombat;
     public EnemyTargeting targeting;
@@ -27,5 +28,6 @@ public class EnemyContext : MonoBehaviour
         formation = GetComponent<EnemyFormation>();
         stats = GetComponent<EnemyStats>();
         animationSync = GetComponent<EnemyAnimationSync>();
+        movement = GetComponent<EnemyMovementBase>();
     }
 }

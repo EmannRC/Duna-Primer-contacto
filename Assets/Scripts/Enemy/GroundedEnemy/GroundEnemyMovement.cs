@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 
 [RequireComponent(typeof(NavMeshAgent))]
-public class GroundEnemyMovement : NetworkBehaviour
+public class GroundEnemyMovement : EnemyMovementBase
 {
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 3.5f;
@@ -16,7 +16,14 @@ public class GroundEnemyMovement : NetworkBehaviour
 
     private EnforcerSpecialAttack specialAttack;
 
+    private bool movementLocked;
+
     public Vector3 Velocity => agent.velocity;
+
+
+    //=======================================================//
+    // AWAKE
+    //=======================================================//
 
     private void Awake()
     {
@@ -28,9 +35,36 @@ public class GroundEnemyMovement : NetworkBehaviour
             GetComponent<EnforcerSpecialAttack>();
     }
 
+
+    //=======================================================//
+    // MOVEMENT LOCK
+    //=======================================================//
+
+    public override void SetMovementLocked(bool locked)
+    {
+        movementLocked = locked;
+
+        if (movementLocked)
+        {
+            if (agent.isActiveAndEnabled &&
+                agent.isOnNavMesh)
+            {
+                agent.ResetPath();
+            }
+        }
+    }
+
+
+    //=======================================================//
+    // UPDATE
+    //=======================================================//
+
     private void Update()
     {
         if (!IsServer)
+            return;
+
+        if (movementLocked)
             return;
 
         // No ejecutar movimiento durante
@@ -45,7 +79,6 @@ public class GroundEnemyMovement : NetworkBehaviour
         agent.stoppingDistance = stoppingDistance;
         agent.angularSpeed = 720f;
 
-        // La rotación la controlamos nosotros
         agent.updateRotation = false;
 
         Transform target =
@@ -68,6 +101,11 @@ public class GroundEnemyMovement : NetworkBehaviour
         LookAtTarget(target);
     }
 
+
+    //=======================================================//
+    // LOOK AT TARGET
+    //=======================================================//
+
     private void LookAtTarget(Transform target)
     {
         Vector3 direction =
@@ -88,6 +126,11 @@ public class GroundEnemyMovement : NetworkBehaviour
                 8f * Time.deltaTime
             );
     }
+
+
+    //=======================================================//
+    // GIZMOS
+    //=======================================================//
 
     private void OnDrawGizmosSelected()
     {

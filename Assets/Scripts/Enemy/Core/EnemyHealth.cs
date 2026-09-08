@@ -13,35 +13,45 @@ public class EnemyHealth : HealthController
 
     private EnemyIdentity identity;
 
+    //==============================================================//
+
     private void Awake()
     {
         reward = GetComponent<EnemyReward>();
-
         identity = GetComponent<EnemyIdentity>();
     }
 
+
+    //==============================================================//
+
     public override void Die()
     {
+        if (IsDead.Value)
+            return;
+
         if (IsServer)
         {
             DropRandomItem();
+
+            if (reward != null)
+                reward.GiveRewards();
+
+            if (identity != null)
+                QuestEvents.RaiseKillEnemy(identity.EnemyID, 1);
         }
 
-        reward.GiveRewards();
-
-        QuestEvents.RaiseKillEnemy(identity.EnemyID, 1);
-
         base.Die();
-
-        Destroy(gameObject);
     }
+
+
+    //==============================================================//
 
     private void DropRandomItem()
     {
         if (possibleDrops == null || possibleDrops.Length == 0)
             return;
 
-        float totalWeight = 0;
+        float totalWeight = 0f;
 
         foreach (DropItem item in possibleDrops)
         {
@@ -49,9 +59,12 @@ public class EnemyHealth : HealthController
                 totalWeight += item.weight;
         }
 
+        if (totalWeight <= 0f)
+            return;
+
         float randomValue = Random.Range(0f, totalWeight);
 
-        float currentWeight = 0;
+        float currentWeight = 0f;
 
         foreach (DropItem item in possibleDrops)
         {
@@ -67,6 +80,9 @@ public class EnemyHealth : HealthController
             }
         }
     }
+
+
+    //==============================================================//
 
     private void SpawnDrop(NetworkObject prefab)
     {

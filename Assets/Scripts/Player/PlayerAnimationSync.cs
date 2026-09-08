@@ -2,7 +2,7 @@ using System.Globalization;
 using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerAnimationSync : NetworkBehaviour
+public class PlayerAnimationSync : NetworkBehaviour, IDeathAnimation
 {
     private PlayerContext ctx;
 
@@ -77,5 +77,10 @@ public class PlayerAnimationSync : NetworkBehaviour
             return;
 
         ShootCounter.Value++;
+    }
+
+    public void PlayDeathAnimation()
+    {
+        Dead.Value = true;
     }
 }

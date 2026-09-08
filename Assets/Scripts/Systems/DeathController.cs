@@ -1,8 +1,18 @@
-using UnityEngine;
 using System.Collections;
+using Unity.Netcode;
+using UnityEngine;
 
-public class DeathController : MonoBehaviour
+public class DeathController : NetworkBehaviour
 {
+    public enum EntityType
+    {
+        Player,
+        Enemy
+    }
+
+    [Header("Entity")]
+    [SerializeField] private EntityType entityType;
+
     [Header("General")]
     [SerializeField] private bool disableMovement = true;
     [SerializeField] private bool destroyOnDeath = true;
@@ -11,92 +21,80 @@ public class DeathController : MonoBehaviour
     [Header("Audio")]
     [SerializeField] private AudioSource deathSound;
 
-    private IDeathSource deathSource;
-    private IDeathMovement deathMovement;
-    private IDeathAnimation deathAnimation;
+    private PlayerContext playerCtx;
+    private EnemyContext enemyCtx;
 
     private bool deathHandled;
 
 
-    //==============================================================//
+    //========================================================//
+    // AWAKE
+    //========================================================//
 
     private void Awake()
     {
-        deathSource =
-            GetComponent<IDeathSource>();
-
-        deathMovement =
-            GetComponent<IDeathMovement>();
-
-        deathAnimation =
-            GetComponent<IDeathAnimation>();
+        if (entityType == EntityType.Player)
+            playerCtx = GetComponent<PlayerContext>();
+        else
+            enemyCtx = GetComponent<EnemyContext>();
     }
 
 
-    //==============================================================//
+    //========================================================//
+    // DEATH
+    //========================================================//
 
-    private void Start()
+    public void HandleDeath()
     {
-        if (deathSource == null)
-        {
-            Debug.LogError(
-                $"{name}: No se encontró un IDeathSource."
-            );
-
+        if (!IsServer)
             return;
-        }
 
-        deathSource.OnDeath += HandleDeath;
-    }
-
-
-    //==============================================================//
-
-    private void HandleDeath()
-    {
         if (deathHandled)
             return;
 
         deathHandled = true;
 
+        if (entityType == EntityType.Player)
+            HandlePlayerDeath();
+        else
+            HandleEnemyDeath();
 
-        // BLOQUEAR MOVIMIENTO
-        if (disableMovement &&
-            deathMovement != null)
-        {
-            deathMovement.SetMovementLocked(true);
-        }
-
-
-        // ANIMACIÓN DE MUERTE
-        if (deathAnimation != null)
-        {
-            deathAnimation.PlayDeathAnimation();
-        }
-
-
-        // SONIDO
         if (deathSound != null)
-        {
             deathSound.Play();
-        }
 
-
-        // DESTRUCCIÓN
         if (destroyOnDeath)
-        {
             Destroy(gameObject, destroyDelay);
-        }
     }
 
 
-    //==============================================================//
+    //========================================================//
+    // PLAYER
+    //========================================================//
 
-    private void OnDestroy()
+    private void HandlePlayerDeath()
     {
-        if (deathSource != null)
-        {
-            deathSource.OnDeath -= HandleDeath;
-        }
+        if (playerCtx == null)
+            return;
+
+        if (disableMovement && playerCtx.movement != null)
+            playerCtx.movement.SetMovementLocked(true);
+
+        playerCtx.playerAnimation.PlayDeathAnimation();
+    }
+
+
+    //========================================================//
+    // ENEMY
+    //========================================================//
+
+    private void HandleEnemyDeath()
+    {
+        if (enemyCtx == null)
+            return;
+
+        if (disableMovement && enemyCtx.movement != null)
+            enemyCtx.movement.SetMovementLocked(true);
+
+        enemyCtx.enemyAnimation.PlayDeathAnimation();
     }
 }

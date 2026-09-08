@@ -22,9 +22,9 @@ public class PlayerContext : MonoBehaviour
     public PlayerHealth health;
 
     [Header("Movement")]
+    public CharacterController controller;
     public PlayerMovement movement;
     public PlayerRotation rotation;
-    public PlayerAnimation playerAnimation;
 
     [Header("Combat")]
     public PlayerCombat combat;
@@ -32,7 +32,7 @@ public class PlayerContext : MonoBehaviour
 
     [Header("Visual / UI")]
     public Animator animator;
-    public PlayerAnimationSync animationSync;
+    public PlayerAnimation playerAnimation;
     public Transform crosshair;
     public CraftingUI craftingUI;
     public Camera mainCamera;

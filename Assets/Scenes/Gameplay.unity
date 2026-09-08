@@ -2313,7 +2313,7 @@ Transform:
   m_GameObject: {fileID: 203485773}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -171.43, y: -30, z: -108.65}
+  m_LocalPosition: {x: -170.89, y: -30, z: -134.82}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3638,7 +3638,7 @@ Transform:
   m_GameObject: {fileID: 341337318}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -179.6, y: -30, z: -141.96}
+  m_LocalPosition: {x: -173.9, y: -30, z: -141.96}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -10859,7 +10859,7 @@ Transform:
   m_GameObject: {fileID: 1094557387}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -175.09, y: -30, z: -136.97}
+  m_LocalPosition: {x: -182.6, y: -30, z: -143.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -12528,6 +12528,7 @@ MonoBehaviour:
   inventoryUI: {fileID: 1690398551}
   craftingUI: {fileID: 423892743}
   crosshair: {fileID: 1792941251}
+  crosshairUI: {fileID: 1542059370}
   questTrackerUI: {fileID: 1146174690}
 --- !u!1 &1273742623
 GameObject:
@@ -14032,7 +14033,7 @@ Transform:
   m_GameObject: {fileID: 1426668839}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -182.79, y: -30, z: -106.62}
+  m_LocalPosition: {x: -180.52, y: -30, z: -134.87}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -18757,37 +18758,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: fd44fc6bdc7c52945ab00fcff93de9bd, type: 3}
   m_PrefabInstance: {fileID: 1861486274}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1877508198
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1877508200}
-  m_Layer: 0
-  m_Name: NetworkUnityTransport
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1877508200
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1877508198}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1936060429}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1886966650
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -20108,8 +20078,7 @@ Transform:
   m_LocalPosition: {x: 763.0926, y: -0.00003, z: 3684.334}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1877508200}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1936060430

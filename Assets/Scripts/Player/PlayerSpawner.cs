@@ -7,52 +7,162 @@ public class PlayerSpawner : NetworkBehaviour
     [SerializeField] private NetworkObject playerPrefab;
     [SerializeField] private Transform[] spawnPoints;
 
+    //========================================================//
+    // NETWORK SPAWN
+    //========================================================//
+
     public override void OnNetworkSpawn()
     {
         if (!IsServer)
             return;
 
-        foreach (ulong clientId in NetworkManager.ConnectedClientsIds)
+        NetworkManager.Singleton.OnClientConnectedCallback
+            += OnClientConnected;
+
+        NetworkManager.Singleton.OnClientDisconnectCallback
+            += OnClientDisconnected;
+
+        // Spawnear los clientes que ya estaban conectados
+        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
         {
             SpawnPlayer(clientId);
         }
     }
 
-    private void SpawnPlayer(ulong clientId)
-    {
-        NetworkObject player =
-            Instantiate(
-                playerPrefab,
-                spawnPoints[clientId % (ulong)spawnPoints.Length].position,
-                Quaternion.identity);
 
-        player.SpawnAsPlayerObject(clientId);
+    //========================================================//
+    // NETWORK DESPAWN
+    //========================================================//
+
+    public override void OnNetworkDespawn()
+    {
+        if (NetworkManager.Singleton == null)
+            return;
+
+        NetworkManager.Singleton.OnClientConnectedCallback
+            -= OnClientConnected;
+
+        NetworkManager.Singleton.OnClientDisconnectCallback
+            -= OnClientDisconnected;
     }
 
-    public void RespawnAllPlayers()
+
+    //========================================================//
+    // CLIENT CONNECTED
+    //========================================================//
+
+    private void OnClientConnected(ulong clientId)
     {
-        if (!IsServer) return;
+        SpawnPlayer(clientId);
+    }
 
-        // 1. destruir players actuales de forma segura
-        var players = FindObjectsByType<NetworkObject>(FindObjectsSortMode.None);
 
-        foreach (var p in players)
+    //========================================================//
+    // CLIENT DISCONNECTED
+    //========================================================//
+
+    private void OnClientDisconnected(ulong clientId)
+    {
+        Debug.Log($"Player desconectado: {clientId}");
+    }
+
+
+    //========================================================//
+    // SPAWN PLAYER
+    //========================================================//
+
+    private void SpawnPlayer(ulong clientId)
+    {
+        if (!IsServer)
+            return;
+
+        // Evitar spawn duplicado
+        if (NetworkManager.Singleton.ConnectedClients.TryGetValue(
+            clientId,
+            out NetworkClient client))
         {
-            if (p != null && p.IsPlayerObject && p.IsSpawned)
+            if (client.PlayerObject != null &&
+                client.PlayerObject.IsSpawned)
             {
-                p.Despawn(true);
+                Debug.Log($"Player {clientId} ya tiene PlayerObject.");
+
+                return;
             }
         }
 
-        // 2. esperar 1 frame lógico de seguridad (IMPORTANTE)
+
+        // Comprobar Spawn Points
+        if (spawnPoints == null || spawnPoints.Length == 0)
+        {
+            Debug.LogError("PlayerSpawner: No hay Spawn Points configurados.");
+
+            return;
+        }
+
+
+        // Elegir Spawn Point
+        int spawnIndex =
+            (int)(clientId % (ulong)spawnPoints.Length);
+
+        Transform spawnPoint =
+            spawnPoints[spawnIndex];
+
+
+        // Instanciar jugador
+        NetworkObject player =
+            Instantiate(
+                playerPrefab,
+                spawnPoint.position,
+                spawnPoint.rotation
+            );
+
+
+        // Spawn como Player Object
+        player.SpawnAsPlayerObject(clientId);
+
+
+        Debug.Log(
+            $"Player {clientId} spawneado en " +
+            $"{spawnPoint.name} | " +
+            $"Pos: {spawnPoint.position}"
+        );
+    }
+
+
+    //========================================================//
+    // RESPAWN ALL
+    //========================================================//
+
+    public void RespawnAllPlayers()
+    {
+        if (!IsServer)
+            return;
+
+        foreach (NetworkClient client
+                 in NetworkManager.Singleton.ConnectedClientsList)
+        {
+            if (client.PlayerObject == null)
+                continue;
+
+            if (!client.PlayerObject.IsSpawned)
+                continue;
+
+            client.PlayerObject.Despawn(true);
+        }
+
         StartCoroutine(RespawnNextFrame());
     }
 
+
+    //========================================================//
+    // RESPAWN NEXT FRAME
+    //========================================================//
+
     private IEnumerator RespawnNextFrame()
     {
-        yield return null; // deja que NGO limpie despawns
+        yield return null;
 
-        foreach (ulong clientId in NetworkManager.ConnectedClientsIds)
+        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
         {
             SpawnPlayer(clientId);
         }

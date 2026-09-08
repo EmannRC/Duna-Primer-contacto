@@ -79,12 +79,12 @@ public class PlayerCombat : MonoBehaviour
 
         if (ctx.movement != null)
         {
-            //ctx.movement.IsMovementLocked = true;
+            ctx.movement.SetMovementLocked(true);
         }
 
         Debug.Log("DISPARO: NotifyShoot llamado");
 
-        ctx.animationSync.NotifyShoot();
+        ctx.playerAnimation.PlayShootAnimation();
     }
 
 
@@ -129,7 +129,7 @@ public class PlayerCombat : MonoBehaviour
         // Liberar movimiento.
         if (ctx.movement != null)
         {
-            ctx.movement.IsMovementLocked = false;
+            ctx.movement.SetMovementLocked(false);
         }
 
         // Finalizar rotación de ataque.

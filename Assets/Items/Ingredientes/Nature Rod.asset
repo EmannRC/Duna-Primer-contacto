@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Nature Rod
   m_EditorClassIdentifier: Assembly-CSharp::Item
   itemName: Vara de la naturaleza
-  itemId: Ingredient_Rod_Nature
+  itemId: Ingredient_rod_nature
   icon: {fileID: 0}
   iconColor: {r: 1, g: 1, b: 1, a: 1}
   isStackable: 1

@@ -5,18 +5,24 @@ public class CrosshairUI : MonoBehaviour
     public GameObject crosshair;
     private TargetingSystem targetingSystem;
 
-    void Start()
+    private void Start()
     {
         Cursor.visible = false;
 
-        targetingSystem = FindFirstObjectByType<TargetingSystem>();
+        if (crosshair != null)
+            crosshair.SetActive(false);
     }
 
-    void Update()
+    private void Update()
     {
         if (targetingSystem == null)
             return;
 
         crosshair.SetActive(targetingSystem.isAiming);
+    }
+
+    public void Bind(TargetingSystem targeting)
+    {
+        targetingSystem = targeting;
     }
 }

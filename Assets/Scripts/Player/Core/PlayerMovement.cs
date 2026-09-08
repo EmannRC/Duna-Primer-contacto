@@ -4,196 +4,245 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : NetworkBehaviour, IDeathMovement
 {
+
     [Header("Movement")]
-    public float sprintMultiplier = 2f;
-    public float jumpHeight = 1.5f;
+    [SerializeField] private float sprintMultiplier = 2f;
+    [SerializeField] private float acceleration = 12f;
+    [SerializeField] private float deceleration = 16f;
 
-    [Header("Acceleration")]
-    public float acceleration = 12f;
-    public float deceleration = 16f;
-
-    private float currentSpeed;
+    [Header("Jump")]
+    [SerializeField] private float jumpHeight = 1.5f;
 
     [Header("Gravity")]
-    public float gravity = -9.81f;
-    public float fallMultiplier = 2.5f;
+    [SerializeField] private float gravity = -9.81f;
+    [SerializeField] private float fallMultiplier = 2.5f;
 
     [Header("Ground")]
-    public Transform groundCheck;
-    public float groundDistance = 0.25f;
-    public LayerMask groundMask;
-    public float groundedGraceTime = 0.1f;
+    [SerializeField] private float groundDistance = 0.25f;
+    [SerializeField] private LayerMask groundMask;
+    [SerializeField] private float groundedGraceTime = 0.1f;
 
     [Header("Crouch")]
-    public float crouchHeight = 1.3f;
-    public float crouchSpeed = 1f;
+    [SerializeField] private float crouchHeight = 1.3f;
+    [SerializeField] private float crouchSpeed = 1f;
+
 
     private PlayerContext ctx;
-    private CharacterController controller;
 
-    private Vector3 velocity;
-    private Vector2 moveInput;
     private Transform cameraTransform;
 
-    bool jumpPressed;
-    bool sprintHeld;
-    bool isCrouching;
-    public bool isGrounded;
-    float groundedTimer;
+    private Vector2 moveInput;
+    private Vector3 velocity;
+    private Vector3 moveDirection;
 
-    public bool IsMovementLocked { get; set; }
-    public Vector3 MoveDirection { get; private set; }
+    private float currentSpeed;
+    private float groundedTimer;
+    private float standHeight;
+
+    private bool jumpPressed;
+    private bool sprintHeld;
+    private bool isCrouching;
+
+
+    public bool IsMovementLocked { get; private set; }
+
+    public Vector3 MoveDirection => moveDirection;
+
     public float AnimationSpeed { get; private set; }
 
     public bool IsGrounded => groundedTimer > 0f;
+
     public float VerticalVelocity => velocity.y;
+
     public bool IsCrouching => isCrouching;
 
-    float standHeight;
 
-    //==================================================================================//
-    void Awake()
+    //========================================================//
+    // INITIALIZATION
+    //========================================================//
+
+    private void Awake()
     {
-        controller = GetComponent<CharacterController>();
-        standHeight = controller.height;
         ctx = GetComponent<PlayerContext>();
 
+        standHeight = ctx.controller.height;
     }
 
-    //==================================================================================//
-    void Update()
+
+    //========================================================//
+    // UPDATE
+    //========================================================//
+
+    private void Update()
     {
         if (!IsOwner)
             return;
 
-
-        CheckGround();
-        Jump();
-        Gravity();
-        Move();
-        Crouch();
+        UpdateGrounded();
+        UpdateJump();
+        UpdateGravity();
+        UpdateMovement();
     }
 
-    public void SetCameraTransform(Transform cam)
-    {
-        cameraTransform = cam;
-    }
 
-    //==================================================================================//
-    void Move()
+    //========================================================//
+    // MOVEMENT
+    //========================================================//
+
+    private void UpdateMovement()
     {
         if (cameraTransform == null)
             return;
 
-        Vector3 camForward = cameraTransform.forward;
-        Vector3 camRight = cameraTransform.right;
+        CalculateMoveDirection();
+        UpdateSpeed();
 
-        camForward.y = 0;
-        camRight.y = 0;
+        Vector3 horizontalVelocity =
+            moveDirection * currentSpeed;
 
-        camForward.Normalize();
-        camRight.Normalize();
+        Vector3 finalVelocity =
+            horizontalVelocity + velocity;
 
-        MoveDirection = camForward * moveInput.y + camRight * moveInput.x;
-
-        if (IsMovementLocked)
-            return;
-
-        float moveSpeed = ctx.stats.GetStat(StatType.MoveSpeed);
-
-        float targetSpeed;
-
-        if (isCrouching)
-            targetSpeed = crouchSpeed;
-        else if (sprintHeld)
-            targetSpeed = moveSpeed * sprintMultiplier;
-        else
-            targetSpeed = moveSpeed;
-
-        // Si el jugador está moviéndose, acelera
-        if (moveInput.sqrMagnitude > 0.01f)
-        {
-            currentSpeed = Mathf.MoveTowards(
-                currentSpeed,
-                targetSpeed,
-                acceleration * Time.deltaTime
-            );
-        }
-        else
-        {
-            // Si deja de moverse, desacelera
-            currentSpeed = Mathf.MoveTowards(
-                currentSpeed,
-                0f,
-                deceleration * Time.deltaTime
-            );
-        }
-
-        AnimationSpeed = currentSpeed / (moveSpeed * sprintMultiplier);
-
-        controller.Move(
-            MoveDirection.normalized *
-            currentSpeed *
-            Time.deltaTime
+        ctx.controller.Move(
+            finalVelocity * Time.deltaTime
         );
     }
 
-    //==================================================================================//
-    public void SetMovementLocked(bool locked)
-    {
-        IsMovementLocked = locked;
 
-        if (locked)
+    private void CalculateMoveDirection()
+    {
+        Vector3 forward = cameraTransform.forward;
+        Vector3 right = cameraTransform.right;
+
+        forward.y = 0f;
+        right.y = 0f;
+
+        forward.Normalize();
+        right.Normalize();
+
+        moveDirection =
+            forward * moveInput.y +
+            right * moveInput.x;
+
+        if (moveDirection.sqrMagnitude > 1f)
+            moveDirection.Normalize();
+    }
+
+
+    private void UpdateSpeed()
+    {
+        float moveSpeed =
+            ctx.stats.GetStat(StatType.MoveSpeed);
+
+        float targetSpeed = 0f;
+
+        if (!IsMovementLocked)
         {
-            SetMoveInput(Vector2.zero);
+            if (isCrouching)
+                targetSpeed = crouchSpeed;
+            else if (sprintHeld)
+                targetSpeed = moveSpeed * sprintMultiplier;
+            else
+                targetSpeed = moveSpeed;
         }
+
+        float accelerationRate =
+            moveInput.sqrMagnitude > 0.01f
+                ? acceleration
+                : deceleration;
+
+        currentSpeed = Mathf.MoveTowards(
+            currentSpeed,
+            targetSpeed,
+            accelerationRate * Time.deltaTime
+        );
+
+        AnimationSpeed =
+            moveSpeed > 0f
+                ? currentSpeed / (moveSpeed * sprintMultiplier)
+                : 0f;
     }
 
-    //==================================================================================//
-    void CheckGround()
+
+    //========================================================//
+    // GROUND
+    //========================================================//
+
+    private void UpdateGrounded()
     {
-        Vector3 checkPosition = transform.position + controller.center - Vector3.up * (controller.height * 0.5f);
+        Vector3 checkPosition =
+            transform.position +
+            ctx.controller.center -
+            Vector3.up * (ctx.controller.height * 0.5f);
 
-        isGrounded = Physics.CheckSphere(checkPosition,groundDistance,groundMask);
+        bool grounded =
+            Physics.CheckSphere(
+                checkPosition,
+                groundDistance,
+                groundMask
+            );
 
-        groundedTimer = isGrounded ? groundedGraceTime : groundedTimer - Time.deltaTime;
+        groundedTimer =
+            grounded
+                ? groundedGraceTime
+                : groundedTimer - Time.deltaTime;
 
-        if (groundedTimer > 0f && velocity.y < 0) velocity.y = -2f;
+        if (IsGrounded && velocity.y < 0f)
+            velocity.y = -2f;
     }
 
-    //==================================================================================//
-    void Jump()
+
+    //========================================================//
+    // JUMP
+    //========================================================//
+
+    private void UpdateJump()
     {
-        if (!jumpPressed || !isGrounded)
+        if (!jumpPressed || !IsGrounded)
             return;
 
         jumpPressed = false;
 
-        velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+        velocity.y =
+            Mathf.Sqrt(
+                jumpHeight * -2f * gravity
+            );
     }
 
-    //==================================================================================//
-    void Gravity()
+
+    //========================================================//
+    // GRAVITY
+    //========================================================//
+
+    private void UpdateGravity()
     {
-        if (velocity.y < 0)
-            velocity.y += gravity * fallMultiplier * Time.deltaTime;
-        else
-            velocity.y += gravity * Time.deltaTime;
+        float gravityMultiplier =
+            velocity.y < 0f
+                ? fallMultiplier
+                : 1f;
 
-        controller.Move(velocity * Time.deltaTime);
+        velocity.y +=
+            gravity *
+            gravityMultiplier *
+            Time.deltaTime;
     }
 
-    //==================================================================================//
-    void Crouch()
+
+    //========================================================//
+    // PUBLIC API
+    //========================================================//
+
+    public void SetCameraTransform(Transform camera)
     {
-        float targetHeight = isCrouching ? crouchHeight : standHeight;
+        cameraTransform = camera;
     }
 
-    //==================================================================================//
+
     public void SetMoveInput(Vector2 input)
     {
         moveInput = input;
     }
+
 
     public void SetJump(bool value)
     {
@@ -201,26 +250,56 @@ public class PlayerMovement : NetworkBehaviour, IDeathMovement
             jumpPressed = true;
     }
 
+
     public void SetSprint(bool value)
     {
         sprintHeld = value;
     }
+
 
     public void SetCrouch(bool value)
     {
         isCrouching = value;
     }
 
-    //==================================================================================//
 
-    void OnDrawGizmosSelected()
+    public void SetMovementLocked(bool locked)
     {
-        CharacterController cc = GetComponent<CharacterController>();
+        IsMovementLocked = locked;
 
-        Vector3 checkPosition = transform.position + cc.center - Vector3.up * (cc.height * 0.5f);
+        if (locked)
+        {
+            moveInput = Vector2.zero;
+            currentSpeed = 0f;
+        }
+    }
 
-        Gizmos.color = isGrounded ? Color.green : Color.red;
 
-        Gizmos.DrawWireSphere(checkPosition,groundDistance);
+    //========================================================//
+    // DEBUG
+    //========================================================//
+
+    private void OnDrawGizmosSelected()
+    {
+        CharacterController cc =
+            GetComponent<CharacterController>();
+
+        if (cc == null)
+            return;
+
+        Vector3 checkPosition =
+            transform.position +
+            cc.center -
+            Vector3.up * (cc.height * 0.5f);
+
+        Gizmos.color =
+            IsGrounded
+                ? Color.green
+                : Color.red;
+
+        Gizmos.DrawWireSphere(
+            checkPosition,
+            groundDistance
+        );
     }
 }

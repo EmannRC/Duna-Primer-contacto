@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Nature Essence
   m_EditorClassIdentifier: Assembly-CSharp::Item
   itemName: Esencia natural
-  itemId: Ingredient_Essence_Nature
+  itemId: Ingredient_essence_nature
   icon: {fileID: 0}
   iconColor: {r: 1, g: 1, b: 1, a: 1}
   isStackable: 1

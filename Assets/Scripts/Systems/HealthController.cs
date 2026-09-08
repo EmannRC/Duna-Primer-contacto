@@ -2,10 +2,10 @@ using System;
 using Unity.Netcode;
 using UnityEngine;
 
-public class HealthController : NetworkBehaviour, IDeathSource
+public class HealthController : NetworkBehaviour
 {
     [Header("Vida")]
-    public float maxHealth = 100f;
+    [SerializeField] private float maxHealth = 100f;
 
     public NetworkVariable<float> CurrentHealth =
         new NetworkVariable<float>(
@@ -21,33 +21,38 @@ public class HealthController : NetworkBehaviour, IDeathSource
             NetworkVariableWritePermission.Server
         );
 
-    public NetworkVariable<int> DeathTrigger =
-        new NetworkVariable<int>(
-            0,
-            NetworkVariableReadPermission.Everyone,
-            NetworkVariableWritePermission.Server
-        );
-
-    public float HealthPercent => CurrentHealth.Value / maxHealth;
+    public float HealthPercent =>
+        maxHealth > 0f ? CurrentHealth.Value / maxHealth : 0f;
 
     public event Action OnDeath;
-
     public event Action<float, float> OnHealthChanged;
 
+    private DeathController deathController;
 
+
+    //==============================================================//
+    // SPAWN
     //==============================================================//
 
     public override void OnNetworkSpawn()
     {
+        deathController = GetComponent<DeathController>();
+
         if (IsServer)
-        {
             CurrentHealth.Value = maxHealth;
-        }
 
         CurrentHealth.OnValueChanged += OnHealthValueChanged;
     }
 
 
+    public override void OnNetworkDespawn()
+    {
+        CurrentHealth.OnValueChanged -= OnHealthValueChanged;
+    }
+
+
+    //==============================================================//
+    // HEALTH
     //==============================================================//
 
     private void OnHealthValueChanged(float previous, float current)
@@ -56,42 +61,45 @@ public class HealthController : NetworkBehaviour, IDeathSource
     }
 
 
-    //==============================================================//
-
     public void TakeDamage(float amount)
     {
         if (!IsServer || IsDead.Value)
             return;
 
-        CurrentHealth.Value -= amount;
-        CurrentHealth.Value = Mathf.Max(CurrentHealth.Value, 0);
+        CurrentHealth.Value = Mathf.Max(
+            CurrentHealth.Value - amount,
+            0f
+        );
 
-        if (CurrentHealth.Value <= 0)
+        if (CurrentHealth.Value <= 0f)
             Die();
     }
 
-
-    //==============================================================//
 
     public void Heal(float amount)
     {
         if (!IsServer || IsDead.Value)
             return;
 
-        CurrentHealth.Value += amount;
-        CurrentHealth.Value = Mathf.Min(CurrentHealth.Value, maxHealth);
+        CurrentHealth.Value = Mathf.Min(
+            CurrentHealth.Value + amount,
+            maxHealth
+        );
     }
 
 
     //==============================================================//
+    // DEATH
+    //==============================================================//
 
     public virtual void Die()
     {
-        if (IsDead.Value)
+        if (!IsServer || IsDead.Value)
             return;
 
         IsDead.Value = true;
-        DeathTrigger.Value++;
+
+        deathController?.HandleDeath();
 
         OnDeath?.Invoke();
     }

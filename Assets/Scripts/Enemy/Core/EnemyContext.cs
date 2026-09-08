@@ -5,6 +5,8 @@ public class EnemyContext : MonoBehaviour
     [Header("Core")]
     public EnemyStats stats;
     public EnemyHealth health;
+
+    [Header("Movement")]
     public GroundEnemyMovement groundMovement;
     public FlyingEnemyMovement flyingMovement;
     public EnemyMovementBase movement { get; private set; }
@@ -15,7 +17,7 @@ public class EnemyContext : MonoBehaviour
     public EnemyFormation formation;
 
     public Animator animator;
-    public EnemyAnimationSync animationSync;
+    public EnemyAnimation enemyAnimation;
 
     private void Awake()
     {
@@ -27,7 +29,7 @@ public class EnemyContext : MonoBehaviour
         targeting = GetComponent<EnemyTargeting>();
         formation = GetComponent<EnemyFormation>();
         stats = GetComponent<EnemyStats>();
-        animationSync = GetComponent<EnemyAnimationSync>();
+        enemyAnimation = GetComponent<EnemyAnimation>();
         movement = GetComponent<EnemyMovementBase>();
     }
 }

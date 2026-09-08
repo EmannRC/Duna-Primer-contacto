@@ -45,7 +45,6 @@ GameObject:
   - component: {fileID: 7646577446763397831}
   - component: {fileID: 2672155966052293101}
   - component: {fileID: 6203022585917907852}
-  - component: {fileID: 8594678103689615150}
   - component: {fileID: 1539724883744062499}
   - component: {fileID: 6613548246444193388}
   - component: {fileID: -4718539445787199061}
@@ -99,7 +98,7 @@ MonoBehaviour:
   targeting: {fileID: 1539724883744062499}
   formation: {fileID: 0}
   animator: {fileID: 3067703616717758424}
-  animationSync: {fileID: 8594678103689615150}
+  enemyAnimation: {fileID: 689373478056824336}
 --- !u!114 &475998959779334991
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -112,7 +111,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2091079953
+  GlobalObjectIdHash: 1855574444
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -214,45 +213,6 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   moveSpeed: 3
   stoppingDistance: 1.6
---- !u!114 &8594678103689615150
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5029188010892583067}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a88635ab157eae438348bfe37012cf8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyAnimationSync
-  ShowTopMostFoldoutHeaderGroup: 1
-  animator: {fileID: 3067703616717758424}
-  VelX:
-    UpdateTraits:
-      MinSecondsBetweenUpdates: 0
-      MaxSecondsBetweenUpdates: 0
-    m_InternalValue: 0
-  VelY:
-    UpdateTraits:
-      MinSecondsBetweenUpdates: 0
-      MaxSecondsBetweenUpdates: 0
-    m_InternalValue: 0
-  AttackCounter:
-    UpdateTraits:
-      MinSecondsBetweenUpdates: 0
-      MaxSecondsBetweenUpdates: 0
-    m_InternalValue: 0
-  SpecialAttackCounter:
-    UpdateTraits:
-      MinSecondsBetweenUpdates: 0
-      MaxSecondsBetweenUpdates: 0
-    m_InternalValue: 0
-  Dead:
-    UpdateTraits:
-      MinSecondsBetweenUpdates: 0
-      MaxSecondsBetweenUpdates: 0
-    m_InternalValue: 0
 --- !u!114 &1539724883744062499
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -395,6 +355,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb8f1c237a7fe324ab25f267e83dd916, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DeathController
+  entityType: 1
   disableMovement: 1
   destroyOnDeath: 1
   destroyDelay: 3
@@ -666,13 +627,91 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8feb316f2f9ddc34f85dcbc916c7f189, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5563836518553769350}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8feb316f2f9ddc34f85dcbc916c7f189, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 689373478056824336}
   m_SourcePrefab: {fileID: 100100000, guid: 8feb316f2f9ddc34f85dcbc916c7f189, type: 3}
 --- !u!95 &3067703616717758424 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 8feb316f2f9ddc34f85dcbc916c7f189, type: 3}
   m_PrefabInstance: {fileID: 8932953110278840905}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &8590986100949458712 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 8feb316f2f9ddc34f85dcbc916c7f189, type: 3}
+  m_PrefabInstance: {fileID: 8932953110278840905}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5563836518553769350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8590986100949458712}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkAnimator
+  ShowTopMostFoldoutHeaderGroup: 1
+  NetworkAnimatorExpanded: 0
+  AuthorityMode: 1
+  m_Animator: {fileID: 3067703616717758424}
+  TransitionStateInfoList:
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: -1890439121
+    DestinationState: 1080829965
+    TransitionDuration: 0.1
+    TriggerNameHash: 1080829965
+    TransitionIndex: 0
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: -1890439121
+    DestinationState: 1886386442
+    TransitionDuration: 0.25
+    TriggerNameHash: -2045864598
+    TransitionIndex: 1
+  AnimatorParameterEntries:
+    ParameterEntries:
+    - name: VelX
+      NameHash: 767982532
+      Synchronize: 1
+      ParameterType: 1
+    - name: VelY
+      NameHash: 1522617170
+      Synchronize: 1
+      ParameterType: 1
+    - name: Attack
+      NameHash: 1080829965
+      Synchronize: 1
+      ParameterType: 9
+    - name: JumpAttack
+      NameHash: -2045864598
+      Synchronize: 1
+      ParameterType: 9
+    - name: Death
+      NameHash: 646380074
+      Synchronize: 1
+      ParameterType: 9
+  AnimatorParametersExpanded: 0
+--- !u!114 &689373478056824336
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8590986100949458712}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a88635ab157eae438348bfe37012cf8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAnimation
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!4 &8967371624040449442 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8feb316f2f9ddc34f85dcbc916c7f189, type: 3}

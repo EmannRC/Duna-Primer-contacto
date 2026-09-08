@@ -61,10 +61,10 @@ public class EnemyMeleeCombat : NetworkBehaviour
         isAttacking = true;
 
         // Animación
-        if (ctx.animationSync != null &&
+        if (ctx.enemyAnimation != null &&
             ctx.animator != null)
         {
-            ctx.animationSync.NotifyAttack();
+            ctx.enemyAnimation.NotifyAttack();
 
             yield return null;
 

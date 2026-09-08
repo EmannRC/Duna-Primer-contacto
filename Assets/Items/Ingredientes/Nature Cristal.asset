@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Nature Cristal
   m_EditorClassIdentifier: Assembly-CSharp::Item
   itemName: Cristal de la naturaleza
-  itemId: Ingredient_Cristal_Nature
+  itemId: Ingredient_cristal_nature
   icon: {fileID: 0}
   iconColor: {r: 1, g: 1, b: 1, a: 1}
   isStackable: 1

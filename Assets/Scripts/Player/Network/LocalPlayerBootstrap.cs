@@ -14,6 +14,7 @@ public class LocalPlayerBootstrap : MonoBehaviour
     [SerializeField] private InventoryUI inventoryUI;
     [SerializeField] private CraftingUI craftingUI;
     [SerializeField] private Transform crosshair;
+    [SerializeField] private CrosshairUI crosshairUI;
     [SerializeField] private QuestTrackerUI questTrackerUI;
 
     //==========================================================//
@@ -143,8 +144,11 @@ public class LocalPlayerBootstrap : MonoBehaviour
         // CROSSHAIR
         //=========================
 
-        ctx.crosshair =
-            crosshair;
+        ctx.crosshair = crosshair;
+
+        crosshairUI.Bind(
+            ctx.targeting
+        );
 
         //=========================
         // NPC Marker

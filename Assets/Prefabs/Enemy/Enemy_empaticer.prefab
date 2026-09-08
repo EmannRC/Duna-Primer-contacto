@@ -20,6 +20,7 @@ GameObject:
   - component: {fileID: -8699905865848186037}
   - component: {fileID: 7262840521071300179}
   - component: {fileID: 6917441693510559875}
+  - component: {fileID: 2700027427703104316}
   m_Layer: 6
   m_Name: Enemy_empaticer
   m_TagString: Untagged
@@ -65,7 +66,7 @@ MonoBehaviour:
   targeting: {fileID: 7427699400512991140}
   formation: {fileID: -8699905865848186037}
   animator: {fileID: 0}
-  animationSync: {fileID: 0}
+  enemyAnimation: {fileID: 0}
 --- !u!114 &6767598305794059104
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -78,7 +79,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 395922573
+  GlobalObjectIdHash: 28130089
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -171,7 +172,7 @@ MonoBehaviour:
   stoppingDistance: 8
   rotationSpeed: 8
   hoverHeight: 2
-  heightLerpSpeed: 5
+  heightAdjustSpeed: 5
   groundCheckDistance: 20
   groundMask:
     serializedVersion: 2
@@ -282,6 +283,23 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 4.683297, y: 1.7997526, z: 1.5862119}
   m_Center: {x: 0.014106274, y: 0.20782512, z: -0.04564631}
+--- !u!114 &2700027427703104316
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 872235789278910150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb8f1c237a7fe324ab25f267e83dd916, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeathController
+  entityType: 1
+  disableMovement: 1
+  destroyOnDeath: 1
+  destroyDelay: 3
+  deathSound: {fileID: 0}
 --- !u!1 &1228761646124821382
 GameObject:
   m_ObjectHideFlags: 0

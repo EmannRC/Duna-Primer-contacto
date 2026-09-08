@@ -96,9 +96,9 @@ public class EnforcerSpecialAttack : NetworkBehaviour
         LookAtPosition(landingPosition);
 
         // Reproducir animación
-        if (ctx.animationSync != null)
+        if (ctx.enemyAnimation != null)
         {
-            ctx.animationSync.NotifySpecialAttack();
+            ctx.enemyAnimation.NotifySpecialAttack();
         }
 
         // Esperamos que termine la animación

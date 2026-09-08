@@ -453,13 +453,13 @@ MonoBehaviour:
   interaction: {fileID: 274392466181950171}
   questManager: {fileID: 6275100301816433050}
   health: {fileID: 956493243176364785}
+  controller: {fileID: 4840403731964879118}
   movement: {fileID: 1095138380536831322}
   rotation: {fileID: 2593140643872428480}
-  playerAnimation: {fileID: 2072143865546649737}
   combat: {fileID: 2876172698948846332}
   shooter: {fileID: 2617802286818798865}
   animator: {fileID: 2934712776436334263}
-  animationSync: {fileID: 3928446638817122423}
+  playerAnimation: {fileID: 2072143865546649737}
   crosshair: {fileID: 0}
   craftingUI: {fileID: 0}
   mainCamera: {fileID: 0}
@@ -481,7 +481,7 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 1.75
+  m_Height: 1.7
   m_Radius: 0.22
   m_SlopeLimit: 45
   m_StepOffset: 0.3
@@ -500,7 +500,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1908905261
+  GlobalObjectIdHash: 428777726
   InScenePlacedSourceGlobalObjectIdHash: 3680711321
   DeferredDespawnTick: 0
   Ownership: 1
@@ -527,12 +527,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TPCharacterController
   ShowTopMostFoldoutHeaderGroup: 1
   sprintMultiplier: 4
-  jumpHeight: 1.7
   acceleration: 12
   deceleration: 16
+  jumpHeight: 1.7
   gravity: -9.81
   fallMultiplier: 2.5
-  groundCheck: {fileID: 5652147229613945445}
   groundDistance: 0.15
   groundMask:
     serializedVersion: 2
@@ -540,7 +539,6 @@ MonoBehaviour:
   groundedGraceTime: 0.1
   crouchHeight: 1.3
   crouchSpeed: 1
-  isGrounded: 0
 --- !u!114 &2593140643872428480
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -613,7 +611,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
   ShowTopMostFoldoutHeaderGroup: 1
-  maxHealth: 5000
+  maxHealth: 100
   CurrentHealth:
     UpdateTraits:
       MinSecondsBetweenUpdates: 0
@@ -641,6 +639,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb8f1c237a7fe324ab25f267e83dd916, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DeathController
+  entityType: 0
   disableMovement: 1
   destroyOnDeath: 1
   destroyDelay: 3
@@ -677,9 +676,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.2371378
-  m_Height: 1.8155394
+  m_Height: 1.6991448
   m_Direction: 1
-  m_Center: {x: -0.0014448166, y: -0.0124435425, z: 0}
+  m_Center: {x: -0.0014448166, y: 0.0073292255, z: 0}
 --- !u!114 &3829707799618151525
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3055,10 +3054,10 @@ PrefabInstance:
       addedObject: {fileID: 2072143865546649737}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 976ed106e0ee220499c45ed158a43251, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 3928446638817122423}
+      addedObject: {fileID: 2876172698948846332}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 976ed106e0ee220499c45ed158a43251, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2876172698948846332}
+      addedObject: {fileID: 752104466709230402}
   m_SourcePrefab: {fileID: 100100000, guid: 976ed106e0ee220499c45ed158a43251, type: 3}
 --- !u!95 &2934712776436334263 stripped
 Animator:
@@ -3087,59 +3086,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04b1ed6d9dcc26945a4d48097b2761e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimation
---- !u!114 &3928446638817122423
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8435749804554075767}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f81addb9be167f943a9763771c48a6ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimationSync
   ShowTopMostFoldoutHeaderGroup: 1
-  Speed:
-    UpdateTraits:
-      MinSecondsBetweenUpdates: 0
-      MaxSecondsBetweenUpdates: 0
-    m_InternalValue: 0
-  VelX:
-    UpdateTraits:
-      MinSecondsBetweenUpdates: 0
-      MaxSecondsBetweenUpdates: 0
-    m_InternalValue: 0
-  VelY:
-    UpdateTraits:
-      MinSecondsBetweenUpdates: 0
-      MaxSecondsBetweenUpdates: 0
-    m_InternalValue: 0
-  Grounded:
-    UpdateTraits:
-      MinSecondsBetweenUpdates: 0
-      MaxSecondsBetweenUpdates: 0
-    m_InternalValue: 0
-  Vertical:
-    UpdateTraits:
-      MinSecondsBetweenUpdates: 0
-      MaxSecondsBetweenUpdates: 0
-    m_InternalValue: 0
-  Crouching:
-    UpdateTraits:
-      MinSecondsBetweenUpdates: 0
-      MaxSecondsBetweenUpdates: 0
-    m_InternalValue: 0
-  Dead:
-    UpdateTraits:
-      MinSecondsBetweenUpdates: 0
-      MaxSecondsBetweenUpdates: 0
-    m_InternalValue: 0
-  ShootCounter:
-    UpdateTraits:
-      MinSecondsBetweenUpdates: 0
-      MaxSecondsBetweenUpdates: 0
-    m_InternalValue: 0
 --- !u!114 &2876172698948846332
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3153,6 +3100,81 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCombat
   requireAimToShoot: 1
+--- !u!114 &752104466709230402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8435749804554075767}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkAnimator
+  ShowTopMostFoldoutHeaderGroup: 1
+  NetworkAnimatorExpanded: 0
+  AuthorityMode: 1
+  m_Animator: {fileID: 2934712776436334263}
+  TransitionStateInfoList:
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: -1890439121
+    DestinationState: 1877016939
+    TransitionDuration: 0.1
+    TriggerNameHash: -1316629574
+    TransitionIndex: 4
+  AnimatorParameterEntries:
+    ParameterEntries:
+    - name: VelX
+      NameHash: 767982532
+      Synchronize: 1
+      ParameterType: 1
+    - name: VelY
+      NameHash: 1522617170
+      Synchronize: 1
+      ParameterType: 1
+    - name: IsGrounded
+      NameHash: 507951781
+      Synchronize: 1
+      ParameterType: 4
+    - name: Jump
+      NameHash: 125937960
+      Synchronize: 1
+      ParameterType: 9
+    - name: Speed
+      NameHash: -823668238
+      Synchronize: 1
+      ParameterType: 1
+    - name: VelocityY
+      NameHash: -303020060
+      Synchronize: 1
+      ParameterType: 1
+    - name: Death
+      NameHash: 646380074
+      Synchronize: 1
+      ParameterType: 9
+    - name: IsCrouching
+      NameHash: -1154928320
+      Synchronize: 1
+      ParameterType: 4
+    - name: IsJumping
+      NameHash: 1749078233
+      Synchronize: 1
+      ParameterType: 4
+    - name: IsFalling
+      NameHash: 268975031
+      Synchronize: 1
+      ParameterType: 4
+    - name: IsMoving
+      NameHash: 120489994
+      Synchronize: 1
+      ParameterType: 4
+    - name: Shoot
+      NameHash: -1316629574
+      Synchronize: 1
+      ParameterType: 9
+  AnimatorParametersExpanded: 0
 --- !u!4 &9104621947051074765 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 976ed106e0ee220499c45ed158a43251, type: 3}

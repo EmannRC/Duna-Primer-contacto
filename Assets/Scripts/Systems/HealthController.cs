@@ -103,4 +103,16 @@ public class HealthController : NetworkBehaviour
 
         OnDeath?.Invoke();
     }
+
+    //==============================================================//
+    // RESET
+    //==============================================================//
+    public void ResetHealth()
+    {
+        if (!IsServer)
+            return;
+
+        CurrentHealth.Value = maxHealth;
+        IsDead.Value = false;
+    }
 }

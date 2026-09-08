@@ -1,7 +1,7 @@
 using Unity.Netcode;
 using UnityEngine;
 
-public class EnemyAnimation : NetworkBehaviour, IDeathAnimation
+public class EnemyAnimation : NetworkBehaviour
 {
     private EnemyContext ctx;
 

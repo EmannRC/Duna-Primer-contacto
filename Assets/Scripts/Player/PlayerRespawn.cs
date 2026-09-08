@@ -4,20 +4,93 @@ using UnityEngine;
 
 public class PlayerRespawn : NetworkBehaviour
 {
-    public void RequestRestart()
+    private PlayerContext ctx;
+
+
+    //========================================================//
+    // AWAKE
+    //========================================================//
+
+    private void Awake()
     {
-        if (IsOwner)
-            RestartServerRpc();
+        ctx = GetComponent<PlayerContext>();
     }
 
-    [ServerRpc]
-    private void RestartServerRpc()
-    {
-        var spawner = FindFirstObjectByType<PlayerSpawner>();
 
-        if (spawner != null)
+    //========================================================//
+    // REQUEST
+    //========================================================//
+
+    public void RequestRestart()
+    {
+        if (!IsOwner)
+            return;
+
+        RestartServerRpc();
+    }
+
+
+    //========================================================//
+    // SERVER
+    //========================================================//
+
+    [ServerRpc]
+    private void RestartServerRpc(ServerRpcParams rpcParams = default)
+    {
+        // Seguridad: asegurarnos de que la petición
+        // viene del propietario de este Player.
+        if (rpcParams.Receive.SenderClientId != OwnerClientId)
+            return;
+
+        if (ctx == null || ctx.health == null)
+            return;
+
+        if (!ctx.health.IsDead.Value)
+            return;
+
+        PlayerSpawner spawner =
+            FindFirstObjectByType<PlayerSpawner>();
+
+        if (spawner == null)
         {
-            //spawner.RespawnPlayer(OwnerClientId);
+            Debug.LogError(
+                "PlayerRespawn: No se encontró PlayerSpawner."
+            );
+
+            return;
         }
+
+        // Reposicionar.
+        spawner.RespawnPlayer(OwnerClientId);
+
+        // Restaurar vida.
+        ctx.health.ResetHealth();
+
+        // Avisar al jugador propietario.
+        RespawnClientRpc();
+    }
+
+
+    //========================================================//
+    // CLIENT
+    //========================================================//
+
+    [ClientRpc]
+    private void RespawnClientRpc(
+        ClientRpcParams clientRpcParams = default)
+    {
+        if (!IsOwner)
+            return;
+
+        if (ctx == null)
+            return;
+
+        // Desbloquear movimiento.
+        if (ctx.movement != null)
+            ctx.movement.SetMovementLocked(false);
+
+        // Restaurar estado de ataque.
+        if (ctx.combat != null)
+            ctx.combat.EndAttack();
     }
 }

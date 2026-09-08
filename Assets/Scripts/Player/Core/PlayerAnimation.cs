@@ -3,7 +3,7 @@ using Unity.Netcode;
 using UnityEngine;
 
 
-public class PlayerAnimation : NetworkBehaviour, IDeathAnimation
+public class PlayerAnimation : NetworkBehaviour
 {
     private PlayerContext ctx;
 

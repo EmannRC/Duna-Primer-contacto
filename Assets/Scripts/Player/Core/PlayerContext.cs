@@ -10,7 +10,7 @@ public class PlayerContext : MonoBehaviour
     public PlayerMana mana;
     public PlayerEquipment equipment;
     public Inventory inventory;
-    public PlayerActions actions;
+    public PlayerItemActions actions;
     public PlayerCrafting crafting;
     public TargetingSystem targeting;
     public PlayerInputEvents inputEvents;

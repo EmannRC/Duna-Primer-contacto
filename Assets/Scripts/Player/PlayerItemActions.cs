@@ -1,24 +1,29 @@
 using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerActions : NetworkBehaviour
+public class PlayerItemActions : NetworkBehaviour
 {
-    [SerializeField] private Inventory inventory;
+    private PlayerContext ctx;
 
     //====================================================//
+    private void Awake()
+    {
+        ctx = GetComponentInParent<PlayerContext>();
+    }
+
     //====================================================//
     [ServerRpc]
     public void RequestConsumeItemServerRpc(string itemId)
     {
         if (!IsServer) return;
 
-        Item item = inventory.itemDatabase.GetByItemId(itemId);
+        Item item = ctx.inventory.itemDatabase.GetByItemId(itemId);
         if (item == null) return;
 
-        if (!inventory.HasItem(itemId, 1)) return;
+        if (!ctx.inventory.HasItem(itemId, 1)) return;
 
         item.Consume(gameObject);
-        inventory.RemoveItem(itemId, 1);
+        ctx.inventory.RemoveItem(itemId, 1);
     }
 
     //====================================================//
@@ -27,12 +32,12 @@ public class PlayerActions : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        Item item = inventory.itemDatabase.GetByItemId(itemId);
+        Item item = ctx.inventory.itemDatabase.GetByItemId(itemId);
         if (item == null) return;
 
-        if (!inventory.HasItem(itemId, 1)) return;
+        if (!ctx.inventory.HasItem(itemId, 1)) return;
 
-        inventory.RemoveItem(itemId, 1);
+        ctx.inventory.RemoveItem(itemId, 1);
 
         SpawnDrop(item);
     }

@@ -4,21 +4,22 @@ using UnityEngine;
 public class PlayerStatsManager : MonoBehaviour
 {
     public float basePower = 10;
-    public float baseMoveSpeed = 5;
+    public float baseMoveSpeed = 1;
     public float baseMana = 100;
-    public float baseAttackSpeed = 0f;
+    public float baseAttackSpeed = 1f;
 
     private Dictionary<StatType, float> finalStats = new();
 
     private List<StatModifier> runeModifiers = new();
 
-    public PlayerContext ctx;
+    private PlayerContext ctx;
 
     public System.Action OnStatsChanged;
 
     private void Awake()
     {
-        ctx = GetComponentInParent<PlayerContext>();
+        ctx = GetComponent<PlayerContext>();
+
         RecalculateStats();
     }
 

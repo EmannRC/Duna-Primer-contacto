@@ -3088,7 +3088,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &306265537
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -12530,6 +12530,8 @@ MonoBehaviour:
   crosshair: {fileID: 1792941251}
   crosshairUI: {fileID: 1542059370}
   questTrackerUI: {fileID: 1146174690}
+  deathMenu: {fileID: 356504717}
+  menuButtonUI: {fileID: 326182205}
 --- !u!1 &1273742623
 GameObject:
   m_ObjectHideFlags: 0

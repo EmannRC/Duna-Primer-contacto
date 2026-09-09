@@ -16,6 +16,8 @@ public class LocalPlayerBootstrap : MonoBehaviour
     [SerializeField] private Transform crosshair;
     [SerializeField] private CrosshairUI crosshairUI;
     [SerializeField] private QuestTrackerUI questTrackerUI;
+    [SerializeField] private UI_Manager deathMenu;
+    [SerializeField] private MenuButtonUI menuButtonUI;
 
     //==========================================================//
     private void Awake()
@@ -139,6 +141,13 @@ public class LocalPlayerBootstrap : MonoBehaviour
             questManager
         );
 
+        PlayerRespawn playerRespawn = playerRoot.GetComponent<PlayerRespawn>();
+
+        if (playerRespawn != null)
+        {
+            menuButtonUI.Bind(playerRespawn);
+        }
+
 
         //=========================
         // CROSSHAIR
@@ -163,6 +172,12 @@ public class LocalPlayerBootstrap : MonoBehaviour
         {
             marker.Initialize(questManager);
         }
+    }
+
+    public void ShowDeathMenu()
+    {
+        if (deathMenu != null)
+            deathMenu.ShowDefeatMenu();
     }
 
 }

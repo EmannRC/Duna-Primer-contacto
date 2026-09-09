@@ -5,12 +5,16 @@ using System.Collections;
 
 public class PlayerNetworkSetup : NetworkBehaviour
 {
-    [SerializeField] private UnityEngine.InputSystem.PlayerInput playerInput;
+    private PlayerInput playerInput;
+
+    private void Awake()
+    {
+        playerInput = GetComponent<PlayerInput>();
+    }
 
     public override void OnNetworkSpawn()
     {
-        Debug.Log(
-        $"Player Spawned | Scene: {gameObject.scene.name} | Pos: {transform.position}");
+        Debug.Log($"Player Spawned | Scene: {gameObject.scene.name} | Pos: {transform.position}");
 
         if (!IsOwner)
         {

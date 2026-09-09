@@ -46,6 +46,7 @@ public class DeathController : NetworkBehaviour
 
     public void HandleDeath()
     {
+        // La muerte siempre la controla el servidor.
         if (!IsServer)
             return;
 
@@ -55,15 +56,26 @@ public class DeathController : NetworkBehaviour
         deathHandled = true;
 
         if (entityType == EntityType.Player)
+        {
             HandlePlayerDeath();
+        }
         else
+        {
             HandleEnemyDeath();
+        }
 
+        // El sonido puede ejecutarse en el servidor,
+        // aunque si quieres que todos lo escuchen habrá
+        // que sincronizarlo posteriormente.
         if (deathSound != null)
             deathSound.Play();
 
-        if (destroyOnDeath)
+        // Los Players NO se destruyen.
+        // Los enemigos sí pueden destruirse.
+        if (destroyOnDeath && entityType == EntityType.Enemy)
+        {
             Destroy(gameObject, destroyDelay);
+        }
     }
 
 
@@ -76,10 +88,37 @@ public class DeathController : NetworkBehaviour
         if (playerCtx == null)
             return;
 
+        // El Player tiene NetworkAnimator con autoridad del Owner,
+        // por lo tanto el servidor avisa al propietario.
+        ShowPlayerDeathClientRpc();
+    }
+
+
+    //========================================================//
+    // PLAYER CLIENT
+    //========================================================//
+
+    [ClientRpc]
+    private void ShowPlayerDeathClientRpc()
+    {
+        // Solo el jugador que murió ejecuta esto.
+        if (!IsOwner)
+            return;
+
+        if (playerCtx == null)
+            return;
+
+        // Bloquear movimiento.
         if (disableMovement && playerCtx.movement != null)
             playerCtx.movement.SetMovementLocked(true);
 
-        playerCtx.playerAnimation.PlayDeathAnimation();
+        // Animación de muerte.
+        if (playerCtx.playerAnimation != null)
+            playerCtx.playerAnimation.PlayDeathAnimation();
+
+        // Mostrar menú de muerte.
+        if (LocalPlayerBootstrap.Instance != null)
+            LocalPlayerBootstrap.Instance.ShowDeathMenu();
     }
 
 
@@ -92,9 +131,25 @@ public class DeathController : NetworkBehaviour
         if (enemyCtx == null)
             return;
 
+        // Los enemigos tienen NetworkAnimator con autoridad
+        // del servidor, así que podemos ejecutar directamente.
         if (disableMovement && enemyCtx.movement != null)
             enemyCtx.movement.SetMovementLocked(true);
 
-        enemyCtx.enemyAnimation.PlayDeathAnimation();
+        if (enemyCtx.enemyAnimation != null)
+            enemyCtx.enemyAnimation.PlayDeathAnimation();
+    }
+
+
+    //========================================================//
+    // RESET
+    //========================================================//
+
+    public void ResetDeathState()
+    {
+        if (!IsServer)
+            return;
+
+        deathHandled = false;
     }
 }

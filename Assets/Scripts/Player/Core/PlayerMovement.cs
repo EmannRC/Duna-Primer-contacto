@@ -42,6 +42,7 @@ public class PlayerMovement : NetworkBehaviour
     private bool jumpPressed;
     private bool sprintHeld;
     private bool isCrouching;
+    private bool wasGrounded;
 
 
     public bool IsMovementLocked { get; private set; }
@@ -134,9 +135,12 @@ public class PlayerMovement : NetworkBehaviour
         float moveSpeed =
             ctx.stats.GetStat(StatType.MoveSpeed);
 
+        bool isMoving =
+            moveInput.sqrMagnitude > 0.01f;
+
         float targetSpeed = 0f;
 
-        if (!IsMovementLocked)
+        if (!IsMovementLocked && isMoving)
         {
             if (isCrouching)
                 targetSpeed = crouchSpeed;
@@ -147,7 +151,7 @@ public class PlayerMovement : NetworkBehaviour
         }
 
         float accelerationRate =
-            moveInput.sqrMagnitude > 0.01f
+            isMoving
                 ? acceleration
                 : deceleration;
 
@@ -164,10 +168,8 @@ public class PlayerMovement : NetworkBehaviour
     }
 
 
-    //========================================================//
+    
     // GROUND
-    //========================================================//
-
     private void UpdateGrounded()
     {
         Vector3 checkPosition =
@@ -187,8 +189,20 @@ public class PlayerMovement : NetworkBehaviour
                 ? groundedGraceTime
                 : groundedTimer - Time.deltaTime;
 
+
+        // LANDING
+        if (grounded && !wasGrounded && velocity.y < -1f)
+        {
+            currentSpeed *= 0.85f;
+        }
+
+
+        // VERTICAL
         if (IsGrounded && velocity.y < 0f)
             velocity.y = -2f;
+
+
+        wasGrounded = grounded;
     }
 
 

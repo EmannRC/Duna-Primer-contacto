@@ -148,11 +148,6 @@ MonoBehaviour:
       MinSecondsBetweenUpdates: 0
       MaxSecondsBetweenUpdates: 0
     m_InternalValue: 0
-  DeathTrigger:
-    UpdateTraits:
-      MinSecondsBetweenUpdates: 0
-      MaxSecondsBetweenUpdates: 0
-    m_InternalValue: 0
   reward: {fileID: 7680477722212220428}
   possibleDrops:
   - prefab: {fileID: 7657548515417732486, guid: ffade861ef406084eb10e9d260d4b171, type: 3}
@@ -355,6 +350,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb8f1c237a7fe324ab25f267e83dd916, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DeathController
+  ShowTopMostFoldoutHeaderGroup: 1
   entityType: 1
   disableMovement: 1
   destroyOnDeath: 1

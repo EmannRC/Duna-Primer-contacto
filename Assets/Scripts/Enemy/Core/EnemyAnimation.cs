@@ -23,7 +23,7 @@ public class EnemyAnimation : NetworkBehaviour
 
     private void Awake()
     {
-        ctx = GetComponent<EnemyContext>();
+        ctx = GetComponentInParent<EnemyContext>();
     }
 
 

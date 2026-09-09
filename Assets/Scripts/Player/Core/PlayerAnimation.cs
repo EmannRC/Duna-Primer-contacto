@@ -41,6 +41,9 @@ public class PlayerAnimation : NetworkBehaviour
     private static readonly int ShootHash =
         Animator.StringToHash("Shoot");
 
+    private static readonly int AttackAnimationSpeedHash =
+    Animator.StringToHash("AttackAnimationSpeed");
+
     private static readonly int DeathHash =
         Animator.StringToHash("Death");
 
@@ -67,7 +70,7 @@ public class PlayerAnimation : NetworkBehaviour
 
     //========================================================//
 
-    void UpdateLocomotion()
+    private void UpdateLocomotion()
     {
         Vector3 move = ctx.movement.MoveDirection;
 
@@ -89,6 +92,7 @@ public class PlayerAnimation : NetworkBehaviour
             0.15f,
             Time.deltaTime);
 
+
         float speed =
             ctx.movement.AnimationSpeed;
 
@@ -98,9 +102,13 @@ public class PlayerAnimation : NetworkBehaviour
             0.1f,
             Time.deltaTime);
 
+
+        bool isMoving =
+            move.sqrMagnitude > 0.01f;
+
         ctx.animator.SetBool(
             IsMovingHash,
-            speed > 0.1f);
+            isMoving);
     }
 
     //========================================================//
@@ -148,6 +156,17 @@ public class PlayerAnimation : NetworkBehaviour
         if (!IsOwner)
             return;
 
+        float attackSpeed =
+            ctx.stats.GetStat(StatType.AttackSpeed);
+
+        if (attackSpeed <= 0f)
+            attackSpeed = 0.1f;
+
+        ctx.animator.SetFloat(
+            AttackAnimationSpeedHash,
+            attackSpeed
+        );
+
         ctx.animator.SetTrigger(ShootHash);
     }
 
@@ -159,5 +178,15 @@ public class PlayerAnimation : NetworkBehaviour
         deathPlayed = true;
 
         ctx.animator.SetTrigger(DeathHash);
+    }
+
+    public void ResetDeathAnimation()
+    {
+        if (!IsOwner)
+            return;
+
+        deathPlayed = false;
+
+        ctx.animator.ResetTrigger(DeathHash);
     }
 }

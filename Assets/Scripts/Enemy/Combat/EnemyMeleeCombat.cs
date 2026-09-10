@@ -10,7 +10,7 @@ public class EnemyMeleeCombat : NetworkBehaviour
     [SerializeField] private float attackCooldown = 1f;
 
     private EnemyContext ctx;
-    private EnforcerSpecialAttack specialAttack;
+    //private EnforcerSpecialAttack specialAttack;
 
     private bool isAttacking;
     private float nextAttackTime;
@@ -21,11 +21,7 @@ public class EnemyMeleeCombat : NetworkBehaviour
 
     private void Awake()
     {
-        ctx =
-            GetComponent<EnemyContext>();
-
-        specialAttack =
-            GetComponent<EnforcerSpecialAttack>();
+        ctx = GetComponent<EnemyContext>();
     }
 
 
@@ -44,28 +40,21 @@ public class EnemyMeleeCombat : NetworkBehaviour
         if (Time.time < nextAttackTime)
             return;
 
-        // No atacar durante el ataque especial.
-        if (specialAttack != null &&
-            specialAttack.IsPerformingSpecialAttack)
-        {
-            return;
-        }
-
         Transform target =
             ctx.targeting.CurrentTarget;
 
         if (!IsValidTarget(target))
             return;
 
-        if (Vector3.Distance(
+        float distance =
+            Vector3.Distance(
                 transform.position,
-                target.position)
-            > attackRange)
-        {
-            return;
-        }
+                target.position);
 
-        StartAttack(target);
+        if (distance > attackRange)
+            return;
+
+        StartAttack();
     }
 
 
@@ -73,34 +62,24 @@ public class EnemyMeleeCombat : NetworkBehaviour
     // START ATTACK
     //========================================================//
 
-    private void StartAttack(
-        Transform target)
+    private void StartAttack()
     {
         isAttacking = true;
 
         nextAttackTime =
             Time.time + attackCooldown;
 
-        bool hasAnimation =
-            ctx.enemyAnimation != null &&
-            ctx.animator != null;
-
-        //====================================================//
-        // ENEMIGO CON ANIMACIÓN
-        //====================================================//
-
-        if (hasAnimation)
+        // Si tiene animación,
+        // esperamos al Animation Event.
+        if (ctx.enemyAnimation != null)
         {
             ctx.enemyAnimation.NotifyAttack();
-
             return;
         }
 
-        //====================================================//
-        // ENEMIGO SIN ANIMACIÓN
-        //====================================================//
-
-        DealDamage(target);
+        // Si no tiene animación,
+        // hacemos el daño inmediatamente.
+        DealDamage(ctx.targeting.CurrentTarget);
 
         isAttacking = false;
     }
@@ -118,25 +97,13 @@ public class EnemyMeleeCombat : NetworkBehaviour
         if (!isAttacking)
             return;
 
-        // Si empezó el ataque especial,
-        // cancelamos el ataque normal.
-        if (specialAttack != null &&
-            specialAttack.IsPerformingSpecialAttack)
-        {
-            isAttacking = false;
-            return;
-        }
-
         Transform target =
             ctx.targeting.CurrentTarget;
 
-        if (!IsValidTarget(target))
+        if (IsValidTarget(target))
         {
-            isAttacking = false;
-            return;
+            DealDamage(target);
         }
-
-        DealDamage(target);
 
         isAttacking = false;
     }
@@ -152,7 +119,7 @@ public class EnemyMeleeCombat : NetworkBehaviour
         if (target == null)
             return false;
 
-        if (!target.TryGetComponent(
+        if (!target.TryGetComponent<PlayerHealth>(
                 out PlayerHealth health))
         {
             return false;
@@ -178,13 +145,13 @@ public class EnemyMeleeCombat : NetworkBehaviour
         if (!IsValidTarget(target))
             return;
 
-        if (Vector3.Distance(
+        float distance =
+            Vector3.Distance(
                 transform.position,
-                target.position)
-            > attackRange)
-        {
+                target.position);
+
+        if (distance > attackRange)
             return;
-        }
 
         PlayerHealth health =
             target.GetComponent<PlayerHealth>();
@@ -213,7 +180,6 @@ public class EnemyMeleeCombat : NetworkBehaviour
 
         Gizmos.DrawWireSphere(
             transform.position,
-            attackRange
-        );
+            attackRange);
     }
 }

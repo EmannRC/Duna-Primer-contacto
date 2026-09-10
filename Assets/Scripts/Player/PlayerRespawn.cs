@@ -144,10 +144,7 @@ public class PlayerRespawn : NetworkBehaviour
     //========================================================//
 
     [Rpc(SendTo.Owner)]
-    private void RespawnOwnerRpc(
-        Vector3 position,
-        Quaternion rotation
-    )
+    private void RespawnOwnerRpc(Vector3 position, Quaternion rotation)
     {
         Debug.Log(
             $"[RESPAWN] Owner recibió respawn | " +
@@ -205,6 +202,14 @@ public class PlayerRespawn : NetworkBehaviour
             ctx.combat.EndAttack();
         }
 
+        //====================================================//
+        // REVIVE ANIMATION
+        //====================================================//
+
+        if (ctx.playerAnimation != null)
+        {
+            ctx.playerAnimation.PlayReviveAnimation();
+        }
 
         //====================================================//
         // HIDE DEATH MENU

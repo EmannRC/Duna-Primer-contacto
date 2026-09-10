@@ -29,7 +29,7 @@ public class EnemyContext : MonoBehaviour
         targeting = GetComponent<EnemyTargeting>();
         formation = GetComponent<EnemyFormation>();
         stats = GetComponent<EnemyStats>();
-        enemyAnimation = GetComponent<EnemyAnimation>();
+        enemyAnimation = GetComponentInChildren<EnemyAnimation>();
         movement = GetComponent<EnemyMovementBase>();
     }
 }

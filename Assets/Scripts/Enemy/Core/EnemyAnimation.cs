@@ -89,7 +89,7 @@ public class EnemyAnimation : NetworkBehaviour
         );
     }
 
-    public void StartAttack()
+    public void AnimationEventDealDamage()
     {
         ctx.meleeCombat.AnimationEventDealDamage();
     }

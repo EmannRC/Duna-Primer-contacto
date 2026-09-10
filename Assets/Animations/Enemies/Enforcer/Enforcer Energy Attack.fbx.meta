@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 80e84341b7be7514c9fc5d844e706c9e
+guid: 5e527ead534a152468db17c7dcf8c84b
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
@@ -31,11 +31,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: mixamo.com
+      name: Enforcer Energy Attack
       takeName: mixamo.com
       internalID: -203655887218126122
       firstFrame: 0
-      lastFrame: 72
+      lastFrame: 258
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

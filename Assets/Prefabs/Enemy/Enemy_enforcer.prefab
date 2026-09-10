@@ -45,8 +45,8 @@ GameObject:
   - component: {fileID: 7646577446763397831}
   - component: {fileID: 2672155966052293101}
   - component: {fileID: 6203022585917907852}
-  - component: {fileID: 1539724883744062499}
   - component: {fileID: 6613548246444193388}
+  - component: {fileID: 1539724883744062499}
   - component: {fileID: -4718539445787199061}
   - component: {fileID: 7680477722212220428}
   - component: {fileID: 9157681933946727567}
@@ -111,7 +111,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2091079953
+  GlobalObjectIdHash: 1855574444
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -208,20 +208,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   rotationSpeed: 8
   moveSpeed: 3.5
-  stoppingDistance: 1.6
---- !u!114 &1539724883744062499
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5029188010892583067}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df5dca852b89505419e2873a66d33522, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyTargeting
-  ShowTopMostFoldoutHeaderGroup: 1
+  stoppingDistance: 2.5
 --- !u!114 &6613548246444193388
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -236,10 +223,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyMeleeCombat
   ShowTopMostFoldoutHeaderGroup: 1
   damage: 20
-  attackRange: 1.6
-  animator: {fileID: 3067703616717758424}
-  attackStateName: Attack
-  animationWaitTime: 0.5
+  attackRange: 2.5
+  attackCooldown: 1
+--- !u!114 &1539724883744062499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5029188010892583067}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df5dca852b89505419e2873a66d33522, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyTargeting
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!114 &-4718539445787199061
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -662,16 +660,16 @@ MonoBehaviour:
   - IsCrossFadeExit: 0
     Layer: 0
     OriginatingState: -1890439121
-    DestinationState: 1080829965
-    TransitionDuration: 0.1
-    TriggerNameHash: 1080829965
+    DestinationState: 1886386442
+    TransitionDuration: 0.25
+    TriggerNameHash: -2045864598
     TransitionIndex: 0
   - IsCrossFadeExit: 0
     Layer: 0
     OriginatingState: -1890439121
-    DestinationState: 1886386442
-    TransitionDuration: 0.25
-    TriggerNameHash: -2045864598
+    DestinationState: 1080829965
+    TransitionDuration: 0.1
+    TriggerNameHash: 1080829965
     TransitionIndex: 1
   AnimatorParameterEntries:
     ParameterEntries:

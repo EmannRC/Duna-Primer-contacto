@@ -41,42 +41,50 @@ public class PlayerAnimation : NetworkBehaviour
     private static readonly int AttackAnimationSpeedHash =
         Animator.StringToHash("AttackAnimationSpeed");
 
-    private static readonly int IsDeadHash =
-        Animator.StringToHash("IsDead");
+    private static readonly int DieHash =
+        Animator.StringToHash("Die");
+
+    private static readonly int IsAliveHash =
+        Animator.StringToHash("IsAlive");
 
 
     //========================================================//
+    // AWAKE
+    //========================================================//
 
-    void Awake()
+    private void Awake()
     {
-        
         ctx = GetComponentInParent<PlayerContext>();
     }
 
+
+    //========================================================//
+    // UPDATE
     //========================================================//
 
-    void Update()
+    private void Update()
     {
         if (!IsOwner)
             return;
 
-        bool isDead =
-            ctx.health != null &&
-            ctx.health.IsDead.Value;
-
-        ctx.animator.SetBool(
-            IsDeadHash,
-            isDead
-        );
-
-        if (isDead)
+        if (ctx == null || ctx.animator == null)
             return;
+
+        // Si está muerto, no actualizar locomoción.
+        if (ctx.health != null &&
+            ctx.health.IsDead.Value)
+        {
+            return;
+        }
 
         UpdateLocomotion();
         UpdateAirState();
         UpdateCrouch();
     }
 
+
+    //========================================================//
+    // LOCOMOTION
     //========================================================//
 
     private void UpdateLocomotion()
@@ -101,7 +109,6 @@ public class PlayerAnimation : NetworkBehaviour
             0.15f,
             Time.deltaTime);
 
-
         float speed =
             ctx.movement.AnimationSpeed;
 
@@ -111,7 +118,6 @@ public class PlayerAnimation : NetworkBehaviour
             0.1f,
             Time.deltaTime);
 
-
         bool isMoving =
             move.sqrMagnitude > 0.01f;
 
@@ -120,9 +126,12 @@ public class PlayerAnimation : NetworkBehaviour
             isMoving);
     }
 
+
+    //========================================================//
+    // AIR
     //========================================================//
 
-    void UpdateAirState()
+    private void UpdateAirState()
     {
         bool grounded =
             ctx.movement.IsGrounded;
@@ -147,22 +156,29 @@ public class PlayerAnimation : NetworkBehaviour
             !grounded && vertical < 0);
     }
 
+
+    //========================================================//
+    // CROUCH
     //========================================================//
 
-    void UpdateCrouch()
+    private void UpdateCrouch()
     {
         ctx.animator.SetBool(
             IsCrouchingHash,
             ctx.movement.IsCrouching);
     }
 
+
     //========================================================//
-    // EVENTS
+    // SHOOT
     //========================================================//
 
     public void PlayShootAnimation()
     {
         if (!IsOwner)
+            return;
+
+        if (ctx == null || ctx.animator == null)
             return;
 
         float attackSpeed =
@@ -173,22 +189,35 @@ public class PlayerAnimation : NetworkBehaviour
 
         ctx.animator.SetFloat(
             AttackAnimationSpeedHash,
-            attackSpeed
-        );
+            attackSpeed);
 
         ctx.animator.SetTrigger(ShootHash);
     }
-    
+
+
+    //========================================================//
+    // DEATH
+    //========================================================//
+
     public void PlayDeathAnimation()
     {
         if (!IsOwner)
             return;
 
-        ctx.animator.SetBool(
-            IsDeadHash,
-            true
-        );
+        if (ctx == null || ctx.animator == null)
+            return;
+
+        ctx.animator.SetTrigger(DieHash);
     }
 
-  
+    public void PlayReviveAnimation()
+    {
+        if (!IsOwner)
+            return;
+
+        if (ctx == null || ctx.animator == null)
+            return;
+
+        ctx.animator.SetBool(IsAliveHash, true);
+    }
 }

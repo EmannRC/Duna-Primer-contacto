@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 09991182dfc5e834d8aeed101d55b6ef
+guid: 09d2bac20c8d67e4589a37497f9ddf9b
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
@@ -31,11 +31,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: mixamo.com
+      name: Enforcer Melee Attack
       takeName: mixamo.com
       internalID: -203655887218126122
       firstFrame: 0
-      lastFrame: 190
+      lastFrame: 136
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

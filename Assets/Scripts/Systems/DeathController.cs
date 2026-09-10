@@ -110,6 +110,13 @@ public class DeathController : NetworkBehaviour
             playerCtx.movement.SetMovementLocked(true);
         }
 
+        // Animación de muerte.
+
+        if (playerCtx.playerAnimation != null)
+        {
+            playerCtx.playerAnimation.PlayDeathAnimation();
+        }
+
         // Mostrar menú de muerte.
         if (LocalPlayerBootstrap.Instance != null)
         {

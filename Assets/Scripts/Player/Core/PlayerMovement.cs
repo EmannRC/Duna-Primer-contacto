@@ -316,4 +316,29 @@ public class PlayerMovement : NetworkBehaviour
             groundDistance
         );
     }
+
+    //========================================================//
+    // RESPAWN
+    //========================================================//
+
+    public void ResetForRespawn()
+    {
+        moveInput = Vector2.zero;
+        moveDirection = Vector3.zero;
+
+        velocity = Vector3.zero;
+
+        currentSpeed = 0f;
+        AnimationSpeed = 0f;
+
+        groundedTimer = 0f;
+
+        jumpPressed = false;
+        sprintHeld = false;
+        isCrouching = false;
+
+        wasGrounded = false;
+
+        IsMovementLocked = false;
+    }
 }

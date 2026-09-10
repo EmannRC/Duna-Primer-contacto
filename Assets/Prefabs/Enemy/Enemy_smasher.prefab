@@ -79,7 +79,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2245230121
+  GlobalObjectIdHash: 2462690272
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -112,11 +112,6 @@ MonoBehaviour:
       MaxSecondsBetweenUpdates: 0
     m_InternalValue: 100
   IsDead:
-    UpdateTraits:
-      MinSecondsBetweenUpdates: 0
-      MaxSecondsBetweenUpdates: 0
-    m_InternalValue: 0
-  DeathTrigger:
     UpdateTraits:
       MinSecondsBetweenUpdates: 0
       MaxSecondsBetweenUpdates: 0
@@ -177,8 +172,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GroundEnemyMovement
   ShowTopMostFoldoutHeaderGroup: 1
+  rotationSpeed: 8
   moveSpeed: 3.5
-  stoppingDistance: 1.7
+  stoppingDistance: 2
 --- !u!114 &9181602100196363287
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -297,6 +293,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb8f1c237a7fe324ab25f267e83dd916, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DeathController
+  ShowTopMostFoldoutHeaderGroup: 1
   entityType: 1
   disableMovement: 1
   destroyOnDeath: 1

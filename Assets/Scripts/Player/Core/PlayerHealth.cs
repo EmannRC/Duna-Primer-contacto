@@ -9,7 +9,5 @@ public class PlayerHealth : HealthController
             return;
 
         base.Die();
-
-        CoopGameManager.Instance.CheckDefeat();
     }
 }

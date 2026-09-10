@@ -125,11 +125,12 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   speed: 10
   lifeTime: 2
-  damage: 10
+  damage: 5
   radius: 0.1
   damageLayers:
     serializedVersion: 2
     m_Bits: 128
+  destroyEffect: {fileID: 0}
 --- !u!114 &2250254904431273833
 MonoBehaviour:
   m_ObjectHideFlags: 0

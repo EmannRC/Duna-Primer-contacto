@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerRespawn : NetworkBehaviour
 {
     private PlayerContext ctx;
-
+    private PlayerSpawner spawner;
 
     //========================================================//
     // AWAKE
@@ -18,104 +18,211 @@ public class PlayerRespawn : NetworkBehaviour
 
 
     //========================================================//
-    // REQUEST
+    // NETWORK SPAWN
+    //========================================================//
+
+    public override void OnNetworkSpawn()
+    {
+        if (IsServer)
+        {
+            spawner =
+                FindFirstObjectByType<PlayerSpawner>();
+        }
+    }
+
+
+    //========================================================//
+    // REQUEST RESTART
     //========================================================//
 
     public void RequestRestart()
     {
-        Debug.Log($"[RESPAWN] RequestRestart | IsOwner={IsOwner}");
+        Debug.Log(
+            $"[RESPAWN] RequestRestart | IsOwner={IsOwner}"
+        );
 
         if (!IsOwner)
             return;
 
-        RestartServerRpc();
+        RequestRestartRpc();
     }
 
-    [ServerRpc]
-    private void RestartServerRpc(ServerRpcParams rpcParams = default)
+
+    //========================================================//
+    // SERVER
+    //========================================================//
+
+    [Rpc(
+        SendTo.Server,
+        InvokePermission = RpcInvokePermission.Owner
+    )]
+    private void RequestRestartRpc()
     {
         Debug.Log(
-            $"[RESPAWN] ServerRpc recibido | " +
-            $"Sender={rpcParams.Receive.SenderClientId} | " +
-            $"Owner={OwnerClientId}"
+            $"[RESPAWN] Server recibió restart | " +
+            $"ClientId={OwnerClientId}"
         );
-
-        if (rpcParams.Receive.SenderClientId != OwnerClientId)
-            return;
 
         if (ctx == null || ctx.health == null)
         {
-            Debug.LogError("[RESPAWN] ctx o health es NULL.");
+            Debug.LogError(
+                "[RESPAWN] ctx o health es NULL."
+            );
+
             return;
         }
-
-        Debug.Log(
-            $"[RESPAWN] IsDead antes del respawn = " +
-            $"{ctx.health.IsDead.Value}"
-        );
 
         if (!ctx.health.IsDead.Value)
         {
-            Debug.LogWarning("[RESPAWN] El jugador NO está muerto.");
+            Debug.LogWarning(
+                "[RESPAWN] El jugador no está muerto."
+            );
+
             return;
         }
-
-        PlayerSpawner spawner =
-            FindFirstObjectByType<PlayerSpawner>();
 
         if (spawner == null)
         {
-            Debug.LogError("[RESPAWN] No se encontró PlayerSpawner.");
+            spawner =
+                FindFirstObjectByType<PlayerSpawner>();
+        }
+
+        if (spawner == null)
+        {
+            Debug.LogError(
+                "[RESPAWN] No se encontró PlayerSpawner."
+            );
+
             return;
         }
 
-        Debug.Log("[RESPAWN] Llamando a RespawnPlayer()");
+        Vector3 spawnPosition =
+            spawner.GetSpawnPosition(OwnerClientId);
 
-        spawner.RespawnPlayer(OwnerClientId);
+        Quaternion spawnRotation =
+            spawner.GetSpawnRotation(OwnerClientId);
 
         Debug.Log(
-            $"[RESPAWN] Posición después de RespawnPlayer: " +
-            $"{transform.position}"
+            $"[RESPAWN] Respawneando ClientId={OwnerClientId} | " +
+            $"Pos={spawnPosition}"
         );
 
+
+        //====================================================//
+        // RESET HEALTH
+        //====================================================//
+
         ctx.health.ResetHealth();
+
+
+        //====================================================//
+        // RESET DEATH CONTROLLER
+        //====================================================//
 
         DeathController death =
             GetComponent<DeathController>();
 
         if (death != null)
+        {
             death.ResetDeathState();
+        }
 
-        Debug.Log(
-            $"[RESPAWN] Respawn terminado | " +
-            $"Pos={transform.position} | " +
-            $"Health={ctx.health.CurrentHealth.Value} | " +
-            $"IsDead={ctx.health.IsDead.Value}"
+
+        //====================================================//
+        // AVISAR AL OWNER
+        //====================================================//
+
+        RespawnOwnerRpc(
+            spawnPosition,
+            spawnRotation
         );
-
-        RespawnClientRpc();
     }
 
+
     //========================================================//
-    // CLIENT
+    // OWNER
     //========================================================//
 
-    [ClientRpc]
-    private void RespawnClientRpc()
+    [Rpc(SendTo.Owner)]
+    private void RespawnOwnerRpc(
+        Vector3 position,
+        Quaternion rotation
+    )
     {
+        Debug.Log(
+            $"[RESPAWN] Owner recibió respawn | " +
+            $"Pos={position}"
+        );
+
         if (!IsOwner)
             return;
 
         if (ctx == null)
+        {
+            Debug.LogError(
+                "[RESPAWN] PlayerContext es NULL."
+            );
+
             return;
+        }
+
+        CharacterController controller =
+            ctx.controller;
+
+
+        //====================================================//
+        // TELEPORT
+        //====================================================//
+
+        if (controller != null)
+            controller.enabled = false;
+
+        transform.SetPositionAndRotation(
+            position,
+            rotation
+        );
+
+        if (controller != null)
+            controller.enabled = true;
+
+
+        //====================================================//
+        // RESET MOVEMENT
+        //====================================================//
 
         if (ctx.movement != null)
-            ctx.movement.SetMovementLocked(false);
+        {
+            ctx.movement.ResetForRespawn();
+        }
+
+
+        //====================================================//
+        // RESET COMBAT
+        //====================================================//
 
         if (ctx.combat != null)
+        {
             ctx.combat.EndAttack();
+        }
 
-        if (ctx.playerAnimation != null)
-            ctx.playerAnimation.ResetDeathAnimation();
+
+        //====================================================//
+        // HIDE DEATH MENU
+        //====================================================//
+
+        if (LocalPlayerBootstrap.Instance != null)
+        {
+            LocalPlayerBootstrap.Instance.HideDeathMenu();
+        }
+
+
+        //====================================================//
+        // DEBUG
+        //====================================================//
+
+        Debug.Log(
+            $"[RESPAWN] Respawn COMPLETADO | " +
+            $"Pos actual={transform.position}"
+        );
     }
 }

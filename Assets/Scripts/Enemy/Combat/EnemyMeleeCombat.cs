@@ -7,31 +7,44 @@ public class EnemyMeleeCombat : NetworkBehaviour
     [Header("Combat")]
     [SerializeField] private int damage = 10;
     [SerializeField] private float attackRange = 1.5f;
-
-    [Header("Animation")]
-    [SerializeField] private Animator animator;
-    [SerializeField] private string attackStateName = "Attack";
-    [SerializeField] private float animationWaitTime = 0.5f;
+    [SerializeField] private float attackCooldown = 1f;
 
     private EnemyContext ctx;
     private EnforcerSpecialAttack specialAttack;
 
     private bool isAttacking;
+    private float nextAttackTime;
+
+    //========================================================//
+    // AWAKE
+    //========================================================//
 
     private void Awake()
     {
-        ctx = GetComponent<EnemyContext>();
+        ctx =
+            GetComponent<EnemyContext>();
 
         specialAttack =
             GetComponent<EnforcerSpecialAttack>();
     }
 
+
+    //========================================================//
+    // UPDATE
+    //========================================================//
+
     private void Update()
     {
-        if (!IsServer || isAttacking)
+        if (!IsServer)
             return;
 
-        // No atacar normalmente durante el especial
+        if (isAttacking)
+            return;
+
+        if (Time.time < nextAttackTime)
+            return;
+
+        // No atacar durante el ataque especial.
         if (specialAttack != null &&
             specialAttack.IsPerformingSpecialAttack)
         {
@@ -41,7 +54,7 @@ public class EnemyMeleeCombat : NetworkBehaviour
         Transform target =
             ctx.targeting.CurrentTarget;
 
-        if (target == null)
+        if (!IsValidTarget(target))
             return;
 
         if (Vector3.Distance(
@@ -52,52 +65,75 @@ public class EnemyMeleeCombat : NetworkBehaviour
             return;
         }
 
-        StartCoroutine(AttackRoutine(target));
+        StartAttack(target);
     }
 
-    private IEnumerator AttackRoutine(
+
+    //========================================================//
+    // START ATTACK
+    //========================================================//
+
+    private void StartAttack(
         Transform target)
     {
         isAttacking = true;
 
-        // Animación
-        if (ctx.enemyAnimation != null &&
-            ctx.animator != null)
+        nextAttackTime =
+            Time.time + attackCooldown;
+
+        bool hasAnimation =
+            ctx.enemyAnimation != null &&
+            ctx.animator != null;
+
+        //====================================================//
+        // ENEMIGO CON ANIMACIÓN
+        //====================================================//
+
+        if (hasAnimation)
         {
             ctx.enemyAnimation.NotifyAttack();
 
-            yield return null;
+            return;
+        }
 
-            // Esperar hasta el momento del golpe
-            float timeout = 3f;
-            float timer = 0f;
+        //====================================================//
+        // ENEMIGO SIN ANIMACIÓN
+        //====================================================//
 
-            while (timer < timeout)
-            {
-                // Si empieza el especial,
-                // cancelamos el ataque normal
-                if (specialAttack != null &&
-                    specialAttack.IsPerformingSpecialAttack)
-                {
-                    isAttacking = false;
-                    yield break;
-                }
+        DealDamage(target);
 
-                AnimatorStateInfo stateInfo =
-                    ctx.animator
-                        .GetCurrentAnimatorStateInfo(0);
+        isAttacking = false;
+    }
 
-                if (stateInfo.IsName(attackStateName) &&
-                    stateInfo.normalizedTime >=
-                    animationWaitTime)
-                {
-                    break;
-                }
 
-                timer += Time.deltaTime;
+    //========================================================//
+    // ANIMATION EVENT
+    //========================================================//
 
-                yield return null;
-            }
+    public void AnimationEventDealDamage()
+    {
+        if (!IsServer)
+            return;
+
+        if (!isAttacking)
+            return;
+
+        // Si empezó el ataque especial,
+        // cancelamos el ataque normal.
+        if (specialAttack != null &&
+            specialAttack.IsPerformingSpecialAttack)
+        {
+            isAttacking = false;
+            return;
+        }
+
+        Transform target =
+            ctx.targeting.CurrentTarget;
+
+        if (!IsValidTarget(target))
+        {
+            isAttacking = false;
+            return;
         }
 
         DealDamage(target);
@@ -105,17 +141,42 @@ public class EnemyMeleeCombat : NetworkBehaviour
         isAttacking = false;
     }
 
-    private void DealDamage(Transform target)
+
+    //========================================================//
+    // TARGET
+    //========================================================//
+
+    private bool IsValidTarget(
+        Transform target)
     {
         if (target == null)
+            return false;
+
+        if (!target.TryGetComponent(
+                out PlayerHealth health))
+        {
+            return false;
+        }
+
+        if (health.IsDead.Value)
+            return false;
+
+        return true;
+    }
+
+
+    //========================================================//
+    // DAMAGE
+    //========================================================//
+
+    private void DealDamage(
+        Transform target)
+    {
+        if (!IsServer)
             return;
 
-        // Si empezó el especial no hacemos daño melee
-        if (specialAttack != null &&
-            specialAttack.IsPerformingSpecialAttack)
-        {
+        if (!IsValidTarget(target))
             return;
-        }
 
         if (Vector3.Distance(
                 transform.position,
@@ -125,12 +186,26 @@ public class EnemyMeleeCombat : NetworkBehaviour
             return;
         }
 
-        if (target.TryGetComponent(
-                out PlayerHealth health))
-        {
-            health.TakeDamage(damage);
-        }
+        PlayerHealth health =
+            target.GetComponent<PlayerHealth>();
+
+        health.TakeDamage(damage);
     }
+
+
+    //========================================================//
+    // CANCEL ATTACK
+    //========================================================//
+
+    public void CancelAttack()
+    {
+        isAttacking = false;
+    }
+
+
+    //========================================================//
+    // GIZMOS
+    //========================================================//
 
     private void OnDrawGizmosSelected()
     {
@@ -138,6 +213,7 @@ public class EnemyMeleeCombat : NetworkBehaviour
 
         Gizmos.DrawWireSphere(
             transform.position,
-            attackRange);
+            attackRange
+        );
     }
 }

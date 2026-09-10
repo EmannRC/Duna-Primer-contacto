@@ -17,7 +17,7 @@ public class EnemyAnimation : NetworkBehaviour
     private static readonly int SpecialAttackHash =
         Animator.StringToHash("JumpAttack");
 
-    private static readonly int DeadHash =
+    private static readonly int DeathHash =
         Animator.StringToHash("Death");
 
 
@@ -81,6 +81,16 @@ public class EnemyAnimation : NetworkBehaviour
         if (!IsServer)
             return;
 
-        ctx.animator.SetBool(DeadHash, true);
+        if (ctx.animator == null)
+            return;
+
+        ctx.animator.SetTrigger(
+            DeathHash
+        );
+    }
+
+    public void StartAttack()
+    {
+        ctx.meleeCombat.AnimationEventDealDamage();
     }
 }

@@ -64,15 +64,13 @@ public class DeathController : NetworkBehaviour
             HandleEnemyDeath();
         }
 
-        // El sonido puede ejecutarse en el servidor,
-        // aunque si quieres que todos lo escuchen habrá
-        // que sincronizarlo posteriormente.
         if (deathSound != null)
             deathSound.Play();
 
         // Los Players NO se destruyen.
         // Los enemigos sí pueden destruirse.
-        if (destroyOnDeath && entityType == EntityType.Enemy)
+        if (destroyOnDeath &&
+            entityType == EntityType.Enemy)
         {
             Destroy(gameObject, destroyDelay);
         }
@@ -88,8 +86,6 @@ public class DeathController : NetworkBehaviour
         if (playerCtx == null)
             return;
 
-        // El Player tiene NetworkAnimator con autoridad del Owner,
-        // por lo tanto el servidor avisa al propietario.
         ShowPlayerDeathClientRpc();
     }
 
@@ -101,7 +97,6 @@ public class DeathController : NetworkBehaviour
     [ClientRpc]
     private void ShowPlayerDeathClientRpc()
     {
-        // Solo el jugador que murió ejecuta esto.
         if (!IsOwner)
             return;
 
@@ -109,16 +104,17 @@ public class DeathController : NetworkBehaviour
             return;
 
         // Bloquear movimiento.
-        if (disableMovement && playerCtx.movement != null)
+        if (disableMovement &&
+            playerCtx.movement != null)
+        {
             playerCtx.movement.SetMovementLocked(true);
-
-        // Animación de muerte.
-        if (playerCtx.playerAnimation != null)
-            playerCtx.playerAnimation.PlayDeathAnimation();
+        }
 
         // Mostrar menú de muerte.
         if (LocalPlayerBootstrap.Instance != null)
+        {
             LocalPlayerBootstrap.Instance.ShowDeathMenu();
+        }
     }
 
 
@@ -131,13 +127,18 @@ public class DeathController : NetworkBehaviour
         if (enemyCtx == null)
             return;
 
-        // Los enemigos tienen NetworkAnimator con autoridad
-        // del servidor, así que podemos ejecutar directamente.
-        if (disableMovement && enemyCtx.movement != null)
+        // Bloquear movimiento.
+        if (disableMovement &&
+            enemyCtx.movement != null)
+        {
             enemyCtx.movement.SetMovementLocked(true);
+        }
 
+        // Animación de muerte del enemigo.
         if (enemyCtx.enemyAnimation != null)
+        {
             enemyCtx.enemyAnimation.PlayDeathAnimation();
+        }
     }
 
 

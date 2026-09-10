@@ -6,7 +6,6 @@ public class FlyingEnemyMovement : EnemyMovementBase
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 4f;
     [SerializeField] private float stoppingDistance = 2f;
-    [SerializeField] private float rotationSpeed = 8f;
 
     [Header("Height")]
     [SerializeField] private float hoverHeight = 3f;
@@ -17,56 +16,15 @@ public class FlyingEnemyMovement : EnemyMovementBase
     [Header("Formation")]
     [SerializeField] private float formationRadius = 3f;
 
-    private EnemyContext ctx;
-    private bool movementLocked;
-
-
-    //=======================================================//
-    // AWAKE
-    //=======================================================//
-
-    private void Awake()
-    {
-        ctx = GetComponent<EnemyContext>();
-    }
-
 
     //=======================================================//
     // MOVEMENT LOCK
     //=======================================================//
 
-    public override void SetMovementLocked(bool locked)
+    public override void SetMovementLocked(
+        bool locked)
     {
         movementLocked = locked;
-    }
-
-
-    //=======================================================//
-    // UPDATE
-    //=======================================================//
-
-    private void Update()
-    {
-        if (!IsServer)
-            return;
-
-        if (movementLocked)
-            return;
-
-        if (ctx == null)
-            return;
-
-        if (ctx.targeting == null)
-            return;
-
-        Transform target =
-            ctx.targeting.CurrentTarget;
-
-        if (target == null)
-            return;
-
-        Move(target);
-        LookAtTarget(target);
     }
 
 
@@ -74,9 +32,11 @@ public class FlyingEnemyMovement : EnemyMovementBase
     // MOVE
     //=======================================================//
 
-    private void Move(Transform target)
+    protected override void Move(
+        Transform target)
     {
-        Vector3 position = transform.position;
+        Vector3 position =
+            transform.position;
 
         Vector3 targetPosition =
             GetFormationTargetPosition(target);
@@ -97,9 +57,24 @@ public class FlyingEnemyMovement : EnemyMovementBase
                 Time.deltaTime;
         }
 
-        MaintainHeight(ref position);
+        MaintainHeight(
+            ref position
+        );
 
-        transform.position = position;
+        transform.position =
+            position;
+    }
+
+
+    //=======================================================//
+    // STOP MOVEMENT
+    //=======================================================//
+
+    protected override void StopMovement()
+    {
+        // El enemigo volador no usa
+        // NavMeshAgent, por lo que no
+        // necesita ResetPath().
     }
 
 
@@ -107,10 +82,12 @@ public class FlyingEnemyMovement : EnemyMovementBase
     // MAINTAIN HEIGHT
     //=======================================================//
 
-    private void MaintainHeight(ref Vector3 position)
+    private void MaintainHeight(
+        ref Vector3 position)
     {
         Vector3 rayOrigin =
-            position + Vector3.up * 10f;
+            position +
+            Vector3.up * 10f;
 
         if (!Physics.Raycast(
             rayOrigin,
@@ -124,38 +101,15 @@ public class FlyingEnemyMovement : EnemyMovementBase
         }
 
         float desiredY =
-            hit.point.y + hoverHeight;
+            hit.point.y +
+            hoverHeight;
 
-        position.y = Mathf.MoveTowards(
-            position.y,
-            desiredY,
-            heightAdjustSpeed * Time.deltaTime
-        );
-    }
-
-
-    //=======================================================//
-    // LOOK AT TARGET
-    //=======================================================//
-
-    private void LookAtTarget(Transform target)
-    {
-        Vector3 direction =
-            target.position - transform.position;
-
-        direction.y = 0f;
-
-        if (direction.sqrMagnitude < 0.001f)
-            return;
-
-        Quaternion targetRotation =
-            Quaternion.LookRotation(direction);
-
-        transform.rotation =
-            Quaternion.Slerp(
-                transform.rotation,
-                targetRotation,
-                rotationSpeed * Time.deltaTime
+        position.y =
+            Mathf.MoveTowards(
+                position.y,
+                desiredY,
+                heightAdjustSpeed *
+                Time.deltaTime
             );
     }
 
@@ -176,7 +130,8 @@ public class FlyingEnemyMovement : EnemyMovementBase
         if (count <= 1)
         {
             Vector3 direction =
-                transform.position - target.position;
+                transform.position -
+                target.position;
 
             direction.y = 0f;
 
@@ -200,7 +155,23 @@ public class FlyingEnemyMovement : EnemyMovementBase
 
         offset *= formationRadius;
 
-        return target.position + offset;
+        return target.position +
+               offset;
+    }
+
+
+    //=======================================================//
+    // GIZMOS
+    //=======================================================//
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.cyan;
+
+        Gizmos.DrawWireSphere(
+            transform.position,
+            formationRadius
+        );
     }
 }
 

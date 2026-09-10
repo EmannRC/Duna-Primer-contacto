@@ -7,9 +7,6 @@ public class PlayerAnimation : NetworkBehaviour
 {
     private PlayerContext ctx;
 
-    private bool deathPlayed;
-
-
     // Hashes para evitar strings constantemente
     private static readonly int VelXHash =
         Animator.StringToHash("VelX");
@@ -42,10 +39,10 @@ public class PlayerAnimation : NetworkBehaviour
         Animator.StringToHash("Shoot");
 
     private static readonly int AttackAnimationSpeedHash =
-    Animator.StringToHash("AttackAnimationSpeed");
+        Animator.StringToHash("AttackAnimationSpeed");
 
-    private static readonly int DeathHash =
-        Animator.StringToHash("Death");
+    private static readonly int IsDeadHash =
+        Animator.StringToHash("IsDead");
 
 
     //========================================================//
@@ -61,6 +58,18 @@ public class PlayerAnimation : NetworkBehaviour
     void Update()
     {
         if (!IsOwner)
+            return;
+
+        bool isDead =
+            ctx.health != null &&
+            ctx.health.IsDead.Value;
+
+        ctx.animator.SetBool(
+            IsDeadHash,
+            isDead
+        );
+
+        if (isDead)
             return;
 
         UpdateLocomotion();
@@ -169,24 +178,17 @@ public class PlayerAnimation : NetworkBehaviour
 
         ctx.animator.SetTrigger(ShootHash);
     }
-
+    
     public void PlayDeathAnimation()
-    {
-        if (deathPlayed)
-            return;
-
-        deathPlayed = true;
-
-        ctx.animator.SetTrigger(DeathHash);
-    }
-
-    public void ResetDeathAnimation()
     {
         if (!IsOwner)
             return;
 
-        deathPlayed = false;
-
-        ctx.animator.ResetTrigger(DeathHash);
+        ctx.animator.SetBool(
+            IsDeadHash,
+            true
+        );
     }
+
+  
 }

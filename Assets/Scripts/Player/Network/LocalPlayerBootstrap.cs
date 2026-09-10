@@ -179,5 +179,10 @@ public class LocalPlayerBootstrap : MonoBehaviour
         if (deathMenu != null)
             deathMenu.ShowDefeatMenu();
     }
+    public void HideDeathMenu()
+    {
+        if (deathMenu != null)
+            deathMenu.HideDefeatMenu();
+    }
 
 }

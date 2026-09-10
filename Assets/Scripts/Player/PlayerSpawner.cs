@@ -120,58 +120,35 @@ public class PlayerSpawner : NetworkBehaviour
     // RESPAWN PLAYER
     //========================================================//
 
-    public void RespawnPlayer(ulong clientId)
+    public Vector3 GetSpawnPosition(ulong clientId)
     {
-        if (!IsServer)
-            return;
-
-        if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(
-            clientId,
-            out NetworkClient client))
-        {
-            Debug.LogWarning(
-                $"PlayerSpawner: No se encontró el cliente {clientId}."
-            );
-
-            return;
-        }
-
-        NetworkObject player = client.PlayerObject;
-
-        if (player == null || !player.IsSpawned)
-        {
-            Debug.LogWarning(
-                $"PlayerSpawner: El Player {clientId} no existe."
-            );
-
-            return;
-        }
-
         if (spawnPoints == null || spawnPoints.Length == 0)
         {
             Debug.LogError(
                 "PlayerSpawner: No hay Spawn Points configurados."
             );
 
-            return;
+            return Vector3.zero;
         }
 
         int spawnIndex =
             (int)(clientId % (ulong)spawnPoints.Length);
 
-        Transform spawnPoint =
-            spawnPoints[spawnIndex];
+        return spawnPoints[spawnIndex].position;
+    }
 
-        // Reposicionar el Player existente.
-        player.transform.SetPositionAndRotation(
-            spawnPoint.position,
-            spawnPoint.rotation
-        );
 
-        Debug.Log(
-            $"Player {clientId} respawneado en " +
-            $"{spawnPoint.name}."
-        );
+    public Quaternion GetSpawnRotation(ulong clientId)
+    {
+        if (spawnPoints == null || spawnPoints.Length == 0)
+        {
+            return Quaternion.identity;
+        }
+
+        int spawnIndex =
+            (int)(clientId % (ulong)spawnPoints.Length);
+
+        return spawnPoints[spawnIndex].rotation;
     }
 
 
@@ -193,7 +170,7 @@ public class PlayerSpawner : NetworkBehaviour
             if (!client.PlayerObject.IsSpawned)
                 continue;
 
-            RespawnPlayer(client.ClientId);
+            //RespawnPlayer(client.ClientId);
         }
     }
 }

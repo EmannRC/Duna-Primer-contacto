@@ -11,25 +11,25 @@ public class GroundEnemyMovement : EnemyMovementBase
     [SerializeField] private float moveSpeed = 3.5f;
     [SerializeField] private float stoppingDistance = 2f;
 
-    private EnemyContext ctx;
     private NavMeshAgent agent;
-
     private EnforcerSpecialAttack specialAttack;
 
-    private bool movementLocked;
-
-    public Vector3 Velocity => agent.velocity;
+    public Vector3 Velocity =>
+        agent != null
+            ? agent.velocity
+            : Vector3.zero;
 
 
     //=======================================================//
     // AWAKE
     //=======================================================//
 
-    private void Awake()
+    protected override void Awake()
     {
-        ctx = GetComponent<EnemyContext>();
+        base.Awake();
 
-        agent = GetComponent<NavMeshAgent>();
+        agent =
+            GetComponent<NavMeshAgent>();
 
         specialAttack =
             GetComponent<EnforcerSpecialAttack>();
@@ -37,94 +37,76 @@ public class GroundEnemyMovement : EnemyMovementBase
 
 
     //=======================================================//
+    // MOVEMENT PAUSED
+    //=======================================================//
+
+    protected override bool IsMovementPaused =>
+        specialAttack != null &&
+        specialAttack.IsPerformingSpecialAttack;
+
+
+    //=======================================================//
     // MOVEMENT LOCK
     //=======================================================//
 
-    public override void SetMovementLocked(bool locked)
+    public override void SetMovementLocked(
+        bool locked)
     {
         movementLocked = locked;
 
-        if (movementLocked)
-        {
-            if (agent.isActiveAndEnabled &&
-                agent.isOnNavMesh)
-            {
-                agent.ResetPath();
-            }
-        }
+        if (!movementLocked)
+            return;
+
+        StopMovement();
     }
 
 
     //=======================================================//
-    // UPDATE
+    // MOVE
     //=======================================================//
 
-    private void Update()
+    protected override void Move(
+        Transform target)
     {
-        if (!IsServer)
-            return;
-
-        if (movementLocked)
-            return;
-
-        // No ejecutar movimiento durante
-        // el ataque especial
-        if (specialAttack != null &&
-            specialAttack.IsPerformingSpecialAttack)
-        {
-            return;
-        }
-
-        agent.speed = moveSpeed;
-        agent.stoppingDistance = stoppingDistance;
-        agent.angularSpeed = 720f;
-
-        agent.updateRotation = false;
-
-        Transform target =
-            ctx.targeting.CurrentTarget;
-
-        if (target == null ||
+        if (agent == null ||
+            !agent.isActiveAndEnabled ||
             !agent.isOnNavMesh)
         {
-            if (agent.isActiveAndEnabled &&
-                agent.isOnNavMesh)
-            {
-                agent.ResetPath();
-            }
-
             return;
         }
 
-        agent.SetDestination(target.position);
+        agent.speed =
+            moveSpeed;
 
-        LookAtTarget(target);
+        agent.stoppingDistance =
+            stoppingDistance;
+
+        agent.angularSpeed =
+            720f;
+
+        agent.updateRotation =
+            false;
+
+        agent.SetDestination(
+            target.position
+        );
     }
 
 
     //=======================================================//
-    // LOOK AT TARGET
+    // STOP MOVEMENT
     //=======================================================//
 
-    private void LookAtTarget(Transform target)
+    protected override void StopMovement()
     {
-        Vector3 direction =
-            target.position - transform.position;
-
-        direction.y = 0f;
-
-        if (direction.sqrMagnitude < 0.01f)
+        if (agent == null)
             return;
 
-        Quaternion targetRotation =
-            Quaternion.LookRotation(direction);
-
-        transform.rotation =
-            Quaternion.Slerp(
-                transform.rotation,
-                targetRotation,
-                8f * Time.deltaTime
-            );
+        if (agent.isActiveAndEnabled &&
+            agent.isOnNavMesh)
+        {
+            agent.ResetPath();
+        }
     }
 
 

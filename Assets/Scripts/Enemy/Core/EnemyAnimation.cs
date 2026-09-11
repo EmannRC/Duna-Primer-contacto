@@ -14,8 +14,8 @@ public class EnemyAnimation : NetworkBehaviour
     private static readonly int AttackHash =
         Animator.StringToHash("Attack");
 
-    private static readonly int SpecialAttackHash =
-        Animator.StringToHash("JumpAttack");
+    private static readonly int LaserAttackHash =
+        Animator.StringToHash("LaserAttack");
 
     private static readonly int DeathHash =
         Animator.StringToHash("Death");
@@ -67,12 +67,12 @@ public class EnemyAnimation : NetworkBehaviour
     }
 
 
-    public void NotifySpecialAttack()
+    public void NotifyLaserAttack()
     {
         if (!IsServer)
             return;
 
-        ctx.animator.SetTrigger(SpecialAttackHash);
+        ctx.animator.SetTrigger(LaserAttackHash);
     }
 
 
@@ -92,5 +92,13 @@ public class EnemyAnimation : NetworkBehaviour
     public void AnimationEventDealDamage()
     {
         ctx.meleeCombat.AnimationEventDealDamage();
+    }
+
+    public void AnimationEventFireLaser()
+    {
+        if (ctx.laserAttack == null)
+            return;
+
+        ctx.laserAttack.AnimationEventFireLaser();
     }
 }

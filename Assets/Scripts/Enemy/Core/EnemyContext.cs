@@ -15,6 +15,7 @@ public class EnemyContext : MonoBehaviour
     public EnemyMeleeCombat meleeCombat;
     public EnemyTargeting targeting;
     public EnemyFormation formation;
+    public EnemyLaserAttack laserAttack;
 
     public Animator animator;
     public EnemyAnimation enemyAnimation;
@@ -31,5 +32,6 @@ public class EnemyContext : MonoBehaviour
         stats = GetComponent<EnemyStats>();
         enemyAnimation = GetComponentInChildren<EnemyAnimation>();
         movement = GetComponent<EnemyMovementBase>();
+        laserAttack = GetComponentInChildren<EnemyLaserAttack>();
     }
 }

@@ -98,7 +98,7 @@ public class EnforcerSpecialAttack : NetworkBehaviour
         // Reproducir animación
         if (ctx.enemyAnimation != null)
         {
-            ctx.enemyAnimation.NotifySpecialAttack();
+            ctx.enemyAnimation.NotifyLaserAttack();
         }
 
         // Esperamos que termine la animación

@@ -602,7 +602,7 @@ MonoBehaviour:
   RotationMaxInterpolationTime: 0.1
   ScaleLerpSmoothing: 1
   ScaleMaxInterpolationTime: 0.1
-  AuthorityMode: 0
+  AuthorityMode: 1
   TickSyncChildren: 0
   UseUnreliableDeltas: 0
   SyncPositionX: 1
@@ -3086,10 +3086,10 @@ MonoBehaviour:
       NameHash: -695135503
       Synchronize: 1
       ParameterType: 4
-    - name: IsDancing
-      NameHash: -1523291736
+    - name: Dancing
+      NameHash: -1900052137
       Synchronize: 1
-      ParameterType: 4
+      ParameterType: 9
   AnimatorParametersExpanded: 0
 --- !u!4 &9104621947051074765 stripped
 Transform:

@@ -47,6 +47,9 @@ public class PlayerAnimation : NetworkBehaviour
     private static readonly int IsAliveHash =
         Animator.StringToHash("IsAlive");
 
+    private static readonly int DancingHash =
+        Animator.StringToHash("Dancing");
+
 
     //========================================================//
     // AWAKE
@@ -124,6 +127,7 @@ public class PlayerAnimation : NetworkBehaviour
         ctx.animator.SetBool(
             IsMovingHash,
             isMoving);
+
     }
 
 
@@ -219,5 +223,19 @@ public class PlayerAnimation : NetworkBehaviour
             return;
 
         ctx.animator.SetBool(IsAliveHash, true);
+    }
+
+    //========================================================//
+    // DANCE
+    //========================================================//
+    public void PlayDanceAnimation()
+    {
+        if (!IsOwner)
+            return;
+
+        if (ctx == null || ctx.animator == null)
+            return;
+
+        ctx.animator.SetTrigger(DancingHash);
     }
 }

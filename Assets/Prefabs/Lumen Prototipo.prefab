@@ -484,7 +484,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 428777726
+  GlobalObjectIdHash: 1908905261
   InScenePlacedSourceGlobalObjectIdHash: 3680711321
   DeferredDespawnTick: 0
   Ownership: 1
@@ -899,6 +899,22 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: c3f3b482-2fe7-4e4b-b146-fbde04a3f43a
     m_ActionName: 'UI/ToggleCrafting[/Keyboard/c]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6235707199556142277}
+        m_TargetAssemblyTypeName: PlayerInputEvents, Assembly-CSharp
+        m_MethodName: OnDance
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 19f802ba-7fe4-444e-a71c-818d2d10ca25
+    m_ActionName: 'Player/Dance[/Keyboard/1]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -3038,10 +3054,6 @@ MonoBehaviour:
       NameHash: -303020060
       Synchronize: 1
       ParameterType: 1
-    - name: Death
-      NameHash: 646380074
-      Synchronize: 1
-      ParameterType: 9
     - name: IsCrouching
       NameHash: -1154928320
       Synchronize: 1
@@ -3066,8 +3078,16 @@ MonoBehaviour:
       NameHash: 1765791331
       Synchronize: 1
       ParameterType: 1
-    - name: IsDead
-      NameHash: 1270110494
+    - name: Die
+      NameHash: 20298039
+      Synchronize: 1
+      ParameterType: 9
+    - name: IsAlive
+      NameHash: -695135503
+      Synchronize: 1
+      ParameterType: 4
+    - name: IsDancing
+      NameHash: -1523291736
       Synchronize: 1
       ParameterType: 4
   AnimatorParametersExpanded: 0

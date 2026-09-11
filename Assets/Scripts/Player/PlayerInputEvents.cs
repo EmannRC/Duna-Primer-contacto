@@ -144,4 +144,18 @@ public class PlayerInputEvents : MonoBehaviour
 
         ctx.combat.TryShoot();
     }
+
+    //=====================//
+    //====  DANCE  ====//
+    //=====================//
+
+    public void OnDance(InputAction.CallbackContext input)
+    {
+        if (!input.performed)
+            return;
+        if (ctx.health.IsDead.Value)
+            return;
+
+        ctx.playerAnimation.PlayDanceAnimation();
+    }
 }

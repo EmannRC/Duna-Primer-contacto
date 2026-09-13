@@ -85,6 +85,10 @@ public class HealthController : NetworkBehaviour
             CurrentHealth.Value + amount,
             maxHealth
         );
+
+
+
+        
     }
 
 

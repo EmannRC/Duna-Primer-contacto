@@ -22,9 +22,19 @@ public class PlayerMovement : NetworkBehaviour
     [SerializeField] private LayerMask groundMask;
     [SerializeField] private float groundedGraceTime = 0.1f;
 
+
     [Header("Crouch")]
     [SerializeField] private float crouchHeight = 1.3f;
     [SerializeField] private float crouchSpeed = 1f;
+
+    [Header("Aim Movement")]
+    [SerializeField] private float aimMovementMultiplier = 0.6f;
+
+    private bool isAiming;
+
+    public bool IsAiming => isAiming;
+
+    private bool isAttacking;
 
 
     private PlayerContext ctx;
@@ -143,11 +153,24 @@ public class PlayerMovement : NetworkBehaviour
         if (!IsMovementLocked && isMoving)
         {
             if (isCrouching)
+            {
                 targetSpeed = crouchSpeed;
-            else if (sprintHeld)
+            }
+            else if (sprintHeld && !isAiming)
+            {
+                // No puede correr mientras apunta.
                 targetSpeed = moveSpeed * sprintMultiplier;
+            }
             else
+            {
                 targetSpeed = moveSpeed;
+            }
+
+            // Reducir velocidad mientras apunta.
+            if (isAiming)
+            {
+                targetSpeed *= aimMovementMultiplier;
+            }
         }
 
         float accelerationRate =
@@ -168,7 +191,7 @@ public class PlayerMovement : NetworkBehaviour
     }
 
 
-    
+
     // GROUND
     private void UpdateGrounded()
     {
@@ -288,6 +311,11 @@ public class PlayerMovement : NetworkBehaviour
         }
     }
 
+    public void SetAiming(bool aiming)
+    {
+        isAiming = aiming;
+    }
+
 
     //========================================================//
     // DEBUG
@@ -341,4 +369,5 @@ public class PlayerMovement : NetworkBehaviour
 
         IsMovementLocked = false;
     }
+
 }

@@ -36,8 +36,6 @@ public class PlayerCombat : MonoBehaviour
         if (ctx.equipment.weapon == null)
             return;
 
-        // No permitir otro ataque mientras
-        // la animación actual está ejecutándose.
         if (isAttacking)
             return;
 
@@ -77,10 +75,6 @@ public class PlayerCombat : MonoBehaviour
 
         isAttacking = true;
 
-        if (ctx.movement != null)
-        {
-            ctx.movement.SetMovementLocked(true);
-        }
 
         Debug.Log("DISPARO: NotifyShoot llamado");
 
@@ -126,13 +120,11 @@ public class PlayerCombat : MonoBehaviour
         if (ctx == null)
             return;
 
-        // Liberar movimiento.
         if (ctx.movement != null)
         {
-            ctx.movement.SetMovementLocked(false);
+            ctx.movement.SetAiming(false);
         }
 
-        // Finalizar rotación de ataque.
         if (ctx.rotation != null)
         {
             ctx.rotation.StopAttackRotation();

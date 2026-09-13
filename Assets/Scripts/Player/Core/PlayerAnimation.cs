@@ -50,6 +50,9 @@ public class PlayerAnimation : NetworkBehaviour
     private static readonly int DancingHash =
         Animator.StringToHash("Dancing");
 
+    private static readonly int IsAimingHash =
+        Animator.StringToHash("IsAiming");
+
 
     //========================================================//
     // AWAKE
@@ -127,6 +130,10 @@ public class PlayerAnimation : NetworkBehaviour
         ctx.animator.SetBool(
             IsMovingHash,
             isMoving);
+
+        ctx.animator.SetBool(
+            IsAimingHash,
+            ctx.movement.IsAiming);
 
     }
 

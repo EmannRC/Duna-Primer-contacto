@@ -77,10 +77,13 @@ public class PlayerInputEvents : MonoBehaviour
     {
         if (ctx == null)
             return;
+
         if (ctx.health.IsDead.Value)
             return;
 
-        ctx.targeting.isAiming = input.ReadValueAsButton();
+        ctx.targeting.SetAiming(
+            input.ReadValueAsButton()
+        );
     }
 
     public void OnLook(InputAction.CallbackContext input)

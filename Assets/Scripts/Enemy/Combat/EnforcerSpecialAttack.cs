@@ -10,9 +10,6 @@ public class EnforcerSpecialAttack : NetworkBehaviour
     [SerializeField] private float minTriggerDistance = 3f;
     [SerializeField] private float maxTriggerDistance = 10f;
 
-    [Header("Animation")]
-    [SerializeField] private string jumpTrigger = "JumpAttack";
-
     [Tooltip("Tiempo total aproximado de la animación")]
     [SerializeField] private float attackDuration = 1.5f;
 

@@ -3,12 +3,35 @@ using UnityEngine;
 
 public class EnemyStats : NetworkBehaviour
 {
-    [field: SerializeField]
-    public float MoveSpeed { get; private set; } = 3.5f;
+    [Header("Stats")]
+    [SerializeField] private EnemyStatsData statsData;
+    [SerializeField] private int level = 1;
 
-    [field: SerializeField]
-    public float AttackDamage { get; private set; } = 10f;
+    public int Level => level;
 
-    [field: SerializeField]
-    public float AttackRange { get; private set; } = 2f;
+    public float MaxHealth
+    {
+        get
+        {
+            EnemyStatsData.LevelStats stats = statsData.GetStats(level);
+
+            if (stats == null)
+                return 0f;
+
+            return stats.maxHealth;
+        }
+    }
+
+    public float AttackDamage
+    {
+        get
+        {
+            EnemyStatsData.LevelStats stats = statsData.GetStats(level);
+
+            if (stats == null)
+                return 0f;
+
+            return stats.attackDamage;
+        }
+    }
 }

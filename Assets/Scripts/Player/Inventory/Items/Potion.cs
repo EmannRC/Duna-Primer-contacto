@@ -9,7 +9,7 @@ public class Potion : Item
 
     public override void Consume(GameObject user)
     {
-        var health = user.GetComponent<PlayerHealth>();
+        var health = user.GetComponentInParent<PlayerHealth>();
 
         if (health != null)
         {

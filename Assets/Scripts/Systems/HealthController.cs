@@ -6,6 +6,14 @@ public class HealthController : NetworkBehaviour
 {
     [Header("Vida")]
     [SerializeField] private float maxHealth = 100f;
+    public float MaxHealth => maxHealth;
+
+    public float HealthPercent =>
+        maxHealth > 0f ? CurrentHealth.Value / maxHealth : 0f;
+
+    public event Action OnDeath;
+    public event Action<float, float> OnHealthChanged;
+
 
     public NetworkVariable<float> CurrentHealth =
         new NetworkVariable<float>(
@@ -21,11 +29,6 @@ public class HealthController : NetworkBehaviour
             NetworkVariableWritePermission.Server
         );
 
-    public float HealthPercent =>
-        maxHealth > 0f ? CurrentHealth.Value / maxHealth : 0f;
-
-    public event Action OnDeath;
-    public event Action<float, float> OnHealthChanged;
 
     private DeathController deathController;
 

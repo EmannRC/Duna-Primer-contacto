@@ -43,37 +43,68 @@ namespace Duna.QuestSystem
 
         private void HandleQuestTurnedIn(QuestInstance quest)
         {
-            Debug.Log($"[QuestSequence] Se entregó: {quest.Data.QuestID}");
+            string completedID = quest.Data.QuestID;
+
+            Debug.Log(
+                $"[QuestSequence] Completada: {completedID}"
+            );
 
             foreach (QuestSequence sequence in sequences)
             {
-                Debug.Log(
-                    $"[QuestSequence] Comparando: " +
-                    $"{sequence.completedQuestID} == {quest.Data.QuestID}"
-                );
-
-                if (sequence.completedQuestID != quest.Data.QuestID)
+                if (sequence.completedQuestID != completedID)
                     continue;
 
                 Debug.Log(
-                    $"[QuestSequence] ¡Coincide! Intentando activar: " +
-                    $"{sequence.nextQuestID}"
+                    $"[QuestSequence] " +
+                    $"{completedID}  {sequence.nextQuestID}"
                 );
 
-                bool result = questManager.AcceptQuest(
-                    sequence.nextQuestID
-                );
+                if (questManager.HasQuest(sequence.nextQuestID))
+                {
+                    Debug.LogWarning(
+                        $"[QuestSequence] " +
+                        $"'{sequence.nextQuestID}' ya está activa."
+                    );
 
-                Debug.Log(
-                    $"[QuestSequence] AcceptQuest devolvió: {result}"
-                );
+                    return;
+                }
+
+                if (questManager.IsQuestCompleted(sequence.nextQuestID))
+                {
+                    Debug.LogWarning(
+                        $"[QuestSequence] " +
+                        $"'{sequence.nextQuestID}' ya fue completada."
+                    );
+
+                    return;
+                }
+
+                bool accepted =
+                    questManager.AcceptQuest(
+                        sequence.nextQuestID
+                    );
+
+                if (accepted)
+                {
+                    Debug.Log(
+                        $"[QuestSequence] " +
+                        $"'{sequence.nextQuestID}' desbloqueada."
+                    );
+                }
+                else
+                {
+                    Debug.LogError(
+                        $"[QuestSequence]  " +
+                        $"No se pudo aceptar '{sequence.nextQuestID}'."
+                    );
+                }
 
                 return;
             }
 
             Debug.LogWarning(
-                $"[QuestSequence] No encontré una secuencia para: " +
-                $"{quest.Data.QuestID}"
+                $"[QuestSequence] No hay una secuencia " +
+                $"configurada para '{completedID}'."
             );
         }
     }

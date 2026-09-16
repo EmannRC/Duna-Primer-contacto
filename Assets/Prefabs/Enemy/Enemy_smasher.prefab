@@ -418,18 +418,12 @@ MonoBehaviour:
     weight: 5
   - prefab: {fileID: -4294227757254934880, guid: 047bb487815d1ed47974aee8e36ed981, type: 3}
     weight: 10
-  - prefab: {fileID: 2646410275566159743, guid: 7c08c62a883a55a499e6b4d05ccb5359, type: 3}
-    weight: 20
-  - prefab: {fileID: 2646410275566159743, guid: 90489fce8af91b94ab89d5c1c245ac9c, type: 3}
-    weight: 20
   - prefab: {fileID: -5405766417531995736, guid: d3fe9e42e1a4aad4aba5cfe3214998d9, type: 3}
-    weight: 100
-  - prefab: {fileID: -3468917201845883158, guid: 4a752c015df4c7f4fadb61af658f7ed0, type: 3}
-    weight: 20
-  - prefab: {fileID: -3468917201845883158, guid: e2da4fe007d2a4c44affe827303dae6f, type: 3}
-    weight: 20
-  - prefab: {fileID: -5616703389811089946, guid: 6ba928ec8a2cc534191a77dba15de69d, type: 3}
-    weight: 20
+    weight: 50
+  - prefab: {fileID: 8842910924500253454, guid: 44656226b793dd84f9e9f081843b6c3d, type: 3}
+    weight: 50
+  - prefab: {fileID: 2646410275566159743, guid: 21c9ce5f8917ea84491833bae638d712, type: 3}
+    weight: 0.1
   dropPoint: {fileID: 3743706927994978619}
 --- !u!195 &6737502161468156323
 NavMeshAgent:

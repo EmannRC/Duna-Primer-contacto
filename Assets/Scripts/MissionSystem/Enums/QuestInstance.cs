@@ -20,6 +20,12 @@ namespace Duna.QuestSystem
         public QuestState State => state;
         public int CurrentObjectiveIndex => currentObjectiveIndex;
 
+        /// <summary>
+        /// Índice del último objetivo que se completó al procesar progreso.
+        /// Es -1 cuando el último evento solo avanzó progreso parcial.
+        /// </summary>
+        public int LastCompletedObjectiveIndex { get; private set; } = -1;
+
         public IReadOnlyList<QuestObjectiveRuntime> Objectives => objectives;
 
         public QuestObjectiveRuntime CurrentObjective =>
@@ -68,8 +74,11 @@ namespace Duna.QuestSystem
         /// </summary>
         public bool TryProgress(ObjectiveType type, string targetID, int amount = 1)
         {
+            LastCompletedObjectiveIndex = -1;
             if (CurrentObjective == null)
                 return false;
+
+            int objectiveIndex = currentObjectiveIndex;
 
             bool progressed = CurrentObjective.TryProgress(type, targetID, amount);
 
@@ -78,6 +87,7 @@ namespace Duna.QuestSystem
 
             if (CurrentObjective.IsCompleted)
             {
+                LastCompletedObjectiveIndex = objectiveIndex;
                 AdvanceObjective();
             }
 

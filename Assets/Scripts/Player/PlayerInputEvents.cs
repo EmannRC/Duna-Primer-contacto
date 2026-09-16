@@ -106,17 +106,13 @@ public class PlayerInputEvents : MonoBehaviour
         ctx.targeting.Zoom(input.ReadValue<Vector2>().y);
     }
 
-    public void OnInteract(
-        InputAction.CallbackContext input)
+    public void OnInteract(InputAction.CallbackContext input)
     {
         if (!input.performed)
             return;
 
-        Debug.Log("E PRESIONADA");
-
         if (ctx == null)
             return;
-
 
         if (ctx.health.IsDead.Value)
             return;

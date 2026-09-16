@@ -65,6 +65,14 @@ namespace Duna.QuestSystem
             OnObjectiveUpdated;
 
 
+        /// <summary>
+        /// Se invoca una sola vez cuando un objetivo pasa a completado.
+        /// Incluye el �ndice y los datos del objetivo que lo originaron.
+        /// </summary>
+        public event Action<QuestInstance, int, QuestObjectiveRuntime>
+            OnObjectiveCompleted;
+
+
         private void OnEnable()
         {
             QuestEvents.OnTalkToNPC += HandleTalkToNPC;
@@ -92,7 +100,10 @@ namespace Duna.QuestSystem
                     itemID,
                     amount))
                 {
-                    NotifyObjectiveUpdated(quest);
+                    NotifyObjectiveUpdated(
+                        quest,
+                        quest.LastCompletedObjectiveIndex
+                    );
                 }
             }
         }
@@ -105,7 +116,10 @@ namespace Duna.QuestSystem
                     ObjectiveType.Talk,
                     npcID))
                 {
-                    NotifyObjectiveUpdated(quest);
+                    NotifyObjectiveUpdated(
+                        quest,
+                        quest.LastCompletedObjectiveIndex
+                    );
                 }
             }
         }
@@ -119,7 +133,10 @@ namespace Duna.QuestSystem
                     itemID,
                     amount))
                 {
-                    NotifyObjectiveUpdated(quest);
+                    NotifyObjectiveUpdated(
+                        quest,
+                        quest.LastCompletedObjectiveIndex
+                    );
                 }
             }
         }
@@ -133,7 +150,10 @@ namespace Duna.QuestSystem
                     enemyID,
                     amount))
                 {
-                    NotifyObjectiveUpdated(quest);
+                    NotifyObjectiveUpdated(
+                        quest,
+                        quest.LastCompletedObjectiveIndex
+                    );
                 }
             }
         }
@@ -146,7 +166,10 @@ namespace Duna.QuestSystem
                     ObjectiveType.ReachArea,
                     areaID))
                 {
-                    NotifyObjectiveUpdated(quest);
+                    NotifyObjectiveUpdated(
+                        quest,
+                        quest.LastCompletedObjectiveIndex
+                    );
                 }
             }
         }
@@ -221,8 +244,7 @@ namespace Duna.QuestSystem
             );
 
 
-            // Una misión sin objetivos ya está completa desde su creación.
-            // Así las misiones automáticas no quedan activas para siempre.
+           
             if (quest.IsCompleted)
             {
                 OnQuestCompleted?.Invoke(quest);
@@ -418,10 +440,23 @@ namespace Duna.QuestSystem
         //================================================//
 
         public void NotifyObjectiveUpdated(
-            QuestInstance quest)
+            QuestInstance quest,
+            int completedObjectiveIndex = -1)
         {
             if (quest == null)
                 return;
+
+            if (
+                completedObjectiveIndex >= 0 &&
+                completedObjectiveIndex < quest.Objectives.Count
+            )
+            {
+                OnObjectiveCompleted?.Invoke(
+                    quest,
+                    completedObjectiveIndex,
+                    quest.Objectives[completedObjectiveIndex]
+                );
+            }
 
             OnObjectiveUpdated?.Invoke(
                 quest

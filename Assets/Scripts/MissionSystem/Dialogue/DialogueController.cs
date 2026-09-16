@@ -1,37 +1,59 @@
 using Duna.InteractionSystem;
 using Duna.QuestSystem;
+using System;
+using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Duna.DialogueSystem
 {
-    public class DialogueController :
-        MonoBehaviour,
-        IInteractable
+    public class DialogueController : MonoBehaviour, IInteractable
     {
-        [Header("Dialogue - Mission")]
-        [Tooltip("Diálogo que se muestra cuando el jugador todavía no tiene la misión.")]
+        //================================================//
+        // DEFAULT DIALOGUE
+        //================================================//
+
+        [Header("Dialogue - Default")]
+
         [SerializeField]
-        private DialogueData questDialogue;
+        private DialogueData defaultDialogue;
 
 
-        [Header("Dialogue - In Progress")]
-        [Tooltip("Diálogo que se muestra mientras la misión está activa pero todavía no está completada.")]
+        //================================================//
+        // DIALOGUE EVENTS
+        //================================================//
+
+        [Header("Dialogue Events")]
+
         [SerializeField]
-        private DialogueData inProgressDialogue;
+        private UnityEvent onQuestDialogueFinished;
 
-
-        [Header("Dialogue - Completion")]
-        [Tooltip("Diálogo que se muestra cuando la misión está completada y puede entregarse.")]
         [SerializeField]
-        private DialogueData completionDialogue;
+        private UnityEvent onInProgressDialogueFinished;
 
+        [SerializeField]
+        private UnityEvent onCompletionDialogueFinished;
+
+
+        //================================================//
+        // CURRENT PLAYER
+        //================================================//
 
         private PlayerContext currentPlayer;
 
 
-        // Indica qué tipo de diálogo se está mostrando.
-        private DialogueState currentDialogueState;
+        //================================================//
+        // CURRENT QUEST
+        //================================================//
 
+        private QuestData currentQuest;
+
+
+        //================================================//
+        // DIALOGUE STATE
+        //================================================//
+
+        private DialogueState currentDialogueState;
 
         private enum DialogueState
         {
@@ -46,23 +68,15 @@ namespace Duna.DialogueSystem
         // INTERACT
         //================================================//
 
-        public void Interact(
-            GameObject player
-        )
+        public void Interact(GameObject player)
         {
             if (player == null)
             {
-                Debug.LogError(
-                    "Player inválido."
-                );
-
+                Debug.LogError("Player inválido.");
                 return;
             }
 
-
-            currentPlayer =
-                player.GetComponent<PlayerContext>();
-
+            currentPlayer = player.GetComponent<PlayerContext>();
 
             if (currentPlayer == null)
             {
@@ -73,7 +87,6 @@ namespace Duna.DialogueSystem
                 return;
             }
 
-
             if (DialogueManager.Instance == null)
             {
                 Debug.LogError(
@@ -83,10 +96,7 @@ namespace Duna.DialogueSystem
                 return;
             }
 
-
-            QuestManager questManager =
-                currentPlayer.questManager;
-
+            QuestManager questManager = currentPlayer.questManager;
 
             if (questManager == null)
             {
@@ -97,52 +107,64 @@ namespace Duna.DialogueSystem
                 return;
             }
 
-
-            QuestGiver questGiver =
-                GetComponent<QuestGiver>();
-
-
-            QuestReceiver questReceiver =
-                GetComponent<QuestReceiver>();
+            QuestGiver questGiver = GetComponent<QuestGiver>();
+            QuestReceiver questReceiver = GetComponent<QuestReceiver>();
 
 
             //================================================//
-            // COMPROBAR ESTADO DE LA MISIÓN
+            // NPC CON QUEST
             //================================================//
 
-            if (
-                questGiver != null &&
-                questGiver.Quest != null
-            )
+            if (questGiver != null &&
+                questGiver.Quest != null)
             {
-                string questID =
-                    questGiver.Quest.QuestID;
+                QuestData quest = questGiver.Quest;
 
+                string questID = quest.QuestID;
 
                 QuestInstance activeQuest =
-                    questManager.GetActiveQuest(
-                        questID
-                    );
+                    questManager.GetActiveQuest(questID);
 
 
                 //================================================//
-                // 1. OBJETIVO DE ENTREGA → DIÁLOGO FINAL
+                // QUEST COMPLETABLE
                 //================================================//
 
-                if (
-                    activeQuest != null &&
-                    questReceiver != null &&
-                    questReceiver.CanDeliver(questManager)
-                )
+                if (activeQuest != null)
                 {
-                    StartCompletionDialogue();
+                    // La misión ya terminó todos sus objetivos.
+                    if (activeQuest.IsCompleted)
+                    {
+                        StartCompletionDialogue(quest);
+                        return;
+                    }
 
+                    // La misión tiene un objetivo Deliver pendiente.
+                    if (questReceiver != null &&
+                        questReceiver.CanDeliver(questManager))
+                    {
+                        StartCompletionDialogue(quest);
+                        return;
+                    }
+
+                    NPCIdentity identity = GetComponent<NPCIdentity>();
+
+                    if (identity != null)
+                    {
+                        if (activeQuest.IsCurrentObjectiveTalkTo(identity.NPCID))
+                        {
+                            StartQuestDialogue(quest);
+                            return;
+                        }
+                    }
+
+                    StartInProgressDialogue(quest);
                     return;
                 }
 
 
                 //================================================//
-                // 2. MISIÓN ACTIVA → DIÁLOGO INTERMEDIO
+                // QUEST ACTIVA
                 //================================================//
 
                 if (activeQuest != null)
@@ -152,30 +174,28 @@ namespace Duna.DialogueSystem
 
                     if (identity != null)
                     {
-                        // Si el objetivo actual es hablar con este NPC
-                        // y todavía no está completado, mostrar diálogo inicial.
-                        if (activeQuest.IsCurrentObjectiveTalkTo(identity.NPCID))
+                        if (activeQuest.IsCurrentObjectiveTalkTo(
+                            identity.NPCID))
                         {
-                            StartQuestDialogue();
+                            StartQuestDialogue(quest);
 
                             return;
                         }
                     }
 
-                    // Si ya habló con este NPC, mostrar diálogo de progreso.
-                    StartInProgressDialogue();
+                    StartInProgressDialogue(quest);
 
                     return;
                 }
 
 
                 //================================================//
-                // 3. MISIÓN NO ACEPTADA → DIÁLOGO INICIAL
+                // QUEST NO ACEPTADA
                 //================================================//
 
                 if (!questManager.IsQuestCompleted(questID))
                 {
-                    StartQuestDialogue();
+                    StartQuestDialogue(quest);
 
                     return;
                 }
@@ -183,16 +203,15 @@ namespace Duna.DialogueSystem
 
 
             //================================================//
-            // NPC SIN QUEST GIVER
+            // NPC SIN QUEST O QUEST YA COMPLETADA
             //================================================//
 
-            if (questDialogue != null)
+            if (defaultDialogue != null)
             {
-                StartQuestDialogue();
+                StartDefaultDialogue();
 
                 return;
             }
-
 
             Debug.LogWarning(
                 $"El NPC {name} no tiene ningún diálogo asignado."
@@ -204,24 +223,25 @@ namespace Duna.DialogueSystem
         // START QUEST DIALOGUE
         //================================================//
 
-        private void StartQuestDialogue()
+        private void StartQuestDialogue(QuestData quest)
         {
-            if (questDialogue == null)
+            if (quest == null)
+                return;
+
+            if (quest.StartDialogue == null)
             {
                 Debug.LogWarning(
-                    $"El NPC {name} no tiene Quest Dialogue."
+                    $"La quest {quest.QuestID} no tiene Start Dialogue."
                 );
 
                 return;
             }
 
-
-            currentDialogueState =
-                DialogueState.Quest;
-
+            currentQuest = quest;
+            currentDialogueState = DialogueState.Quest;
 
             DialogueManager.Instance.StartDialogue(
-                questDialogue,
+                quest.StartDialogue,
                 this
             );
         }
@@ -231,24 +251,25 @@ namespace Duna.DialogueSystem
         // START IN PROGRESS DIALOGUE
         //================================================//
 
-        private void StartInProgressDialogue()
+        private void StartInProgressDialogue(QuestData quest)
         {
-            if (inProgressDialogue == null)
+            if (quest == null)
+                return;
+
+            if (quest.InProgressDialogue == null)
             {
                 Debug.LogWarning(
-                    $"El NPC {name} no tiene In Progress Dialogue."
+                    $"La quest {quest.QuestID} no tiene In Progress Dialogue."
                 );
 
                 return;
             }
 
-
-            currentDialogueState =
-                DialogueState.InProgress;
-
+            currentQuest = quest;
+            currentDialogueState = DialogueState.InProgress;
 
             DialogueManager.Instance.StartDialogue(
-                inProgressDialogue,
+                quest.InProgressDialogue,
                 this
             );
         }
@@ -258,24 +279,44 @@ namespace Duna.DialogueSystem
         // START COMPLETION DIALOGUE
         //================================================//
 
-        private void StartCompletionDialogue()
+        private void StartCompletionDialogue(QuestData quest)
         {
-            if (completionDialogue == null)
+            if (quest == null)
+                return;
+
+            if (quest.CompletionDialogue == null)
             {
                 Debug.LogWarning(
-                    $"El NPC {name} no tiene Completion Dialogue."
+                    $"La quest {quest.QuestID} no tiene Completion Dialogue."
                 );
 
                 return;
             }
 
-
-            currentDialogueState =
-                DialogueState.Completion;
-
+            currentQuest = quest;
+            currentDialogueState = DialogueState.Completion;
 
             DialogueManager.Instance.StartDialogue(
-                completionDialogue,
+                quest.CompletionDialogue,
+                this
+            );
+        }
+
+
+        //================================================//
+        // START DEFAULT DIALOGUE
+        //================================================//
+
+        private void StartDefaultDialogue()
+        {
+            if (defaultDialogue == null)
+                return;
+
+            currentQuest = null;
+            currentDialogueState = DialogueState.None;
+
+            DialogueManager.Instance.StartDialogue(
+                defaultDialogue,
                 this
             );
         }
@@ -289,23 +330,21 @@ namespace Duna.DialogueSystem
         {
             if (currentPlayer == null)
             {
-                Debug.LogError(
-                    "No existe jugador asociado al diálogo."
+                Debug.LogWarning(
+                    $"[{name}] No hay jugador asociado al diálogo."
                 );
+
+                ResetDialogueState();
 
                 return;
             }
 
-
             QuestManager questManager =
                 currentPlayer.questManager;
 
-
             if (questManager == null)
             {
-                Debug.LogError(
-                    "El jugador no tiene QuestManager."
-                );
+                ResetDialogueState();
 
                 return;
             }
@@ -315,17 +354,64 @@ namespace Duna.DialogueSystem
             // DIÁLOGO FINAL
             //================================================//
 
-            if (
-    currentDialogueState ==
-    DialogueState.Completion
-)
+            if (currentDialogueState == DialogueState.Completion)
             {
                 QuestReceiver questReceiver =
                     GetComponent<QuestReceiver>();
 
-                if (questReceiver != null)
+                QuestInstance activeQuest = null;
+
+                if (currentQuest != null)
                 {
-                    // Primero completa el objetivo Deliver
+                    activeQuest =
+                        questManager.GetActiveQuest(
+                            currentQuest.QuestID
+                        );
+                }
+
+                if (activeQuest == null)
+                {
+                    Debug.LogWarning(
+                        $"[{name}] No se encontró la misión activa al finalizar el diálogo."
+                    );
+
+                    onCompletionDialogueFinished?.Invoke();
+                    ResetDialogueState();
+                    return;
+                }
+
+                //================================================//
+                // CASO 1: LA MISIÓN YA ESTABA COMPLETADA
+                //================================================//
+
+                if (activeQuest.IsCompleted)
+                {
+                    bool turnedIn =
+                        questManager.TurnInQuest(
+                            activeQuest.Data.QuestID
+                        );
+
+                    if (turnedIn && currentQuest != null)
+                    {
+                        GiveReward(
+                            currentQuest
+                                .CompletionDialogueData
+                                .reward
+                        );
+                    }
+
+                    onCompletionDialogueFinished?.Invoke();
+                    ResetDialogueState();
+                    return;
+                }
+
+                //================================================//
+                // CASO 2: HAY UN OBJETIVO DELIVER
+                //================================================//
+
+                if (questReceiver != null &&
+                    questReceiver.CanDeliver(questManager))
+                {
                     bool delivered =
                         questReceiver.DeliverItem(
                             questManager
@@ -333,16 +419,35 @@ namespace Duna.DialogueSystem
 
                     if (delivered)
                     {
-                        // Ahora la misión debería estar Completed
-                        questReceiver.TurnInQuest(
-                            questManager
-                        );
+                        // El evento de entrega acaba de ejecutarse.
+                        // Volvemos a consultar el estado de la misión.
+                        activeQuest =
+                            questManager.GetActiveQuest(
+                                currentQuest.QuestID
+                            );
+
+                        if (activeQuest != null &&
+                            activeQuest.IsCompleted)
+                        {
+                            bool turnedIn =
+                                questManager.TurnInQuest(
+                                    activeQuest.Data.QuestID
+                                );
+
+                            if (turnedIn && currentQuest != null)
+                            {
+                                GiveReward(
+                                    currentQuest
+                                        .CompletionDialogueData
+                                        .reward
+                                );
+                            }
+                        }
                     }
                 }
 
-                currentDialogueState =
-                    DialogueState.None;
-
+                onCompletionDialogueFinished?.Invoke();
+                ResetDialogueState();
                 return;
             }
 
@@ -351,7 +456,8 @@ namespace Duna.DialogueSystem
             // DIÁLOGO INICIAL
             //================================================//
 
-            if (currentDialogueState == DialogueState.Quest)
+            if (currentDialogueState ==
+                DialogueState.Quest)
             {
                 QuestGiver questGiver =
                     GetComponent<QuestGiver>();
@@ -365,8 +471,18 @@ namespace Duna.DialogueSystem
 
                 RaiseTalkEvent();
 
-                currentDialogueState =
-                    DialogueState.None;
+                if (currentQuest != null)
+                {
+                    GiveReward(
+                        currentQuest
+                            .StartDialogueData
+                            .reward
+                    );
+                }
+
+                onQuestDialogueFinished?.Invoke();
+
+                ResetDialogueState();
 
                 return;
             }
@@ -376,27 +492,33 @@ namespace Duna.DialogueSystem
             // DIÁLOGO INTERMEDIO
             //================================================//
 
-            if (
-                currentDialogueState ==
-                DialogueState.InProgress
-            )
+            if (currentDialogueState ==
+                DialogueState.InProgress)
             {
-                // No se acepta la misión otra vez.
-                // No se entrega.
-                // Simplemente cuenta como conversación.
                 RaiseTalkEvent();
 
+                if (currentQuest != null)
+                {
+                    GiveReward(
+                        currentQuest
+                            .InProgressDialogueData
+                            .reward
+                    );
+                }
 
-                currentDialogueState =
-                    DialogueState.None;
+                onInProgressDialogueFinished?.Invoke();
 
+                ResetDialogueState();
 
                 return;
             }
 
 
-            currentDialogueState =
-                DialogueState.None;
+            //================================================//
+            // DEFAULT
+            //================================================//
+
+            ResetDialogueState();
         }
 
 
@@ -409,13 +531,10 @@ namespace Duna.DialogueSystem
             NPCIdentity identity =
                 GetComponent<NPCIdentity>();
 
-
-            if (
-                identity == null ||
+            if (identity == null ||
                 string.IsNullOrWhiteSpace(
                     identity.NPCID
-                )
-            )
+                ))
             {
                 Debug.LogWarning(
                     $"El NPC {name} no tiene un NPCIdentity válido."
@@ -424,10 +543,87 @@ namespace Duna.DialogueSystem
                 return;
             }
 
-
             QuestEvents.RaiseTalkToNPC(
                 identity.NPCID
             );
+        }
+
+
+        //================================================//
+        // GIVE REWARD
+        //================================================//
+
+        private void GiveReward(
+            QuestData.DialogueReward reward)
+        {
+            if (reward == null)
+                return;
+
+            if (!reward.giveReward)
+                return;
+
+            if (currentPlayer == null)
+            {
+                Debug.LogWarning(
+                    $"[{name}] No hay jugador asociado."
+                );
+
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(
+                reward.itemID
+            ))
+            {
+                Debug.LogWarning(
+                    $"[{name}] No hay Item ID configurado."
+                );
+
+                return;
+            }
+
+            if (reward.amount <= 0)
+            {
+                Debug.LogWarning(
+                    $"[{name}] La cantidad de recompensa debe ser mayor a 0."
+                );
+
+                return;
+            }
+
+            Inventory inventory =
+                currentPlayer.GetComponentInChildren<Inventory>();
+
+            if (inventory == null)
+            {
+                Debug.LogWarning(
+                    $"[{name}] El jugador no tiene Inventory."
+                );
+
+                return;
+            }
+
+            inventory.RequestAddItem(
+                reward.itemID,
+                reward.amount
+            );
+
+            Debug.Log(
+                $"[{name}] Recompensa solicitada: " +
+                $"{reward.itemID} x{reward.amount}"
+            );
+        }
+
+
+        //================================================//
+        // RESET DIALOGUE STATE
+        //================================================//
+
+        private void ResetDialogueState()
+        {
+            currentDialogueState = DialogueState.None;
+            currentQuest = null;
+            currentPlayer = null;
         }
     }
 }

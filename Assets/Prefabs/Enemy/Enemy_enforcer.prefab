@@ -795,17 +795,7 @@ MonoBehaviour:
   - prefab: {fileID: -5405766417531995736, guid: d3fe9e42e1a4aad4aba5cfe3214998d9, type: 3}
     weight: 50
   - prefab: {fileID: 2646410275566159743, guid: 7c08c62a883a55a499e6b4d05ccb5359, type: 3}
-    weight: 20
-  - prefab: {fileID: -3468917201845883158, guid: 4a752c015df4c7f4fadb61af658f7ed0, type: 3}
-    weight: 20
-  - prefab: {fileID: -5616703389811089946, guid: 9e4feaaf542737740ab982f7f848639b, type: 3}
-    weight: 20
-  - prefab: {fileID: 2646410275566159743, guid: 90489fce8af91b94ab89d5c1c245ac9c, type: 3}
-    weight: 20
-  - prefab: {fileID: -3468917201845883158, guid: e2da4fe007d2a4c44affe827303dae6f, type: 3}
-    weight: 20
-  - prefab: {fileID: -5616703389811089946, guid: 6ba928ec8a2cc534191a77dba15de69d, type: 3}
-    weight: 20
+    weight: 0.5
   dropPoint: {fileID: 2600144279418139401}
 --- !u!195 &2672155966052293101
 NavMeshAgent:

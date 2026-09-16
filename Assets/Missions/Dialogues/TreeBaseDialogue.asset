@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7d96623effd3db54bbc459042cc8a6ab, type: 3}
-  m_Name: Collect-finish-dialogue
+  m_Name: TreeBaseDialogue
   m_EditorClassIdentifier: Assembly-CSharp::Duna.DialogueSystem.DialogueData
-  dialogueID: buscar-coso-finich
+  dialogueID: Dialogue_base_tree
   lines:
   - speakerName: Arbol ancestral
-    text: "Oh, \xA1Lo has encontrado! Buen trabajo, toma este obsequio "
+    text: 'Que paso master '

@@ -71,7 +71,10 @@ namespace Duna.QuestSystem
 
                 if (progressed)
                 {
-                    questManager.NotifyObjectiveUpdated(quest);
+                    questManager.NotifyObjectiveUpdated(
+                        quest,
+                        quest.LastCompletedObjectiveIndex
+                    );
                 }
             }
         }

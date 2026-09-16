@@ -152,6 +152,40 @@ public class Inventory : NetworkBehaviour, IQuestItemProvider
 
         return 0;
     }
+
+    //================================================//
+    // REQUEST ADD ITEM
+    //================================================//
+
+    public void RequestAddItem(
+        string itemID,
+        int amount = 1
+    )
+    {
+        AddItemRpc(
+            itemID,
+            amount
+        );
+    }
+
+    //================================================//
+    // ADD ITEM RPC
+    //================================================//
+
+    [Rpc(
+        SendTo.Server,
+        InvokePermission = RpcInvokePermission.Owner
+    )]
+    private void AddItemRpc(
+        string itemID,
+        int amount
+    )
+    {
+        AddItem(
+            itemID,
+            amount
+        );
+    }
 }
 
 

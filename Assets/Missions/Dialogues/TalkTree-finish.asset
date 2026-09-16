@@ -10,11 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7d96623effd3db54bbc459042cc8a6ab, type: 3}
-  m_Name: Collect-initial-dialogue
+  m_Name: TalkTree-finish
   m_EditorClassIdentifier: Assembly-CSharp::Duna.DialogueSystem.DialogueData
-  dialogueID: buscar-coso
+  dialogueID: Dialogue_finish_tree
   lines:
   - speakerName: Arbol ancestral
-    text: "Hola, te estaba esperando Lumen. Necesito que me ayudes a encontrar el
-      legendario nucleo m\xE1gico. Notar\xE1s que emite una luz rosada. Confio en
-      ti para esta importante misi\xF3n"
+    text: "Oh, \xA1Lo has logrado! Sabia que podia confiar en ti, Lumen. Ha sido
+      un peque\xF1a batalla ganada, pero la guerra no ha terminado "

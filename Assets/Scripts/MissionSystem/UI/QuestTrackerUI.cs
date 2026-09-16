@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
@@ -11,17 +12,21 @@ namespace Duna.QuestSystem.UI
         private QuestManager questManager;
 
 
-        [Header("UI")]
+        [Header("Main Quest")]
         [SerializeField]
-        private TextMeshProUGUI questTitle;
+        private QuestEntryUI mainQuestEntry;
 
+
+        [Header("Side Quests")]
+        [SerializeField]
+        private QuestEntryUI sideQuestEntry1;
 
         [SerializeField]
-        private TextMeshProUGUI questDescription;
-
+        private QuestEntryUI sideQuestEntry2;
 
         [SerializeField]
-        private TextMeshProUGUI objectiveText;
+        private QuestEntryUI sideQuestEntry3;
+
 
         private bool isBound;
 
@@ -30,8 +35,7 @@ namespace Duna.QuestSystem.UI
         // BIND
         //==========================================================//
 
-        public void Bind(
-            QuestManager manager)
+        public void Bind(QuestManager manager)
         {
             if (manager == null)
             {
@@ -42,27 +46,18 @@ namespace Duna.QuestSystem.UI
                 return;
             }
 
-
             if (isBound)
             {
                 Unbind();
             }
 
-
-            questManager =
-                manager;
-
+            questManager = manager;
 
             SubscribeToEvents();
 
+            isBound = true;
 
-            isBound =
-                true;
-
-
-            RefreshUI(
-                null
-            );
+            RefreshUI(null);
         }
 
 
@@ -75,25 +70,19 @@ namespace Duna.QuestSystem.UI
             if (questManager == null)
                 return;
 
-
             questManager.OnQuestAccepted
                 -= RefreshUI;
-
 
             questManager.OnQuestCompleted
                 -= RefreshUI;
 
-
             questManager.OnQuestTurnedIn
                 -= RefreshUI;
-
 
             questManager.OnObjectiveUpdated
                 -= RefreshUI;
 
-
-            isBound =
-                false;
+            isBound = false;
         }
 
 
@@ -116,14 +105,11 @@ namespace Duna.QuestSystem.UI
             questManager.OnQuestAccepted
                 += RefreshUI;
 
-
             questManager.OnQuestCompleted
                 += RefreshUI;
 
-
             questManager.OnQuestTurnedIn
                 += RefreshUI;
-
 
             questManager.OnObjectiveUpdated
                 += RefreshUI;
@@ -139,76 +125,76 @@ namespace Duna.QuestSystem.UI
             if (questManager == null)
                 return;
 
+            ClearEntries();
 
-            if (
-                questManager.ActiveQuests.Count
-                == 0
-            )
+            foreach (QuestInstance activeQuest
+                in questManager.ActiveQuests)
             {
-                ClearUI();
+                if (activeQuest == null)
+                    continue;
 
-                return;
+                if (activeQuest.Data.Type ==
+                    QuestData.QuestType.Main)
+                {
+                    if (mainQuestEntry != null)
+                    {
+                        mainQuestEntry.SetQuest(activeQuest);
+                    }
+
+                    continue;
+                }
+
+                AddSideQuest(activeQuest);
             }
-
-
-            QuestInstance activeQuest =
-                questManager.ActiveQuests[0];
-
-
-            if (activeQuest == null)
-            {
-                ClearUI();
-
-                return;
-            }
-
-
-            questTitle.text =
-                activeQuest.Data.QuestName;
-
-
-            questDescription.text =
-                activeQuest.Data.Description;
-
-
-            QuestObjectiveRuntime objective =
-                activeQuest.CurrentObjective;
-
-
-            if (objective == null)
-            {
-                ClearUI();
-
-                return;
-            }
-
-
-            objectiveText.text =
-                $"{objective.Data.Description}\n" +
-                $"{objective.CurrentAmount}/" +
-                $"{objective.Data.RequiredAmount}";
         }
 
 
         //==========================================================//
-        // CLEAR UI
+        // ADD SIDE QUEST
         //==========================================================//
 
-        private void ClearUI()
+        private void AddSideQuest(QuestInstance quest)
         {
-            if (questTitle != null)
-                questTitle.text =
-                    "";
+            if (sideQuestEntry1 != null &&
+                sideQuestEntry1.IsEmpty)
+            {
+                sideQuestEntry1.SetQuest(quest);
+                return;
+            }
+
+            if (sideQuestEntry2 != null &&
+                sideQuestEntry2.IsEmpty)
+            {
+                sideQuestEntry2.SetQuest(quest);
+                return;
+            }
+
+            if (sideQuestEntry3 != null &&
+                sideQuestEntry3.IsEmpty)
+            {
+                sideQuestEntry3.SetQuest(quest);
+                return;
+            }
+        }
 
 
-            if (questDescription != null)
-                questDescription.text =
-                    "";
+        //==========================================================//
+        // CLEAR
+        //==========================================================//
 
+        private void ClearEntries()
+        {
+            if (mainQuestEntry != null)
+                mainQuestEntry.Clear();
 
-            if (objectiveText != null)
-                objectiveText.text =
-                    "";
+            if (sideQuestEntry1 != null)
+                sideQuestEntry1.Clear();
+
+            if (sideQuestEntry2 != null)
+                sideQuestEntry2.Clear();
+
+            if (sideQuestEntry3 != null)
+                sideQuestEntry3.Clear();
         }
     }
 }

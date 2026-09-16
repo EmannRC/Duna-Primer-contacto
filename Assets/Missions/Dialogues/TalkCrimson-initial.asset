@@ -10,10 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7d96623effd3db54bbc459042cc8a6ab, type: 3}
-  m_Name: Collect-progress-dialogue
+  m_Name: TalkCrimson-initial
   m_EditorClassIdentifier: Assembly-CSharp::Duna.DialogueSystem.DialogueData
-  dialogueID: buscar-coso-progress
+  dialogueID: Dialogue__initial_crimson
   lines:
-  - speakerName: Arbol ancestral
-    text: "\xBFAun no encontraste el coso del cosito? Sigue buscando, confio en que
-      podr\xE1s tu solo"
+  - speakerName: Elfa carmesi
+    text: "Eh, hacia mucho que no veia un elfo normi por aqui. \xBFTe molestaria
+      ayudarme con una plaga de ojalatas vivientes?"
+  - speakerName: Elfa carmesi
+    text: Desde que estalllo la invasion de los Polygon, este lugar ya no es el mismo.
+      Si me ayudas sabre recompensarte

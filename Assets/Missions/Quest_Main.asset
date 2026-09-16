@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03b6b5ad6ba69b945a4292c794841dc2, type: 3}
+  m_Name: Quest_Main
+  m_EditorClassIdentifier: Assembly-CSharp::Duna.QuestSystem.QuestData
+  questType: 0
+  questID: Quest_main
+  questName: La amenaza de los polygon
+  description: "Una peligrosa amezaza de otro mundo est\xE1 alterando el equilibrio
+    m\xE1gico y poniendo a todos en riesgo. Investiga el caso y abret\xE9 camino
+    para terminar con esta terrible invasi\xF3n."
+  objectives:
+  - objectiveType: 3
+    targetID: Enemy_smasher
+    requiredAmount: 5
+    description: Despeja el bosque elfico de los intrusos
+  - objectiveType: 0
+    targetID: NPC_ancient_tree
+    requiredAmount: 0
+    description: Regresa con el arbo ancestral
+  rewards: []
+  startDialogue:
+    dialogue: {fileID: 11400000, guid: 06da4bd7c0ed3e54f9b4ac3e05f3dc0d, type: 2}
+    reward:
+      giveReward: 1
+      itemID: Weapon_Staff_Nature
+      amount: 1
+  inProgressDialogue:
+    dialogue: {fileID: 11400000, guid: e285454cea9026f4cbc5c2aae223cfb5, type: 2}
+    reward:
+      giveReward: 0
+      itemID: 
+      amount: 1
+  completionDialogue:
+    dialogue: {fileID: 11400000, guid: e61155111df77414e92f978d0ab90472, type: 2}
+    reward:
+      giveReward: 0
+      itemID: 
+      amount: 1
+  repeatable: 0
+  autoComplete: 1

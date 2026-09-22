@@ -72,7 +72,7 @@ namespace Duna.QuestSystem
         public event Action<QuestInstance, int, QuestObjectiveRuntime>
             OnObjectiveCompleted;
 
-
+        /*
         private void OnEnable()
         {
             QuestEvents.OnTalkToNPC += HandleTalkToNPC;
@@ -143,6 +143,7 @@ namespace Duna.QuestSystem
 
         private void HandleKillEnemy(string enemyID, int amount)
         {
+            Debug.Log($"[QUEST KILL] enemyID={enemyID} amount={amount} QuestManager={GetInstanceID()}");
             foreach (QuestInstance quest in activeQuests)
             {
                 if (quest.TryProgress(
@@ -173,7 +174,7 @@ namespace Duna.QuestSystem
                 }
             }
         }
-
+        */
         //================================================//
         // ACCEPT QUEST
         //================================================//

@@ -13,6 +13,8 @@ public class EnemyHealth : HealthController
 
     private EnemyIdentity identity;
 
+    private bool killEventSent;
+
     //==============================================================//
 
     private void Awake()
@@ -26,21 +28,34 @@ public class EnemyHealth : HealthController
 
     public override void Die()
     {
+        if (!IsServer)
+            return;
+
         if (IsDead.Value)
             return;
 
-        if (IsServer)
-        {
-            DropRandomItem();
+        if (killEventSent)
+            return;
 
-            if (reward != null)
-                reward.GiveRewards();
+        killEventSent = true;
 
-            if (identity != null)
-                QuestEvents.RaiseKillEnemy(identity.EnemyID, 1);
-        }
-
+        // Muerte base
         base.Die();
+
+        // Recompensas
+        DropRandomItem();
+
+        if (reward != null)
+            reward.GiveRewards();
+
+        // Quest
+        Debug.Log(
+    $"[EnemyHealth] Kill enviado: {identity.EnemyID} | " +
+    $"Enemy: {gameObject.name} | " +
+    $"Server: {IsServer}"
+);
+        if (identity != null)
+            QuestEvents.RaiseKillEnemy(identity.EnemyID, 1);
     }
 
 

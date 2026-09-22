@@ -21,6 +21,10 @@ public class DeathController : NetworkBehaviour
     [Header("Audio")]
     [SerializeField] private AudioSource deathSound;
 
+    [Header("Death VFX")]
+    [SerializeField] private GameObject deathVFXPrefab;
+    [SerializeField] private Transform deathVFXPoint;
+
     private PlayerContext playerCtx;
     private EnemyContext enemyCtx;
 
@@ -54,6 +58,8 @@ public class DeathController : NetworkBehaviour
             return;
 
         deathHandled = true;
+
+        PlayDeathVFXClientRpc();
 
         if (entityType == EntityType.Player)
         {
@@ -94,7 +100,7 @@ public class DeathController : NetworkBehaviour
     // PLAYER CLIENT
     //========================================================//
 
-    [ClientRpc]
+    [Rpc(SendTo.ClientsAndHost)]
     private void ShowPlayerDeathClientRpc()
     {
         if (!IsOwner)
@@ -159,5 +165,18 @@ public class DeathController : NetworkBehaviour
             return;
 
         deathHandled = false;
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void PlayDeathVFXClientRpc()
+    {
+        if (deathVFXPrefab == null)
+            return;
+
+        Vector3 position = deathVFXPoint != null
+            ? deathVFXPoint.position
+            : transform.position;
+
+        Instantiate(deathVFXPrefab, position, Quaternion.identity);
     }
 }

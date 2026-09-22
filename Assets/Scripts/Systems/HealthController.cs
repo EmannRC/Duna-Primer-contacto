@@ -29,6 +29,10 @@ public class HealthController : NetworkBehaviour
             NetworkVariableWritePermission.Server
         );
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource damageSound;
+    [SerializeField] private AudioClip damageClip;
+
 
     private DeathController deathController;
 
@@ -73,6 +77,9 @@ public class HealthController : NetworkBehaviour
             CurrentHealth.Value - amount,
             0f
         );
+
+        if(damageClip != null)
+        PlayDamageSoundRpc();
 
         if (CurrentHealth.Value <= 0f)
             Die();
@@ -121,5 +128,15 @@ public class HealthController : NetworkBehaviour
 
         CurrentHealth.Value = maxHealth;
         IsDead.Value = false;
+    }
+
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void PlayDamageSoundRpc()
+    {
+        if (damageSound == null || damageClip == null)
+            return;
+
+        damageSound.PlayOneShot(damageClip);
     }
 }

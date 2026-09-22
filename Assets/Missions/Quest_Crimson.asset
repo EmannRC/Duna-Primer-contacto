@@ -14,13 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Duna.QuestSystem.QuestData
   questType: 1
   questID: Quest_crimson
-  questName: 
-  description: Elimina a todos los enemigos
+  questName: La purga carmesi
+  description: Elimina a todos los enemigos que encuentres en el bosque carmesi
   objectives:
   - objectiveType: 3
     targetID: Enemy_smasher
     requiredAmount: 5
-    description: Elimina a todos los enemigos del bosque carmesi
+    description: 'Elimina enemigos '
+  - objectiveType: 0
+    targetID: Npc_crimson_elf
+    requiredAmount: 5
+    description: 'Elimina enemigos '
   rewards: []
   startDialogue:
     dialogue: {fileID: 11400000, guid: 5c0127e3b6754cc439c103997ada3723, type: 2}
@@ -41,4 +45,4 @@ MonoBehaviour:
       itemID: Weapon_Staff_Fire
       amount: 1
   repeatable: 0
-  autoComplete: 1
+  autoComplete: 0

@@ -60,6 +60,12 @@ namespace Duna.QuestSystem
             if (data.TargetID != targetID)
                 return false;
 
+            Debug.Log(
+    $"[QuestObjectiveRuntime] Progreso: " +
+    $"{data.Description} | " +
+    $"Antes: {currentAmount} | " +
+    $"Amount recibido: {amount}"
+);
             currentAmount += amount;
 
             if (currentAmount >= data.RequiredAmount)

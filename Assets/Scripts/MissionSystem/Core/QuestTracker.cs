@@ -46,6 +46,9 @@ namespace Duna.QuestSystem
 
         private void OnKillEnemy(string enemyID, int amount)
         {
+            Debug.Log(
+    $"[QuestTracker] Kill recibido: {enemyID} | Amount: {amount}"
+);
             UpdateObjectives(ObjectiveType.Kill, enemyID, amount);
         }
 

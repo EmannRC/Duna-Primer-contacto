@@ -784,16 +784,20 @@ MonoBehaviour:
       MinSecondsBetweenUpdates: 0
       MaxSecondsBetweenUpdates: 0
     m_InternalValue: 0
+  damageSound: {fileID: 0}
+  damageClip: {fileID: 0}
   reward: {fileID: 7680477722212220428}
   possibleDrops:
+  - prefab: {fileID: -5405766417531995736, guid: d3fe9e42e1a4aad4aba5cfe3214998d9, type: 3}
+    weight: 50
+  - prefab: {fileID: -5405766417531995736, guid: ab222af88805f0b4abd6f8b3ab43ba00, type: 3}
+    weight: 50
   - prefab: {fileID: 7657548515417732486, guid: ffade861ef406084eb10e9d260d4b171, type: 3}
     weight: 1
   - prefab: {fileID: 1679491564838946477, guid: 195a12ed20e80164c83cab9f38c8bbb2, type: 3}
     weight: 5
   - prefab: {fileID: -4294227757254934880, guid: 047bb487815d1ed47974aee8e36ed981, type: 3}
     weight: 10
-  - prefab: {fileID: -5405766417531995736, guid: d3fe9e42e1a4aad4aba5cfe3214998d9, type: 3}
-    weight: 50
   - prefab: {fileID: 2646410275566159743, guid: 7c08c62a883a55a499e6b4d05ccb5359, type: 3}
     weight: 0.5
   dropPoint: {fileID: 2600144279418139401}
@@ -980,6 +984,8 @@ MonoBehaviour:
   destroyOnDeath: 1
   destroyDelay: 3
   deathSound: {fileID: 0}
+  deathVFXPrefab: {fileID: 0}
+  deathVFXPoint: {fileID: 0}
 --- !u!114 &96770285929334912
 MonoBehaviour:
   m_ObjectHideFlags: 0

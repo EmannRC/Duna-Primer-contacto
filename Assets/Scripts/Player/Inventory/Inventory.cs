@@ -172,19 +172,55 @@ public class Inventory : NetworkBehaviour, IQuestItemProvider
     // ADD ITEM RPC
     //================================================//
 
-    [Rpc(
-        SendTo.Server,
-        InvokePermission = RpcInvokePermission.Owner
-    )]
-    private void AddItemRpc(
-        string itemID,
-        int amount
-    )
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
+    private void AddItemRpc(string itemID, int amount)
     {
         AddItem(
             itemID,
             amount
         );
+    }
+
+    public bool TryRemoveItems(IReadOnlyList<QuestObjectiveData.RequiredItem> requiredItems)
+    {
+        if (!IsServer)
+            return false;
+
+        if (requiredItems == null || requiredItems.Count == 0)
+            return false;
+
+        //================================================//
+        // 1. COMPROBAR TODO ANTES DE MODIFICAR NADA
+        //================================================//
+
+        foreach (var requiredItem in requiredItems)
+        {
+            if (requiredItem == null)
+                return false;
+
+            if (requiredItem.Amount <= 0)
+                return false;
+
+            if (!HasItem(
+                    requiredItem.ItemID,
+                    requiredItem.Amount))
+            {
+                return false;
+            }
+        }
+
+        //================================================//
+        // 2. ELIMINAR TODO
+        //================================================//
+
+        foreach (var requiredItem in requiredItems)
+        {
+            RemoveItem(
+                requiredItem.ItemID,
+                requiredItem.Amount);
+        }
+
+        return true;
     }
 }
 

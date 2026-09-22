@@ -4,28 +4,37 @@ using UnityEngine;
 namespace Duna.QuestSystem
 {
     /// <summary>
-    /// Permite a un NPC recibir un objeto relacionado con una misión.
+    /// Permite a un NPC recibir todos los objetos
+    /// requeridos por un objetivo de misión de tipo Deliver.
     /// </summary>
     public class QuestItemDelivery : MonoBehaviour, IInteractable
     {
         [Header("Quest")]
-        [SerializeField] private QuestData quest;
+        [SerializeField]
+        private QuestData quest;
 
-        [Header("Item")]
-        [SerializeField] private string itemID;
 
-        [SerializeField] private int requiredAmount = 1;
+        //================================================//
+        // GETTERS
+        //================================================//
 
         public QuestData Quest => quest;
 
-        public string ItemID => itemID;
 
-        public int RequiredAmount => requiredAmount;
+        //================================================//
+        // CAN DELIVER
+        //================================================//
 
-        public bool CanDeliver(QuestManager questManager, IQuestItemProvider inventory)
+        public bool CanDeliver(
+            QuestManager questManager,
+            IQuestItemProvider inventory)
         {
-            if (quest == null || questManager == null || inventory == null || requiredAmount <= 0)
+            if (quest == null ||
+                questManager == null ||
+                inventory == null)
+            {
                 return false;
+            }
 
             QuestInstance questInstance =
                 questManager.GetActiveQuest(quest.QuestID);
@@ -33,62 +42,115 @@ namespace Duna.QuestSystem
             if (questInstance == null)
                 return false;
 
-            if (questInstance.CurrentObjective == null)
-                return false;
-
             QuestObjectiveRuntime objective =
                 questInstance.CurrentObjective;
+
+            if (objective == null)
+                return false;
 
             if (objective.Data.ObjectiveType != ObjectiveType.Deliver)
                 return false;
 
-            if (objective.Data.TargetID != itemID)
-                return false;
-
-            int amountToDeliver = Mathf.Min(
-                requiredAmount,
-                objective.Data.RequiredAmount - objective.CurrentAmount
-            );
-
-            return amountToDeliver > 0 && inventory.HasItem(itemID, amountToDeliver);
-        }
-
-        public bool Deliver(QuestManager questManager, IQuestItemProvider inventory)
-        {
-            if (!CanDeliver(questManager, inventory))
+            if (objective.Data.RequiredItems == null ||
+                objective.Data.RequiredItems.Count == 0)
             {
-                Debug.Log("No se puede entregar este objeto.");
                 return false;
             }
 
-            QuestObjectiveRuntime objective = questManager.GetActiveQuest(quest.QuestID).CurrentObjective;
-            int amountToDeliver = Mathf.Min(
-                requiredAmount,
-                objective.Data.RequiredAmount - objective.CurrentAmount
-            );
+            // Comprobar que el jugador tenga TODOS
+            // los objetos necesarios.
+            foreach (var requiredItem
+                     in objective.Data.RequiredItems)
+            {
+                if (requiredItem == null)
+                    return false;
 
-            if (!inventory.TryRemoveItem(itemID, amountToDeliver))
-                return false;
-
-            QuestEvents.RaiseDeliverItem(
-                itemID,
-                amountToDeliver
-            );
+                if (!inventory.HasItem(
+                        requiredItem.ItemID,
+                        requiredItem.Amount))
+                {
+                    return false;
+                }
+            }
 
             return true;
         }
 
+
+        //================================================//
+        // DELIVER
+        //================================================//
+
+        public bool Deliver(
+            QuestManager questManager,
+            IQuestItemProvider inventory)
+        {
+            if (!CanDeliver(
+                    questManager,
+                    inventory))
+            {
+                Debug.Log(
+                    "No se pueden entregar todos los objetos requeridos.");
+
+                return false;
+            }
+
+            QuestInstance questInstance =
+                questManager.GetActiveQuest(
+                    quest.QuestID);
+
+            QuestObjectiveRuntime objective =
+                questInstance.CurrentObjective;
+
+            // Retirar TODOS los objetos de una sola operación.
+            if (!inventory.TryRemoveItems(
+                    objective.Data.RequiredItems))
+            {
+                Debug.LogError(
+                    "No se pudieron retirar todos los objetos " +
+                    "de la misión.");
+
+                return false;
+            }
+
+            // Avisar al sistema de quests que se realizó
+            // la entrega de cada requisito.
+            foreach (var requiredItem
+                     in objective.Data.RequiredItems)
+            {
+                QuestEvents.RaiseDeliverItem(
+                    requiredItem.ItemID,
+                    requiredItem.Amount);
+            }
+
+            return true;
+        }
+
+
+        //================================================//
+        // INTERACTION
+        //================================================//
+
         public void Interact(GameObject player)
         {
-            PlayerContext context = player != null ? player.GetComponent<PlayerContext>() : null;
+            PlayerContext context =
+                player != null
+                    ? player.GetComponent<PlayerContext>()
+                    : null;
 
             if (context == null)
             {
-                Debug.LogError("La entrega de misión requiere un PlayerContext válido.");
+                Debug.LogError(
+                    "La entrega de misión requiere " +
+                    "un PlayerContext válido.");
+
                 return;
             }
 
-            Deliver(context.questManager, context.inventory);
+            Deliver(
+                context.questManager,
+                context.inventory);
         }
     }
 }
+

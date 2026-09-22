@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: QuestDatabase
   m_EditorClassIdentifier: Assembly-CSharp::Duna.QuestSystem.QuestDatabase
   quests:
-  - {fileID: 11400000, guid: 31e7f437f786ffd42bc71d69bda9d251, type: 2}
   - {fileID: 11400000, guid: f54ebf22d8878644daf95167a73893da, type: 2}
+  - {fileID: 11400000, guid: eb68fb4d2a00aa244aead39cef696fd2, type: 2}
+  - {fileID: 11400000, guid: 31e7f437f786ffd42bc71d69bda9d251, type: 2}
   - {fileID: 11400000, guid: 3f989bb346631de4da6ca1919f2842b8, type: 2}

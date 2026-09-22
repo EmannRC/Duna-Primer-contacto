@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03b6b5ad6ba69b945a4292c794841dc2, type: 3}
   m_Name: Quest_TalkWithTree
   m_EditorClassIdentifier: Assembly-CSharp::Duna.QuestSystem.QuestData
+  questType: 0
   questID: Mission_talk_tree
   questName: Medidas desesperadas
-  description: "Dirigete al bosque elfico y encuantra al \xE1rbol ancestral para
+  description: "Dirigete al bosque elfico y encuentra al \xE1rbol ancestral para
     que te informe la situaci\xF3n acltual."
   objectives:
   - objectiveType: 0

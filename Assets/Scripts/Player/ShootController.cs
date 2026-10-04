@@ -57,17 +57,16 @@ public class ShootController : NetworkBehaviour
     {
         Camera cam = Camera.main;
 
-        if (cam == null || ctx.crosshair == null)
+        if (cam == null)
             return firePoint.forward;
 
-        // Ray desde el centro de la mira.
-        Ray ray = cam.ScreenPointToRay(
-            ctx.crosshair.position
+        // El crosshair visual está en el centro de la pantalla.
+        Ray ray = cam.ViewportPointToRay(
+            new Vector3(0.5f, 0.5f, 0f)
         );
 
         Vector3 targetPoint;
 
-        // Buscamos exactamente qué está apuntando la mira.
         if (Physics.Raycast(
             ray,
             out RaycastHit hit,
@@ -82,8 +81,6 @@ public class ShootController : NetworkBehaviour
             targetPoint = ray.origin + ray.direction * aimDistance;
         }
 
-        // El proyectil sale del FirePoint
-        // hacia el punto donde apunta la mira.
         return (targetPoint - firePoint.position).normalized;
     }
 

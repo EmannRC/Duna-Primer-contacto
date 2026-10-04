@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03b6b5ad6ba69b945a4292c794841dc2, type: 3}
+  m_Name: Quest_Robot
+  m_EditorClassIdentifier: Assembly-CSharp::Duna.QuestSystem.QuestData
+  questType: 1
+  questID: Quest_robot
+  questName: Piezas perdidas
+  description: "Adentrate en la f\xE1brica y consigue las piezas necesarias para
+    ayudar al robot averiado"
+  objectives:
+  - objectiveType: 1
+    targetID: piece
+    requiredAmount: 0
+    description: Derrota enemigos y recolecta piezas metalicas
+    requiredItems: []
+  - objectiveType: 2
+    targetID: 
+    requiredAmount: 0
+    description: Construye el calibrador en la interfaz de crafteo y entregaselo
+      al robot averiado
+    requiredItems:
+    - itemID: calibrador
+      amount: 1
+  rewards: []
+  startDialogue:
+    dialogue: {fileID: 11400000, guid: b1fa4d864959909449dce328a78d06b7, type: 2}
+    reward:
+      giveReward: 0
+      itemID: 
+      amount: 1
+  inProgressDialogue:
+    dialogue: {fileID: 11400000, guid: 5a696ad95fee0a64587a73ff6952e3a1, type: 2}
+    reward:
+      giveReward: 0
+      itemID: 
+      amount: 1
+  completionDialogue:
+    dialogue: {fileID: 11400000, guid: 3c7a272b6d1ffdb43ac3fca104323fb1, type: 2}
+    reward:
+      giveReward: 1
+      itemID: Weapon_Staff_Ice
+      amount: 1
+  repeatable: 0
+  autoComplete: 0

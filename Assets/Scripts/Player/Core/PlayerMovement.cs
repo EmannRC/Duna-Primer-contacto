@@ -30,6 +30,20 @@ public class PlayerMovement : NetworkBehaviour
     [Header("Aim Movement")]
     [SerializeField] private float aimMovementMultiplier = 0.6f;
 
+    [Header("Dash")]
+    [SerializeField] private float dashDistance = 4.5f;
+    [SerializeField] private float dashDuration = 0.25f;
+    [SerializeField] private float dashCooldown = 1f;
+
+    private bool dashPressed;
+    private bool isDashing;
+    private float dashTimer;
+    private float dashCooldownTimer;
+    private Vector3 dashDirection;
+
+    public bool IsDashing => isDashing;
+    public float DashCooldownRemaining => dashCooldownTimer;
+
     private bool isAiming;
 
     public bool IsAiming => isAiming;
@@ -90,6 +104,12 @@ public class PlayerMovement : NetworkBehaviour
             return;
 
         UpdateGrounded();
+
+        UpdateDash();
+
+        if (isDashing)
+            return;
+
         UpdateJump();
         UpdateGravity();
         UpdateMovement();
@@ -316,6 +336,12 @@ public class PlayerMovement : NetworkBehaviour
         isAiming = aiming;
     }
 
+    public void SetDash(bool value)
+    {
+        if (value)
+            dashPressed = true;
+    }
+
 
     //========================================================//
     // DEBUG
@@ -369,5 +395,151 @@ public class PlayerMovement : NetworkBehaviour
 
         IsMovementLocked = false;
     }
+    //========================================================//
+    // DASH
+    //========================================================//
 
+    private void UpdateDash()
+    {
+        if (dashCooldownTimer > 0f)
+        {
+            dashCooldownTimer -= Time.deltaTime;
+        }
+
+        // Si ya está haciendo dash
+        if (isDashing)
+        {
+            dashTimer += Time.deltaTime;
+
+            float dashSpeed = dashDistance / dashDuration;
+
+            // Suaviza ligeramente la velocidad del dash.
+            float dashProgress = dashTimer / dashDuration;
+
+            float speedMultiplier =
+                1f - Mathf.Clamp01(dashProgress) * 0.25f;
+
+            ctx.controller.Move(
+                dashDirection *
+                dashSpeed *
+                speedMultiplier *
+                Time.deltaTime
+            );
+
+            if (dashTimer >= dashDuration)
+            {
+                EndDash();
+            }
+
+            return;
+        }
+
+        if (!dashPressed)
+            return;
+
+        dashPressed = false;
+
+        if (!CanDash())
+            return;
+
+        StartDash();
+    }
+
+
+    private bool CanDash()
+    {
+        if (isDashing)
+            return false;
+
+        if (dashCooldownTimer > 0f)
+            return false;
+
+        if (IsMovementLocked)
+            return false;
+
+        if (!IsGrounded)
+            return false;
+
+        if (isCrouching)
+            return false;
+
+        return true;
+    }
+
+
+    private void StartDash()
+    {
+        isDashing = true;
+
+        dashTimer = 0f;
+        dashCooldownTimer = dashCooldown;
+
+        sprintHeld = false;
+        currentSpeed = 0f;
+
+        dashDirection = CalculateDashDirection();
+
+        // Aseguramos que sea horizontal.
+        dashDirection.y = 0f;
+
+        if (dashDirection.sqrMagnitude <= 0.001f)
+        {
+            dashDirection = transform.forward;
+        }
+
+        dashDirection.Normalize();
+
+        OnDashStarted();
+    }
+
+
+    private void EndDash()
+    {
+        isDashing = false;
+
+        dashTimer = 0f;
+        currentSpeed = 0f;
+
+        OnDashEnded();
+    }
+
+
+    private Vector3 CalculateDashDirection()
+    {
+        Vector3 direction = moveDirection;
+
+        // Si el jugador no está dando ninguna dirección,
+        // dash hacia donde mira la cámara.
+        if (direction.sqrMagnitude <= 0.01f)
+        {
+            if (cameraTransform != null)
+            {
+                direction = cameraTransform.forward;
+                direction.y = 0f;
+                direction.Normalize();
+            }
+            else
+            {
+                direction = transform.forward;
+            }
+        }
+
+        return direction.normalized;
+    }
+    private void OnDashStarted()
+    {
+       
+        // - Animación de dash
+        // - Trail
+        // - VFX
+        // - Sonido
+    }
+
+
+    private void OnDashEnded()
+    {
+        
+        // - Final de animación
+        // - VFX de aterrizaje
+    }
 }

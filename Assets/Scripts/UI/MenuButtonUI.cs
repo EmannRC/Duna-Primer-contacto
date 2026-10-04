@@ -17,6 +17,10 @@ public class MenuButtonUI : MonoBehaviour
     public void Bind(PlayerRespawn respawn)
     {
         playerRespawn = respawn;
+
+        Debug.Log(
+            $"[MenuButtonUI] Bind recibido. PlayerRespawn = {playerRespawn}"
+        );
     }
 
 

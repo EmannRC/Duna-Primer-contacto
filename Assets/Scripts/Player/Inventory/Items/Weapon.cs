@@ -8,4 +8,7 @@ public class Weapon : EquipableItem
     [Header("Combat")]
     public GameObject projectilePrefab;
     public float manaCost;
+
+    [Header("Staff Ability")]
+    public StaffAbilityData ability;
 }

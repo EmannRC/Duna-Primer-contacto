@@ -5,6 +5,15 @@ public class CrosshairUI : MonoBehaviour
     public GameObject crosshair;
     private TargetingSystem targetingSystem;
 
+    public void Bind(TargetingSystem targeting)
+    {
+        targetingSystem = targeting;
+
+        Debug.Log(
+            $"CrosshairUI vinculado a: {targetingSystem?.gameObject.name}"
+        );
+    }
+
     private void Start()
     {
         Cursor.visible = false;
@@ -18,11 +27,7 @@ public class CrosshairUI : MonoBehaviour
         if (targetingSystem == null)
             return;
 
-        crosshair.SetActive(targetingSystem.isAiming);
-    }
-
-    public void Bind(TargetingSystem targeting)
-    {
-        targetingSystem = targeting;
+        if (crosshair != null)
+            crosshair.SetActive(targetingSystem.isAiming);
     }
 }

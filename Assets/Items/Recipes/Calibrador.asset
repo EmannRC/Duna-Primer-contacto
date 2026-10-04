@@ -10,9 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 30ea11c1d6d61244e9fcc50eb761f6f7, type: 3}
-  m_Name: Recipe-StaffOfNature
+  m_Name: Calibrador
   m_EditorClassIdentifier: Assembly-CSharp::Recipe
-  ingredients: []
-  recipeId: Recipe_Staff_Nature
-  resultItemId: Weapon_Staff_Nature
+  ingredients:
+  - itemId: piece
+    amount: 4
+  recipeId: Recipe_calibrador
+  resultItemId: calibrador
   resultAmount: 1

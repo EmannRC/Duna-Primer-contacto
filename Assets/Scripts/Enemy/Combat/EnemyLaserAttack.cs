@@ -29,7 +29,7 @@ public class EnemyLaserAttack : NetworkBehaviour
 
 
     //========================================================//
-    // INITIALIZE
+    // AWAKE
     //========================================================//
 
     private void Awake()
@@ -50,8 +50,8 @@ public class EnemyLaserAttack : NetworkBehaviour
         if (!IsServer)
             return;
 
-        // Mientras prepara el láser,
-        // gira hacia el jugador.
+        // Durante la preparación del láser
+        // puede girar, pero NO caminar.
         if (isAttacking)
         {
             AimAtTarget();
@@ -61,7 +61,8 @@ public class EnemyLaserAttack : NetworkBehaviour
         if (Time.time < nextAttackTime)
             return;
 
-        Transform target = ctx.targeting.CurrentTarget;
+        Transform target =
+            ctx.targeting.CurrentTarget;
 
         if (!IsValidTarget(target))
             return;
@@ -92,7 +93,8 @@ public class EnemyLaserAttack : NetworkBehaviour
             return;
 
         Vector3 direction =
-            attackTarget.position - transform.position;
+            attackTarget.position -
+            transform.position;
 
         direction.y = 0f;
 
@@ -123,9 +125,16 @@ public class EnemyLaserAttack : NetworkBehaviour
         nextAttackTime =
             Time.time + attackCooldown;
 
+        // BLOQUEAR MOVIMIENTO
+        ctx.movement.SetMovementLocked(true);
+
         if (ctx.enemyAnimation != null)
         {
             ctx.enemyAnimation.NotifyLaserAttack();
+        }
+        else
+        {
+            CancelAttack();
         }
     }
 
@@ -142,14 +151,13 @@ public class EnemyLaserAttack : NetworkBehaviour
         if (!isAttacking)
             return;
 
-        if (firePoint == null || attackTarget == null)
+        if (firePoint == null ||
+            attackTarget == null)
         {
             CancelAttack();
             return;
         }
 
-        // Dirección desde el FirePoint
-        // hacia la posición ACTUAL del jugador.
         Vector3 direction =
             attackTarget.position -
             firePoint.position;
@@ -180,7 +188,6 @@ public class EnemyLaserAttack : NetworkBehaviour
             direction *
             maxLaserRange;
 
-        // Comprueba si el láser golpea algo.
         if (Physics.Raycast(
                 start,
                 direction,
@@ -200,7 +207,7 @@ public class EnemyLaserAttack : NetworkBehaviour
             }
         }
 
-        ShowLaserClientRpc(start, end);
+        ShowLaserRpc(start, end);
 
         CancelAttack();
     }
@@ -211,7 +218,7 @@ public class EnemyLaserAttack : NetworkBehaviour
     //========================================================//
 
     [Rpc(SendTo.ClientsAndHost)]
-    private void ShowLaserClientRpc(
+    private void ShowLaserRpc(
         Vector3 start,
         Vector3 end)
     {
@@ -247,6 +254,9 @@ public class EnemyLaserAttack : NetworkBehaviour
     {
         isAttacking = false;
         attackTarget = null;
+
+        // VOLVER A PERMITIR MOVIMIENTO
+        ctx.movement.SetMovementLocked(false);
     }
 
 
@@ -276,12 +286,14 @@ public class EnemyLaserAttack : NetworkBehaviour
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
+
         Gizmos.DrawWireSphere(
             transform.position,
             maxLaserRange
         );
 
         Gizmos.color = Color.red;
+
         Gizmos.DrawWireSphere(
             transform.position,
             minLaserRange

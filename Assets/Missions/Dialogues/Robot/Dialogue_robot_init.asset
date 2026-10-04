@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d96623effd3db54bbc459042cc8a6ab, type: 3}
+  m_Name: Dialogue_robot_init
+  m_EditorClassIdentifier: Assembly-CSharp::Duna.DialogueSystem.DialogueData
+  dialogueID: Dialogue_robot_init
+  lines:
+  - speakerName: Robot Averiado
+    text: "\xBFPodrias ayudarme con algo? Necesito un calibrador para estabilizar
+      mis circuitos, pero lamentablemente no tengo los materiales ni la posibilidad
+      de construirlo yo mismo"
+  - speakerName: Robot Averiado
+    text: Si me ayudas te lo cambiare por una viaja reliquia que tengo y no uso
+  - speakerName: Robot Averiado
+    text: "No ser\xE1 f\xE1cil conseguir las piezas, solo se encuentran como parte
+      de los robots invasore, por lo que tendras que destruir unos cuantos para hacerte
+      con esas piezas."

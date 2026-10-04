@@ -51,16 +51,12 @@ public class EnemyRangeCombat : NetworkBehaviour
         if (Time.time < nextShotTime)
             return;
 
-        nextShotTime =
-            Time.time + (1f / fireRate);
+        nextShotTime = Time.time + (1f / fireRate);
 
-        Shoot(leftCannon);
-
-        if (rightCannon != null)
-            Shoot(rightCannon);
+        ctx.enemyAnimation.NotifyAttack();
     }
 
-    private void Shoot(Transform cannon)
+    public void Shoot(Transform cannon)
     {
         if (cannon == null)
             return;
@@ -74,13 +70,27 @@ public class EnemyRangeCombat : NetworkBehaviour
         Projectile projectile =
             projectileObject.GetComponent<Projectile>();
 
-        Vector3 direction =
-            (ctx.targeting.CurrentTarget.position
-            - cannon.position).normalized;
+        Vector3 direction = (ctx.targeting.CurrentTarget.position - cannon.position).normalized;
 
         projectile.Initialize(direction);
 
         projectileObject.Spawn();
+    }
+
+    public void AnimationEventShootLeft()
+    {
+        if (!IsServer)
+            return;
+
+        Shoot(leftCannon);
+    }
+
+    public void AnimationEventShootRight()
+    {
+        if (!IsServer)
+            return;
+
+        Shoot(rightCannon);
     }
 
     private void OnDrawGizmosSelected()

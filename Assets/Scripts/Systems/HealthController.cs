@@ -29,12 +29,23 @@ public class HealthController : NetworkBehaviour
             NetworkVariableWritePermission.Server
         );
 
+    public NetworkVariable<bool> IsInvulnerable =
+    new NetworkVariable<bool>(
+        false,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server
+    );
+
     [Header("Audio")]
     [SerializeField] private AudioSource damageSound;
     [SerializeField] private AudioClip damageClip;
 
 
     private DeathController deathController;
+
+    private bool isInvulnerable;
+
+    
 
 
     //==============================================================//
@@ -71,6 +82,9 @@ public class HealthController : NetworkBehaviour
     public void TakeDamage(float amount)
     {
         if (!IsServer || IsDead.Value)
+            return;
+
+        if (isInvulnerable)
             return;
 
         CurrentHealth.Value = Mathf.Max(
@@ -138,5 +152,13 @@ public class HealthController : NetworkBehaviour
             return;
 
         damageSound.PlayOneShot(damageClip);
+    }
+
+    public void SetInvulnerable(bool value)
+    {
+        if (!IsServer)
+            return;
+
+        isInvulnerable = value;
     }
 }

@@ -16,32 +16,35 @@ MonoBehaviour:
   questID: Quest_main
   questName: La amenaza de los polygon
   description: "Una peligrosa amezaza de otro mundo est\xE1 alterando el equilibrio
-    m\xE1gico y poniendo a todos en riesgo. Investiga el caso y abret\xE9 camino
-    para terminar con esta terrible invasi\xF3n."
+    m\xE1gico y poniendo a todos en riesgo. Enfrenta la amenaza y abrete paso hacia
+    la nave invaso"
   objectives:
-  - objectiveType: 3
-    targetID: Enemy_smasher
-    requiredAmount: 5
-    description: Despeja el bosque elfico de los intrusos
-  - objectiveType: 0
-    targetID: NPC_ancient_tree
+  - objectiveType: 4
+    targetID: ship
     requiredAmount: 0
-    description: Regresa con el arbo ancestral
+    description: Entra a la nave invasora usando el portal en el centro del templo
+    requiredItems: []
+  - objectiveType: 3
+    targetID: core
+    requiredAmount: 1
+    description: Destruye el nucleo de la nave polygon para acabar con la invasion
+      definitivamente
+    requiredItems: []
   rewards: []
   startDialogue:
-    dialogue: {fileID: 11400000, guid: 06da4bd7c0ed3e54f9b4ac3e05f3dc0d, type: 2}
+    dialogue: {fileID: 0}
     reward:
-      giveReward: 1
-      itemID: Weapon_Staff_Nature
+      giveReward: 0
+      itemID: 
       amount: 1
   inProgressDialogue:
-    dialogue: {fileID: 11400000, guid: e285454cea9026f4cbc5c2aae223cfb5, type: 2}
+    dialogue: {fileID: 0}
     reward:
       giveReward: 0
       itemID: 
       amount: 1
   completionDialogue:
-    dialogue: {fileID: 11400000, guid: e61155111df77414e92f978d0ab90472, type: 2}
+    dialogue: {fileID: 0}
     reward:
       giveReward: 0
       itemID: 

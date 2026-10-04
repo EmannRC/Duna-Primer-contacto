@@ -8,6 +8,8 @@ public class PlayerInputEvents : MonoBehaviour
 
     public event Action InteractPressed;
 
+    public event Action AbilityPressed;
+
     //==============================================//
     public void Bind(PlayerContext playerContext)
     {
@@ -145,6 +147,24 @@ public class PlayerInputEvents : MonoBehaviour
     }
 
     //=====================//
+    //====  ABILITY  ======//
+    //=====================//
+
+    public void OnAbility(InputAction.CallbackContext input)
+    {
+        if (!input.performed)
+            return;
+
+        if (ctx == null)
+            return;
+
+        if (ctx.health.IsDead.Value)
+            return;
+
+        AbilityPressed?.Invoke();
+    }
+
+    //=====================//
     //====  DANCE  ====//
     //=====================//
 
@@ -156,5 +176,20 @@ public class PlayerInputEvents : MonoBehaviour
             return;
 
         ctx.playerAnimation.PlayDanceAnimation();
+    }
+
+
+    public void OnDash(InputAction.CallbackContext input)
+    {
+        if (!input.performed)
+            return;
+
+        if (ctx == null)
+            return;
+
+        if (ctx.health.IsDead.Value)
+            return;
+
+        ctx.movement.SetDash(true);
     }
 }

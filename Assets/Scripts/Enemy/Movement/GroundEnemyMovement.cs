@@ -10,9 +10,9 @@ public class GroundEnemyMovement : EnemyMovementBase
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 3.5f;
     [SerializeField] private float stoppingDistance = 2f;
+    [SerializeField] private float rotatSpeed = 720f;
 
     private NavMeshAgent agent;
-    private EnforcerSpecialAttack specialAttack;
 
     public Vector3 Velocity =>
         agent != null
@@ -28,36 +28,40 @@ public class GroundEnemyMovement : EnemyMovementBase
     {
         base.Awake();
 
-        agent =
-            GetComponent<NavMeshAgent>();
+        agent = GetComponent<NavMeshAgent>();
 
-        specialAttack =
-            GetComponent<EnforcerSpecialAttack>();
+        agent.speed = moveSpeed;
+        agent.stoppingDistance = stoppingDistance;
+        agent.angularSpeed = rotationSpeed;
+
+        // La rotación la manejamos nosotros.
+        agent.updateRotation = false;
     }
-
-
-    //=======================================================//
-    // MOVEMENT PAUSED
-    //=======================================================//
-
-    protected override bool IsMovementPaused =>
-        specialAttack != null &&
-        specialAttack.IsPerformingSpecialAttack;
 
 
     //=======================================================//
     // MOVEMENT LOCK
     //=======================================================//
 
-    public override void SetMovementLocked(
-        bool locked)
+    public override void SetMovementLocked(bool locked)
     {
         movementLocked = locked;
 
-        if (!movementLocked)
+        if (agent == null)
             return;
 
-        StopMovement();
+        if (!agent.isActiveAndEnabled ||
+            !agent.isOnNavMesh)
+        {
+            return;
+        }
+
+        agent.isStopped = locked;
+
+        if (locked)
+        {
+            agent.ResetPath();
+        }
     }
 
 
@@ -65,9 +69,11 @@ public class GroundEnemyMovement : EnemyMovementBase
     // MOVE
     //=======================================================//
 
-    protected override void Move(
-        Transform target)
+    protected override void Move(Transform target)
     {
+        if (movementLocked)
+            return;
+
         if (agent == null ||
             !agent.isActiveAndEnabled ||
             !agent.isOnNavMesh)
@@ -75,26 +81,14 @@ public class GroundEnemyMovement : EnemyMovementBase
             return;
         }
 
-        agent.speed =
-            moveSpeed;
+        agent.isStopped = false;
 
-        agent.stoppingDistance =
-            stoppingDistance;
-
-        agent.angularSpeed =
-            720f;
-
-        agent.updateRotation =
-            false;
-
-        agent.SetDestination(
-            target.position
-        );
+        agent.SetDestination(target.position);
     }
 
 
     //=======================================================//
-    // STOP MOVEMENT
+    // STOP
     //=======================================================//
 
     protected override void StopMovement()
@@ -102,11 +96,14 @@ public class GroundEnemyMovement : EnemyMovementBase
         if (agent == null)
             return;
 
-        if (agent.isActiveAndEnabled &&
-            agent.isOnNavMesh)
+        if (!agent.isActiveAndEnabled ||
+            !agent.isOnNavMesh)
         {
-            agent.ResetPath();
+            return;
         }
+
+        agent.isStopped = true;
+        agent.ResetPath();
     }
 
 

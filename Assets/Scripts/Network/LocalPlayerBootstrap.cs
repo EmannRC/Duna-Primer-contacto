@@ -13,11 +13,12 @@ public class LocalPlayerBootstrap : MonoBehaviour
     [SerializeField] private PlayerHUD hud;
     [SerializeField] private InventoryUI inventoryUI;
     [SerializeField] private CraftingUI craftingUI;
-    [SerializeField] private Transform crosshair;
+    //[SerializeField] private Transform crosshair;
     [SerializeField] private CrosshairUI crosshairUI;
     [SerializeField] private QuestTrackerUI questTrackerUI;
     [SerializeField] private UI_Manager deathMenu;
     [SerializeField] private MenuButtonUI menuButtonUI;
+    [SerializeField] private StaffAbilityUI staffAbilityUI;
 
     //==========================================================//
     private void Awake()
@@ -141,11 +142,31 @@ public class LocalPlayerBootstrap : MonoBehaviour
             questManager
         );
 
-        PlayerRespawn playerRespawn = playerRoot.GetComponent<PlayerRespawn>();
+        if (staffAbilityUI != null && ctx.staffAbility != null)
+        {
+            staffAbilityUI.Bind(ctx.staffAbility);
+        }
 
-        if (playerRespawn != null)
+        PlayerRespawn playerRespawn = playerRoot.GetComponent<PlayerRespawn>();
+        if (playerRespawn == null)
+        {
+            Debug.LogError(
+                "[LocalPlayerBootstrap] El Player local no tiene PlayerRespawn."
+            );
+        }
+        else if (menuButtonUI == null)
+        {
+            Debug.LogError(
+                "[LocalPlayerBootstrap] MenuButtonUI no está asignado en el Inspector."
+            );
+        }
+        else
         {
             menuButtonUI.Bind(playerRespawn);
+
+            Debug.Log(
+                "[LocalPlayerBootstrap] PlayerRespawn vinculado correctamente al MenuButtonUI."
+            );
         }
 
 
@@ -153,11 +174,28 @@ public class LocalPlayerBootstrap : MonoBehaviour
         // CROSSHAIR
         //=========================
 
-        ctx.crosshair = crosshair;
+        Debug.Log($"[Crosshair] UI: {crosshairUI}");
+        Debug.Log($"[Crosshair] Targeting: {ctx.targeting}");
 
-        crosshairUI.Bind(
-            ctx.targeting
-        );
+        if (crosshairUI == null)
+        {
+            Debug.LogError(
+                "[Crosshair] LocalPlayerBootstrap no tiene CrosshairUI asignado."
+            );
+
+            return;
+        }
+
+        if (ctx.targeting == null)
+        {
+            Debug.LogError(
+                "[Crosshair] PlayerContext no tiene TargetingSystem asignado."
+            );
+
+            return;
+        }
+
+        crosshairUI.Bind(ctx.targeting);
 
         //=========================
         // NPC Marker

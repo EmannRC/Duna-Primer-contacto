@@ -29,11 +29,12 @@ public class PlayerContext : MonoBehaviour
     [Header("Combat")]
     public PlayerCombat combat;
     public ShootController shooter;
+    public PlayerStaffAbility staffAbility;
 
     [Header("Visual / UI")]
     public Animator animator;
     public PlayerAnimation playerAnimation;
-    public Transform crosshair;
+    //public Transform crosshair;
     public CraftingUI craftingUI;
     public Camera mainCamera;
 

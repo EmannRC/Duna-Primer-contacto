@@ -41,20 +41,24 @@ public class EnemyAnimation : NetworkBehaviour
         if (ctx.animator == null || ctx.movement == null)
             return;
 
-        Vector3 velocity = ctx.groundMovement.Velocity;
+        if (ctx.groundMovement != null)
+        {
+            Vector3 velocity = ctx.groundMovement.Velocity;
 
-        Vector3 localVelocity =
-            transform.InverseTransformDirection(velocity);
+            Vector3 localVelocity =
+                transform.InverseTransformDirection(velocity);
 
-        ctx.animator.SetFloat(
+            ctx.animator.SetFloat(
             VelXHash,
             localVelocity.x
-        );
+            );
 
-        ctx.animator.SetFloat(
-            VelYHash,
-            localVelocity.z
-        );
+            ctx.animator.SetFloat(
+                VelYHash,
+                localVelocity.z
+            );
+        }
+        
     }
 
 
@@ -100,5 +104,27 @@ public class EnemyAnimation : NetworkBehaviour
             return;
 
         ctx.laserAttack.AnimationEventFireLaser();
+    }
+
+    public void AnimationEventShootLeft()
+    {
+        if (!IsServer)
+            return;
+
+        if (ctx.rangedCombat == null)
+            return;
+
+        ctx.rangedCombat.AnimationEventShootLeft();
+    }
+
+    public void AnimationEventShootRight()
+    {
+        if (!IsServer)
+            return;
+
+        if (ctx.rangedCombat == null)
+            return;
+
+        ctx.rangedCombat.AnimationEventShootRight();
     }
 }

@@ -280,9 +280,10 @@ GameObject:
   m_Component:
   - component: {fileID: 8678225780982016345}
   - component: {fileID: 8949671991868108341}
-  - component: {fileID: 7110410063800042869}
+  - component: {fileID: 548290030191248002}
   - component: {fileID: 5460381638834643532}
   - component: {fileID: 495377119099727565}
+  - component: {fileID: 3660772854959274513}
   m_Layer: 6
   m_Name: Core
   m_TagString: Untagged
@@ -333,7 +334,7 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!114 &7110410063800042869
+--- !u!114 &548290030191248002
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -342,11 +343,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 7974074860848835316}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ef9a8d0a5ff2a04980aa67fac1a05a1, type: 3}
+  m_Script: {fileID: 11500000, guid: f6e46e121f5de7444af80aeed24a9eae, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HealthController
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
   ShowTopMostFoldoutHeaderGroup: 1
-  maxHealth: 100
+  maxHealth: 50
   CurrentHealth:
     UpdateTraits:
       MinSecondsBetweenUpdates: 0
@@ -364,6 +365,9 @@ MonoBehaviour:
     m_InternalValue: 0
   damageSound: {fileID: 0}
   damageClip: {fileID: 0}
+  reward: {fileID: 0}
+  possibleDrops: []
+  dropPoint: {fileID: 0}
 --- !u!114 &5460381638834643532
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -407,3 +411,16 @@ CapsuleCollider:
   m_Height: 11
   m_Direction: 1
   m_Center: {x: 3.765358, y: 2, z: 0}
+--- !u!114 &3660772854959274513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7974074860848835316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 472a01e3525d6c0428a3cae37db3b2f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyIdentity
+  enemyID: core

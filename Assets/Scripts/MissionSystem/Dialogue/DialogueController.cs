@@ -412,37 +412,33 @@ namespace Duna.DialogueSystem
                 if (questReceiver != null &&
                     questReceiver.CanDeliver(questManager))
                 {
-                    bool delivered =
-                        questReceiver.DeliverItem(
-                            questManager
+                    QuestItemDelivery itemDelivery =
+                        GetComponent<QuestItemDelivery>();
+
+                    if (itemDelivery == null)
+                    {
+                        Debug.LogError(
+                            $"[{name}] Falta QuestItemDelivery " +
+                            "en el NPC que recibe la misión.");
+                    }
+                    else
+                    {
+                        QuestData deliveryQuest = currentQuest;
+                        PlayerContext deliveryPlayer = currentPlayer;
+
+                        itemDelivery.Deliver(
+                            questManager,
+                            deliveryPlayer.inventory,
+                            delivered => HandleDeliveryCompleted(
+                                questManager,
+                                deliveryQuest,
+                                deliveryPlayer,
+                                delivered
+                            )
                         );
 
-                    if (delivered)
-                    {
-                        // El evento de entrega acaba de ejecutarse.
-                        // Volvemos a consultar el estado de la misión.
-                        activeQuest =
-                            questManager.GetActiveQuest(
-                                currentQuest.QuestID
-                            );
-
-                        if (activeQuest != null &&
-                            activeQuest.IsCompleted)
-                        {
-                            bool turnedIn =
-                                questManager.TurnInQuest(
-                                    activeQuest.Data.QuestID
-                                );
-
-                            if (turnedIn && currentQuest != null)
-                            {
-                                GiveReward(
-                                    currentQuest
-                                        .CompletionDialogueData
-                                        .reward
-                                );
-                            }
-                        }
+                        ResetDialogueState();
+                        return;
                     }
                 }
 
@@ -556,13 +552,20 @@ namespace Duna.DialogueSystem
         private void GiveReward(
             QuestData.DialogueReward reward)
         {
+            GiveReward(reward, currentPlayer);
+        }
+
+        private void GiveReward(
+            QuestData.DialogueReward reward,
+            PlayerContext player)
+        {
             if (reward == null)
                 return;
 
             if (!reward.giveReward)
                 return;
 
-            if (currentPlayer == null)
+            if (player == null)
             {
                 Debug.LogWarning(
                     $"[{name}] No hay jugador asociado."
@@ -592,7 +595,7 @@ namespace Duna.DialogueSystem
             }
 
             Inventory inventory =
-                currentPlayer.GetComponentInChildren<Inventory>();
+                player.GetComponentInChildren<Inventory>();
 
             if (inventory == null)
             {
@@ -612,6 +615,41 @@ namespace Duna.DialogueSystem
                 $"[{name}] Recompensa solicitada: " +
                 $"{reward.itemID} x{reward.amount}"
             );
+        }
+
+        private void HandleDeliveryCompleted(
+            QuestManager questManager,
+            QuestData quest,
+            PlayerContext player,
+            bool delivered)
+        {
+            if (!delivered)
+            {
+                Debug.LogWarning(
+                    $"[{name}] No se pudo realizar la entrega. " +
+                    "Revisá el objeto requerido y el inventario."
+                );
+                onCompletionDialogueFinished?.Invoke();
+                return;
+            }
+
+            Debug.Log($"[{name}] Entrega realizada.");
+
+            QuestInstance activeQuest =
+                questManager.GetActiveQuest(quest.QuestID);
+
+            if (activeQuest != null && activeQuest.IsCompleted)
+            {
+                bool turnedIn =
+                    questManager.TurnInQuest(activeQuest.Data.QuestID);
+
+                if (turnedIn && quest.CompletionDialogueData != null)
+                {
+                    GiveReward(quest.CompletionDialogueData.reward, player);
+                }
+            }
+
+            onCompletionDialogueFinished?.Invoke();
         }
 
 

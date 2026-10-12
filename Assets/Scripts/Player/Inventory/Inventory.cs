@@ -15,6 +15,9 @@ public class Inventory : NetworkBehaviour, IQuestItemProvider
 
     public int maxSlots = 20;
 
+    private ulong nextRemovalRequestId;
+    private readonly Dictionary<ulong, Action<bool>> pendingRemovalCallbacks = new();
+
     //====================================================//
     void Awake()
     {
@@ -93,7 +96,7 @@ public class Inventory : NetworkBehaviour, IQuestItemProvider
 
     public bool TryRemoveItem(string itemId, int amount)
     {
-        if (!IsServer)
+        if (!IsServer || string.IsNullOrWhiteSpace(itemId) || amount <= 0)
             return false;
 
         if (!HasItem(itemId, amount))
@@ -102,6 +105,42 @@ public class Inventory : NetworkBehaviour, IQuestItemProvider
         RemoveItem(itemId, amount);
 
         return true;
+    }
+
+    public void RequestRemoveItem(string itemId, int amount, Action<bool> onCompleted)
+    {
+        if (IsServer)
+        {
+            onCompleted?.Invoke(TryRemoveItem(itemId, amount));
+            return;
+        }
+
+        if (!IsOwner || string.IsNullOrWhiteSpace(itemId) || amount <= 0)
+        {
+            onCompleted?.Invoke(false);
+            return;
+        }
+
+        ulong requestId = ++nextRemovalRequestId;
+        pendingRemovalCallbacks[requestId] = onCompleted;
+        RemoveItemRpc(itemId, amount, requestId);
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
+    private void RemoveItemRpc(string itemId, int amount, ulong requestId)
+    {
+        bool removed = TryRemoveItem(itemId, amount);
+        RemoveItemResultRpc(requestId, removed);
+    }
+
+    [Rpc(SendTo.Owner)]
+    private void RemoveItemResultRpc(ulong requestId, bool removed)
+    {
+        if (!pendingRemovalCallbacks.TryGetValue(requestId, out Action<bool> callback))
+            return;
+
+        pendingRemovalCallbacks.Remove(requestId);
+        callback?.Invoke(removed);
     }
 
     //==============================================================//
@@ -179,48 +218,6 @@ public class Inventory : NetworkBehaviour, IQuestItemProvider
             itemID,
             amount
         );
-    }
-
-    public bool TryRemoveItems(IReadOnlyList<QuestObjectiveData.RequiredItem> requiredItems)
-    {
-        if (!IsServer)
-            return false;
-
-        if (requiredItems == null || requiredItems.Count == 0)
-            return false;
-
-        //================================================//
-        // 1. COMPROBAR TODO ANTES DE MODIFICAR NADA
-        //================================================//
-
-        foreach (var requiredItem in requiredItems)
-        {
-            if (requiredItem == null)
-                return false;
-
-            if (requiredItem.Amount <= 0)
-                return false;
-
-            if (!HasItem(
-                    requiredItem.ItemID,
-                    requiredItem.Amount))
-            {
-                return false;
-            }
-        }
-
-        //================================================//
-        // 2. ELIMINAR TODO
-        //================================================//
-
-        foreach (var requiredItem in requiredItems)
-        {
-            RemoveItem(
-                requiredItem.ItemID,
-                requiredItem.Amount);
-        }
-
-        return true;
     }
 }
 

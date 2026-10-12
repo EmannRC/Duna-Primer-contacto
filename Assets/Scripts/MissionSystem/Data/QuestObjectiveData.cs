@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Duna.QuestSystem
@@ -6,24 +5,6 @@ namespace Duna.QuestSystem
     [System.Serializable]
     public class QuestObjectiveData
     {
-        //================================================//
-        // REQUIRED ITEM
-        //================================================//
-
-        [System.Serializable]
-        public class RequiredItem
-        {
-            [SerializeField]
-            private string itemID;
-
-            [SerializeField]
-            private int amount = 1;
-
-            public string ItemID => itemID;
-            public int Amount => amount;
-        }
-
-
         //================================================//
         // GENERAL
         //================================================//
@@ -45,16 +26,6 @@ namespace Duna.QuestSystem
 
 
         //================================================//
-        // DELIVER ITEMS
-        //================================================//
-
-        [Header("Deliver Items")]
-
-        [SerializeField]
-        private List<RequiredItem> requiredItems = new();
-
-
-        //================================================//
         // GETTERS
         //================================================//
 
@@ -65,9 +36,6 @@ namespace Duna.QuestSystem
         public int RequiredAmount => requiredAmount;
 
         public string Description => description;
-
-        public IReadOnlyList<RequiredItem> RequiredItems =>
-            requiredItems;
     }
 }
 

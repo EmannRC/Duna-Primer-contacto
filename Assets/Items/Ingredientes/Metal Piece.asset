@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9dd392949f97f8b4a88556f6f8c79f97, type: 3}
   m_Name: Metal Piece
   m_EditorClassIdentifier: Assembly-CSharp::Item
-  itemName: 
+  itemName: Piece
   itemId: Ingredient_Metal_Piece
   icon: {fileID: 0}
   iconColor: {r: 1, g: 1, b: 1, a: 1}
   isStackable: 1
-  pickupPrefab: {fileID: 0}
+  pickupPrefab: {fileID: 7131883451847555540, guid: b1cc6254ed9061248a482d14a077cf3b, type: 3}

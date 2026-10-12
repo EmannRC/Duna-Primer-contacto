@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Recipe-StaffOfMagic
   m_EditorClassIdentifier: Assembly-CSharp::Recipe
   ingredients:
-  - itemId: Ingredient_Magic_Glass
+  - itemId: Ingredient_glass_magic
     amount: 1
-  - itemId: Ingredient_Magic_Essence
+  - itemId: Ingredient_essence_magic
     amount: 1
-  - itemId: Ingredient_Magic_Rod
+  - itemId: Ingredient_wood
     amount: 1
   recipeId: Recipe_Staff_Magic
   resultItemId: Weapon_Staff_Magic

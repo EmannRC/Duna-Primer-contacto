@@ -78,6 +78,9 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ca950b55a7dcbe843b14de1f42988e56, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 6710028653927946086}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ca950b55a7dcbe843b14de1f42988e56, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 332665981728621749}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ca950b55a7dcbe843b14de1f42988e56, type: 3}
       insertIndex: -1
@@ -85,9 +88,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ca950b55a7dcbe843b14de1f42988e56, type: 3}
       insertIndex: -1
       addedObject: {fileID: 9154717679536418510}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ca950b55a7dcbe843b14de1f42988e56, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6710028653927946086}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ca950b55a7dcbe843b14de1f42988e56, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8917634925507848306}
@@ -102,6 +102,27 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: ca950b55a7dcbe843b14de1f42988e56, type: 3}
   m_PrefabInstance: {fileID: 5853310377370999573}
   m_PrefabAsset: {fileID: 0}
+--- !u!65 &6710028653927946086
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6771807553191110212}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.7672747, y: 0.880678, z: 0.7396168}
+  m_Center: {x: 0.0295372, y: 0.38976637, z: -0.06541088}
 --- !u!114 &332665981728621749
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -183,27 +204,6 @@ MonoBehaviour:
   deathSound: {fileID: 0}
   deathVFXPrefab: {fileID: 6155210867353427163, guid: 3b5715253ca34d8469922287844fc059, type: 3}
   deathVFXPoint: {fileID: 6246945389190266110}
---- !u!65 &6710028653927946086
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6771807553191110212}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.7672747, y: 0.880678, z: 0.7396168}
-  m_Center: {x: 0.0295372, y: 0.38976637, z: -0.06541088}
 --- !u!114 &8917634925507848306
 MonoBehaviour:
   m_ObjectHideFlags: 0

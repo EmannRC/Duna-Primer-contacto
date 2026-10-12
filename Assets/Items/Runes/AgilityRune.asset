@@ -20,4 +20,4 @@ MonoBehaviour:
   pickupPrefab: {fileID: 0}
   modifiers:
   - stat: 2
-    value: 0.1
+    value: 3

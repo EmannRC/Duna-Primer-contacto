@@ -20,9 +20,8 @@ MonoBehaviour:
   objectives:
   - objectiveType: 0
     targetID: NPC_ancient_tree
-    requiredAmount: 0
+    requiredAmount: 1
     description: "Habla con el \xE1rbol ancestral"
-    requiredItems: []
   rewards:
   - rewardType: 2
     amount: 0

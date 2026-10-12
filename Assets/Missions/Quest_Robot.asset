@@ -19,18 +19,14 @@ MonoBehaviour:
     ayudar al robot averiado"
   objectives:
   - objectiveType: 1
-    targetID: piece
-    requiredAmount: 0
+    targetID: Ingredient_Metal_Piece
+    requiredAmount: 4
     description: Derrota enemigos y recolecta piezas metalicas
-    requiredItems: []
   - objectiveType: 2
-    targetID: 
-    requiredAmount: 0
+    targetID: calibrador
+    requiredAmount: 1
     description: Construye el calibrador en la interfaz de crafteo y entregaselo
       al robot averiado
-    requiredItems:
-    - itemID: calibrador
-      amount: 1
   rewards: []
   startDialogue:
     dialogue: {fileID: 11400000, guid: b1fa4d864959909449dce328a78d06b7, type: 2}

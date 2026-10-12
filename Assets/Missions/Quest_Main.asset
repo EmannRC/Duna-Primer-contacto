@@ -19,16 +19,11 @@ MonoBehaviour:
     m\xE1gico y poniendo a todos en riesgo. Enfrenta la amenaza y abrete paso hacia
     la nave invaso"
   objectives:
-  - objectiveType: 4
-    targetID: ship
-    requiredAmount: 0
-    description: Entra a la nave invasora usando el portal en el centro del templo
-    requiredItems: []
   - objectiveType: 3
     targetID: core
     requiredAmount: 1
-    description: Destruye el nucleo de la nave polygon para acabar con la invasion
-      definitivamente
+    description: Dirigete al portal al centro del templo y destruye el nucleo de
+      la nave polygon para acabar con la invasion definitivamente
     requiredItems: []
   rewards: []
   startDialogue:

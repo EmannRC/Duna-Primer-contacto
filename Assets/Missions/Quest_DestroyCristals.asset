@@ -21,17 +21,10 @@ MonoBehaviour:
     targetID: object_cristal
     requiredAmount: 6
     description: Destruye cristales
-    requiredItems: []
   - objectiveType: 0
     targetID: NPC_ancient_tree
-    requiredAmount: 0
+    requiredAmount: 1
     description: "Habla con el \xE1rbol ancestral"
-    requiredItems: []
-  - objectiveType: 0
-    targetID: NPC_ancient_tree
-    requiredAmount: 0
-    description: "Habla con el \xE1rbol ancestral"
-    requiredItems: []
   rewards: []
   startDialogue:
     dialogue: {fileID: 11400000, guid: 06da4bd7c0ed3e54f9b4ac3e05f3dc0d, type: 2}

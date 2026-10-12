@@ -1,11 +1,12 @@
 using Duna.InteractionSystem;
+using System;
 using UnityEngine;
 
 namespace Duna.QuestSystem
 {
     /// <summary>
-    /// Permite a un NPC recibir todos los objetos
-    /// requeridos por un objetivo de misión de tipo Deliver.
+    /// Permite a un NPC recibir el objeto único requerido
+    /// por un objetivo de misión de tipo Deliver.
     /// </summary>
     public class QuestItemDelivery : MonoBehaviour, IInteractable
     {
@@ -51,29 +52,15 @@ namespace Duna.QuestSystem
             if (objective.Data.ObjectiveType != ObjectiveType.Deliver)
                 return false;
 
-            if (objective.Data.RequiredItems == null ||
-                objective.Data.RequiredItems.Count == 0)
+            string itemID = objective.Data.TargetID;
+            int amount = objective.Data.RequiredAmount;
+
+            if (string.IsNullOrWhiteSpace(itemID) || amount <= 0)
             {
                 return false;
             }
 
-            // Comprobar que el jugador tenga TODOS
-            // los objetos necesarios.
-            foreach (var requiredItem
-                     in objective.Data.RequiredItems)
-            {
-                if (requiredItem == null)
-                    return false;
-
-                if (!inventory.HasItem(
-                        requiredItem.ItemID,
-                        requiredItem.Amount))
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            return inventory.HasItem(itemID, amount);
         }
 
 
@@ -81,18 +68,20 @@ namespace Duna.QuestSystem
         // DELIVER
         //================================================//
 
-        public bool Deliver(
+        public void Deliver(
             QuestManager questManager,
-            IQuestItemProvider inventory)
+            Inventory inventory,
+            Action<bool> onCompleted = null)
         {
             if (!CanDeliver(
                     questManager,
                     inventory))
             {
                 Debug.Log(
-                    "No se pueden entregar todos los objetos requeridos.");
+                    "No se puede entregar el objeto requerido.");
 
-                return false;
+                onCompleted?.Invoke(false);
+                return;
             }
 
             QuestInstance questInstance =
@@ -102,28 +91,24 @@ namespace Duna.QuestSystem
             QuestObjectiveRuntime objective =
                 questInstance.CurrentObjective;
 
-            // Retirar TODOS los objetos de una sola operación.
-            if (!inventory.TryRemoveItems(
-                    objective.Data.RequiredItems))
+            string itemID = objective.Data.TargetID;
+            int amount = objective.Data.RequiredAmount;
+
+            inventory.RequestRemoveItem(itemID, amount, removed =>
             {
-                Debug.LogError(
-                    "No se pudieron retirar todos los objetos " +
-                    "de la misión.");
+                if (!removed)
+                {
+                    Debug.LogError(
+                        "No se pudo retirar el objeto requerido " +
+                        "de la misión.");
+                    onCompleted?.Invoke(false);
+                    return;
+                }
 
-                return false;
-            }
+                QuestEvents.RaiseDeliverItem(itemID, amount);
+                onCompleted?.Invoke(true);
+            });
 
-            // Avisar al sistema de quests que se realizó
-            // la entrega de cada requisito.
-            foreach (var requiredItem
-                     in objective.Data.RequiredItems)
-            {
-                QuestEvents.RaiseDeliverItem(
-                    requiredItem.ItemID,
-                    requiredItem.Amount);
-            }
-
-            return true;
         }
 
 

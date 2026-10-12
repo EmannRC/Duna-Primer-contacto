@@ -21,10 +21,12 @@ MonoBehaviour:
     targetID: Enemy_smasher
     requiredAmount: 5
     description: 'Elimina enemigos '
+    requiredItems: []
   - objectiveType: 0
     targetID: Npc_crimson_elf
-    requiredAmount: 5
-    description: 'Elimina enemigos '
+    requiredAmount: 1
+    description: Habla con la elfa carmesi
+    requiredItems: []
   rewards: []
   startDialogue:
     dialogue: {fileID: 11400000, guid: 5c0127e3b6754cc439c103997ada3723, type: 2}

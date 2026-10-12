@@ -310,6 +310,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Duna.QuestSystem.QuestGiver
   quest: {fileID: 11400000, guid: a64f42fda3dc1f14ba66a41afeab91db, type: 2}
+  offerDialogue: {fileID: 11400000, guid: b1fa4d864959909449dce328a78d06b7, type: 2}
+  offerReward:
+    giveReward: 0
+    itemID:
+    amount: 1
 --- !u!114 &7193486201947531001
 MonoBehaviour:
   m_ObjectHideFlags: 0

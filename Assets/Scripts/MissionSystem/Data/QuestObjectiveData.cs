@@ -1,4 +1,5 @@
 using UnityEngine;
+using Duna.DialogueSystem;
 
 namespace Duna.QuestSystem
 {
@@ -24,6 +25,13 @@ namespace Duna.QuestSystem
         [SerializeField]
         private string description;
 
+        [Header("Talk Dialogue and Reward")]
+        [SerializeField]
+        private DialogueData dialogue;
+
+        [SerializeField]
+        private QuestData.DialogueReward reward;
+
 
         //================================================//
         // GETTERS
@@ -36,6 +44,10 @@ namespace Duna.QuestSystem
         public int RequiredAmount => requiredAmount;
 
         public string Description => description;
+
+        public DialogueData Dialogue => dialogue;
+
+        public QuestData.DialogueReward Reward => reward;
     }
 }
 

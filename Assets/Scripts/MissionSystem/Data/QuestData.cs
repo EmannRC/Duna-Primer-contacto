@@ -1,4 +1,3 @@
-using Duna.DialogueSystem;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -35,18 +34,13 @@ namespace Duna.QuestSystem
             public int amount = 1;
         }
 
-
-        //================================================//
-        // QUEST DIALOGUE DATA
-        //================================================//
-
         [Serializable]
         public class QuestDialogueData
         {
-            public DialogueData dialogue;
-
+            public Duna.DialogueSystem.DialogueData dialogue;
             public DialogueReward reward;
         }
+
 
 
         //================================================//
@@ -85,21 +79,10 @@ namespace Duna.QuestSystem
         [SerializeField]
         private List<RewardData> rewards = new();
 
-
-        //================================================//
-        // DIALOGUE
-        //================================================//
-
-        [Header("Dialogue")]
-
-        [SerializeField]
-        private QuestDialogueData startDialogue;
-
+        [Header("In Progress Dialogue")]
         [SerializeField]
         private QuestDialogueData inProgressDialogue;
 
-        [SerializeField]
-        private QuestDialogueData completionDialogue;
 
 
         //================================================//
@@ -133,33 +116,10 @@ namespace Duna.QuestSystem
         public IReadOnlyList<RewardData> Rewards =>
             rewards;
 
+        public QuestDialogueData InProgressDialogueData => inProgressDialogue;
 
-        //================================================//
-        // DIALOGUE GETTERS
-        //================================================//
+        public Duna.DialogueSystem.DialogueData InProgressDialogue => inProgressDialogue?.dialogue;
 
-        public QuestDialogueData StartDialogueData =>
-            startDialogue;
-
-        public QuestDialogueData InProgressDialogueData =>
-            inProgressDialogue;
-
-        public QuestDialogueData CompletionDialogueData =>
-            completionDialogue;
-
-
-        //================================================//
-        // DIRECT DIALOGUE GETTERS
-        //================================================//
-
-        public DialogueData StartDialogue =>
-            startDialogue?.dialogue;
-
-        public DialogueData InProgressDialogue =>
-            inProgressDialogue?.dialogue;
-
-        public DialogueData CompletionDialogue =>
-            completionDialogue?.dialogue;
 
 
         //================================================//

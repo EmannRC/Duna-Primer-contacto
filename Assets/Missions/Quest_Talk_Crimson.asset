@@ -21,6 +21,11 @@ MonoBehaviour:
     targetID: Npc_crimson_elf
     requiredAmount: 0
     description: Habla con la elfa carmesi
+    dialogue: {fileID: 11400000, guid: 5c0127e3b6754cc439c103997ada3723, type: 2}
+    reward:
+      giveReward: 0
+      itemID:
+      amount: 1
     requiredItems: []
   - objectiveType: 4
     targetID: Npc_crimson_elf
@@ -28,23 +33,11 @@ MonoBehaviour:
     description: Habla con la elfa carmesi
     requiredItems: []
   rewards: []
-  startDialogue:
-    dialogue: {fileID: 11400000, guid: 5c0127e3b6754cc439c103997ada3723, type: 2}
-    reward:
-      giveReward: 0
-      itemID: 
-      amount: 1
   inProgressDialogue:
     dialogue: {fileID: 11400000, guid: ae2cf234dafb3604ea3a6191a1b99783, type: 2}
     reward:
       giveReward: 0
-      itemID: 
-      amount: 1
-  completionDialogue:
-    dialogue: {fileID: 11400000, guid: e31e88bc9771d234993ede8428970094, type: 2}
-    reward:
-      giveReward: 0
-      itemID: 
+      itemID:
       amount: 1
   repeatable: 0
   autoComplete: 0

@@ -27,24 +27,17 @@ MonoBehaviour:
     requiredAmount: 1
     description: Construye el calibrador en la interfaz de crafteo y entregaselo
       al robot averiado
-  rewards: []
-  startDialogue:
-    dialogue: {fileID: 11400000, guid: b1fa4d864959909449dce328a78d06b7, type: 2}
-    reward:
-      giveReward: 0
-      itemID: 
-      amount: 1
-  inProgressDialogue:
-    dialogue: {fileID: 11400000, guid: 5a696ad95fee0a64587a73ff6952e3a1, type: 2}
-    reward:
-      giveReward: 0
-      itemID: 
-      amount: 1
-  completionDialogue:
     dialogue: {fileID: 11400000, guid: 3c7a272b6d1ffdb43ac3fca104323fb1, type: 2}
     reward:
       giveReward: 1
       itemID: Weapon_Staff_Ice
+      amount: 1
+  rewards: []
+  inProgressDialogue:
+    dialogue: {fileID: 11400000, guid: 5a696ad95fee0a64587a73ff6952e3a1, type: 2}
+    reward:
+      giveReward: 0
+      itemID:
       amount: 1
   repeatable: 0
   autoComplete: 0

@@ -1,7 +1,5 @@
 using Duna.InteractionSystem;
 using Duna.QuestSystem;
-using System;
-using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -9,658 +7,226 @@ namespace Duna.DialogueSystem
 {
     public class DialogueController : MonoBehaviour, IInteractable
     {
-        //================================================//
-        // DEFAULT DIALOGUE
-        //================================================//
-
         [Header("Dialogue - Default")]
-
-        [SerializeField]
-        private DialogueData defaultDialogue;
-
-
-        //================================================//
-        // DIALOGUE EVENTS
-        //================================================//
+        [SerializeField] private DialogueData defaultDialogue;
 
         [Header("Dialogue Events")]
-
-        [SerializeField]
-        private UnityEvent onQuestDialogueFinished;
-
-        [SerializeField]
-        private UnityEvent onInProgressDialogueFinished;
-
-        [SerializeField]
-        private UnityEvent onCompletionDialogueFinished;
-
-
-        //================================================//
-        // CURRENT PLAYER
-        //================================================//
+        [SerializeField] private UnityEvent onQuestDialogueFinished;
+        [SerializeField] private UnityEvent onInProgressDialogueFinished;
+        [SerializeField] private UnityEvent onCompletionDialogueFinished;
 
         private PlayerContext currentPlayer;
-
-
-        //================================================//
-        // CURRENT QUEST
-        //================================================//
-
         private QuestData currentQuest;
-
-
-        //================================================//
-        // DIALOGUE STATE
-        //================================================//
-
+        private QuestObjectiveData currentObjective;
         private DialogueState currentDialogueState;
 
-        private enum DialogueState
-        {
-            None,
-            Quest,
-            InProgress,
-            Completion
-        }
-
-
-        //================================================//
-        // INTERACT
-        //================================================//
+        private enum DialogueState { None, Offer, Objective, Progress, Default }
 
         public void Interact(GameObject player)
         {
-            if (player == null)
-            {
-                Debug.LogError("Player inválido.");
+            if (player == null || DialogueManager.Instance == null)
                 return;
-            }
 
             currentPlayer = player.GetComponent<PlayerContext>();
-
-            if (currentPlayer == null)
-            {
-                Debug.LogError(
-                    "El jugador no tiene PlayerContext."
-                );
-
+            if (currentPlayer == null || currentPlayer.questManager == null)
                 return;
-            }
 
-            if (DialogueManager.Instance == null)
+            QuestManager manager = currentPlayer.questManager;
+            QuestGiver giver = GetComponent<QuestGiver>();
+            QuestReceiver receiver = GetComponent<QuestReceiver>();
+            NPCIdentity identity = GetComponent<NPCIdentity>();
+            QuestData quest = giver != null ? giver.Quest : receiver != null ? receiver.Quest : null;
+            QuestInstance active = quest != null ? manager.GetActiveQuest(quest.QuestID) : null;
+
+            if (active != null && active.CurrentObjective != null)
             {
-                Debug.LogError(
-                    "No existe DialogueManager."
-                );
-
-                return;
-            }
-
-            QuestManager questManager = currentPlayer.questManager;
-
-            if (questManager == null)
-            {
-                Debug.LogError(
-                    "El jugador no tiene QuestManager."
-                );
-
-                return;
-            }
-
-            QuestGiver questGiver = GetComponent<QuestGiver>();
-            QuestReceiver questReceiver = GetComponent<QuestReceiver>();
-
-
-            //================================================//
-            // NPC CON QUEST
-            //================================================//
-
-            if (questGiver != null &&
-                questGiver.Quest != null)
-            {
-                QuestData quest = questGiver.Quest;
-
-                string questID = quest.QuestID;
-
-                QuestInstance activeQuest =
-                    questManager.GetActiveQuest(questID);
-
-
-                //================================================//
-                // QUEST COMPLETABLE
-                //================================================//
-
-                if (activeQuest != null)
+                QuestObjectiveData objective = active.CurrentObjective.Data;
+                bool talkHere = identity != null && objective.ObjectiveType == ObjectiveType.Talk && objective.TargetID == identity.NPCID;
+                bool deliverHere = objective.ObjectiveType == ObjectiveType.Deliver && receiver != null && receiver.CanDeliver(manager);
+                if (talkHere || deliverHere)
                 {
-                    // La misión ya terminó todos sus objetivos.
-                    if (activeQuest.IsCompleted)
-                    {
-                        StartCompletionDialogue(quest);
-                        return;
-                    }
-
-                    // La misión tiene un objetivo Deliver pendiente.
-                    if (questReceiver != null &&
-                        questReceiver.CanDeliver(questManager))
-                    {
-                        StartCompletionDialogue(quest);
-                        return;
-                    }
-
-                    NPCIdentity identity = GetComponent<NPCIdentity>();
-
-                    if (identity != null)
-                    {
-                        if (activeQuest.IsCurrentObjectiveTalkTo(identity.NPCID))
-                        {
-                            StartQuestDialogue(quest);
-                            return;
-                        }
-                    }
-
-                    StartInProgressDialogue(quest);
+                    StartObjectiveDialogue(quest, objective);
                     return;
                 }
 
-
-                //================================================//
-                // QUEST ACTIVA
-                //================================================//
-
-                if (activeQuest != null)
-                {
-                    NPCIdentity identity =
-                        GetComponent<NPCIdentity>();
-
-                    if (identity != null)
-                    {
-                        if (activeQuest.IsCurrentObjectiveTalkTo(
-                            identity.NPCID))
-                        {
-                            StartQuestDialogue(quest);
-
-                            return;
-                        }
-                    }
-
-                    StartInProgressDialogue(quest);
-
-                    return;
-                }
-
-
-                //================================================//
-                // QUEST NO ACEPTADA
-                //================================================//
-
-                if (!questManager.IsQuestCompleted(questID))
-                {
-                    StartQuestDialogue(quest);
-
-                    return;
-                }
-            }
-
-
-            //================================================//
-            // NPC SIN QUEST O QUEST YA COMPLETADA
-            //================================================//
-
-            if (defaultDialogue != null)
-            {
-                StartDefaultDialogue();
-
+                StartInProgressDialogue(quest);
                 return;
             }
 
-            Debug.LogWarning(
-                $"El NPC {name} no tiene ningún diálogo asignado."
-            );
+            if (active == null && giver != null && giver.Quest != null && !manager.IsQuestCompleted(giver.Quest.QuestID))
+            {
+                quest = giver.Quest;
+                QuestObjectiveData first = quest.Objectives.Count > 0 ? quest.Objectives[0] : null;
+                bool firstTalkHere = identity != null && first != null && first.ObjectiveType == ObjectiveType.Talk && first.TargetID == identity.NPCID;
+                if (firstTalkHere)
+                {
+                    StartObjectiveDialogue(quest, first);
+                    return;
+                }
+
+                StartDialogue(giver.OfferDialogue != null ? giver.OfferDialogue : defaultDialogue, quest, null, DialogueState.Offer);
+                return;
+            }
+
+            StartDialogue(defaultDialogue, null, null, DialogueState.Default);
         }
 
-
-        //================================================//
-        // START QUEST DIALOGUE
-        //================================================//
-
-        private void StartQuestDialogue(QuestData quest)
+        private void StartObjectiveDialogue(QuestData quest, QuestObjectiveData objective)
         {
-            if (quest == null)
-                return;
-
-            if (quest.StartDialogue == null)
+            DialogueData dialogue = objective.Dialogue != null ? objective.Dialogue : defaultDialogue;
+            if (dialogue == null)
             {
-                Debug.LogWarning(
-                    $"La quest {quest.QuestID} no tiene Start Dialogue."
-                );
-
+                Debug.LogWarning($"[{name}] El objetivo no tiene diálogo y el NPC tampoco tiene uno genérico.");
                 return;
             }
 
             currentQuest = quest;
-            currentDialogueState = DialogueState.Quest;
-
-            DialogueManager.Instance.StartDialogue(
-                quest.StartDialogue,
-                this
-            );
+            currentObjective = objective;
+            currentDialogueState = DialogueState.Objective;
+            DialogueManager.Instance.StartDialogue(dialogue, this);
         }
-
-
-        //================================================//
-        // START IN PROGRESS DIALOGUE
-        //================================================//
 
         private void StartInProgressDialogue(QuestData quest)
         {
-            if (quest == null)
-                return;
-
-            if (quest.InProgressDialogue == null)
+            DialogueData dialogue = quest != null ? quest.InProgressDialogue : null;
+            if (dialogue == null)
             {
-                Debug.LogWarning(
-                    $"La quest {quest.QuestID} no tiene In Progress Dialogue."
-                );
-
+                StartDialogue(defaultDialogue, null, null, DialogueState.Default);
                 return;
             }
 
             currentQuest = quest;
-            currentDialogueState = DialogueState.InProgress;
-
-            DialogueManager.Instance.StartDialogue(
-                quest.InProgressDialogue,
-                this
-            );
+            currentObjective = null;
+            currentDialogueState = DialogueState.Progress;
+            DialogueManager.Instance.StartDialogue(dialogue, this);
         }
 
-
-        //================================================//
-        // START COMPLETION DIALOGUE
-        //================================================//
-
-        private void StartCompletionDialogue(QuestData quest)
+        private void StartDialogue(DialogueData dialogue, QuestData quest, QuestObjectiveData objective, DialogueState state)
         {
-            if (quest == null)
-                return;
-
-            if (quest.CompletionDialogue == null)
+            if (dialogue == null)
             {
-                Debug.LogWarning(
-                    $"La quest {quest.QuestID} no tiene Completion Dialogue."
-                );
-
+                if (state == DialogueState.Offer && quest != null)
+                    currentPlayer.questManager.AcceptQuest(quest.QuestID);
+                ResetDialogueState();
                 return;
             }
 
             currentQuest = quest;
-            currentDialogueState = DialogueState.Completion;
-
-            DialogueManager.Instance.StartDialogue(
-                quest.CompletionDialogue,
-                this
-            );
+            currentObjective = objective;
+            currentDialogueState = state;
+            DialogueManager.Instance.StartDialogue(dialogue, this);
         }
-
-
-        //================================================//
-        // START DEFAULT DIALOGUE
-        //================================================//
-
-        private void StartDefaultDialogue()
-        {
-            if (defaultDialogue == null)
-                return;
-
-            currentQuest = null;
-            currentDialogueState = DialogueState.None;
-
-            DialogueManager.Instance.StartDialogue(
-                defaultDialogue,
-                this
-            );
-        }
-
-
-        //================================================//
-        // DIALOGUE FINISHED
-        //================================================//
 
         public void DialogueFinished()
         {
-            if (currentPlayer == null)
+            if (currentPlayer == null || currentPlayer.questManager == null)
             {
-                Debug.LogWarning(
-                    $"[{name}] No hay jugador asociado al diálogo."
-                );
-
                 ResetDialogueState();
-
                 return;
             }
 
-            QuestManager questManager =
-                currentPlayer.questManager;
+            QuestManager manager = currentPlayer.questManager;
+            QuestData quest = currentQuest;
+            QuestObjectiveData objective = currentObjective;
+            DialogueState state = currentDialogueState;
+            QuestGiver giver = GetComponent<QuestGiver>();
+            QuestReceiver receiver = GetComponent<QuestReceiver>();
+            PlayerContext player = currentPlayer;
 
-            if (questManager == null)
+            if (state == DialogueState.Offer)
             {
-                ResetDialogueState();
-
-                return;
+                bool accepted = giver != null && giver.GiveQuest(manager);
+                if (accepted && giver != null)
+                    GiveReward(giver.OfferReward, player);
+                onQuestDialogueFinished?.Invoke();
             }
-
-
-            //================================================//
-            // DIÁLOGO FINAL
-            //================================================//
-
-            if (currentDialogueState == DialogueState.Completion)
+            else if (state == DialogueState.Progress)
             {
-                QuestReceiver questReceiver =
-                    GetComponent<QuestReceiver>();
+                RaiseTalkEvent();
+                if (quest != null)
+                    GiveReward(quest.InProgressDialogueData?.reward, player);
+                onInProgressDialogueFinished?.Invoke();
+            }
+            else if (state == DialogueState.Objective && quest != null && objective != null)
+            {
+                QuestInstance active = manager.GetActiveQuest(quest.QuestID);
+                bool newlyAccepted = false;
+                if (active == null && giver != null && giver.Quest == quest)
+                    newlyAccepted = giver.GiveQuest(manager);
 
-                QuestInstance activeQuest = null;
-
-                if (currentQuest != null)
+                if (objective.ObjectiveType == ObjectiveType.Deliver && active != null && receiver != null && receiver.CanDeliver(manager))
                 {
-                    activeQuest =
-                        questManager.GetActiveQuest(
-                            currentQuest.QuestID
-                        );
-                }
-
-                if (activeQuest == null)
-                {
-                    Debug.LogWarning(
-                        $"[{name}] No se encontró la misión activa al finalizar el diálogo."
-                    );
-
-                    onCompletionDialogueFinished?.Invoke();
-                    ResetDialogueState();
-                    return;
-                }
-
-                //================================================//
-                // CASO 1: LA MISIÓN YA ESTABA COMPLETADA
-                //================================================//
-
-                if (activeQuest.IsCompleted)
-                {
-                    bool turnedIn =
-                        questManager.TurnInQuest(
-                            activeQuest.Data.QuestID
-                        );
-
-                    if (turnedIn && currentQuest != null)
+                    QuestItemDelivery delivery = GetComponent<QuestItemDelivery>();
+                    if (delivery != null)
                     {
-                        GiveReward(
-                            currentQuest
-                                .CompletionDialogueData
-                                .reward
-                        );
-                    }
-
-                    onCompletionDialogueFinished?.Invoke();
-                    ResetDialogueState();
-                    return;
-                }
-
-                //================================================//
-                // CASO 2: HAY UN OBJETIVO DELIVER
-                //================================================//
-
-                if (questReceiver != null &&
-                    questReceiver.CanDeliver(questManager))
-                {
-                    QuestItemDelivery itemDelivery =
-                        GetComponent<QuestItemDelivery>();
-
-                    if (itemDelivery == null)
-                    {
-                        Debug.LogError(
-                            $"[{name}] Falta QuestItemDelivery " +
-                            "en el NPC que recibe la misión.");
-                    }
-                    else
-                    {
-                        QuestData deliveryQuest = currentQuest;
-                        PlayerContext deliveryPlayer = currentPlayer;
-
-                        itemDelivery.Deliver(
-                            questManager,
-                            deliveryPlayer.inventory,
-                            delivered => HandleDeliveryCompleted(
-                                questManager,
-                                deliveryQuest,
-                                deliveryPlayer,
-                                delivered
-                            )
-                        );
-
+                        QuestObjectiveRuntime runtimeObjective = active.CurrentObjective;
                         ResetDialogueState();
+                        delivery.Deliver(manager, player.inventory, delivered => HandleDeliveryCompleted(manager, quest, objective, runtimeObjective, player, delivered));
                         return;
+                    }
+                    Debug.LogError($"[{name}] Falta QuestItemDelivery.");
+                }
+                else if (objective.ObjectiveType == ObjectiveType.Talk)
+                {
+                    if (active != null || newlyAccepted)
+                    {
+                        QuestInstance talkingQuest = active ?? manager.GetActiveQuest(quest.QuestID);
+                        QuestObjectiveRuntime runtimeObjective = talkingQuest != null ? talkingQuest.CurrentObjective : null;
+                        RaiseTalkEvent();
+                        QuestInstance afterTalk = manager.GetActiveQuest(quest.QuestID);
+                        if (afterTalk != null && afterTalk.IsCompleted && !quest.AutoComplete)
+                            manager.TurnInQuest(quest.QuestID);
+                        if (runtimeObjective != null && runtimeObjective.IsCompleted)
+                            GiveReward(objective.Reward, player);
                     }
                 }
 
                 onCompletionDialogueFinished?.Invoke();
-                ResetDialogueState();
-                return;
-            }
-
-
-            //================================================//
-            // DIÁLOGO INICIAL
-            //================================================//
-
-            if (currentDialogueState ==
-                DialogueState.Quest)
-            {
-                QuestGiver questGiver =
-                    GetComponent<QuestGiver>();
-
-                if (questGiver != null)
-                {
-                    questGiver.GiveQuest(
-                        questManager
-                    );
-                }
-
-                RaiseTalkEvent();
-
-                if (currentQuest != null)
-                {
-                    GiveReward(
-                        currentQuest
-                            .StartDialogueData
-                            .reward
-                    );
-                }
-
-                onQuestDialogueFinished?.Invoke();
-
-                ResetDialogueState();
-
-                return;
-            }
-
-
-            //================================================//
-            // DIÁLOGO INTERMEDIO
-            //================================================//
-
-            if (currentDialogueState ==
-                DialogueState.InProgress)
-            {
-                RaiseTalkEvent();
-
-                if (currentQuest != null)
-                {
-                    GiveReward(
-                        currentQuest
-                            .InProgressDialogueData
-                            .reward
-                    );
-                }
-
                 onInProgressDialogueFinished?.Invoke();
-
-                ResetDialogueState();
-
-                return;
             }
-
-
-            //================================================//
-            // DEFAULT
-            //================================================//
 
             ResetDialogueState();
         }
 
-
-        //================================================//
-        // TALK TO NPC EVENT
-        //================================================//
-
         private void RaiseTalkEvent()
         {
-            NPCIdentity identity =
-                GetComponent<NPCIdentity>();
-
-            if (identity == null ||
-                string.IsNullOrWhiteSpace(
-                    identity.NPCID
-                ))
-            {
-                Debug.LogWarning(
-                    $"El NPC {name} no tiene un NPCIdentity válido."
-                );
-
-                return;
-            }
-
-            QuestEvents.RaiseTalkToNPC(
-                identity.NPCID
-            );
+            NPCIdentity identity = GetComponent<NPCIdentity>();
+            if (identity != null && !string.IsNullOrWhiteSpace(identity.NPCID))
+                QuestEvents.RaiseTalkToNPC(identity.NPCID);
         }
 
-
-        //================================================//
-        // GIVE REWARD
-        //================================================//
-
-        private void GiveReward(
-            QuestData.DialogueReward reward)
+        private void GiveReward(QuestData.DialogueReward reward, PlayerContext player)
         {
-            GiveReward(reward, currentPlayer);
+            if (reward == null || !reward.giveReward || player == null || string.IsNullOrWhiteSpace(reward.itemID) || reward.amount <= 0)
+                return;
+
+            Inventory inventory = player.GetComponentInChildren<Inventory>();
+            if (inventory != null)
+                inventory.RequestAddItem(reward.itemID, reward.amount);
         }
 
-        private void GiveReward(
-            QuestData.DialogueReward reward,
-            PlayerContext player)
+        private void HandleDeliveryCompleted(QuestManager manager, QuestData quest, QuestObjectiveData objective, QuestObjectiveRuntime runtimeObjective, PlayerContext player, bool delivered)
         {
-            if (reward == null)
-                return;
-
-            if (!reward.giveReward)
-                return;
-
-            if (player == null)
+            if (delivered && runtimeObjective != null && runtimeObjective.IsCompleted)
             {
-                Debug.LogWarning(
-                    $"[{name}] No hay jugador asociado."
-                );
-
-                return;
+                GiveReward(objective.Reward, player);
+                QuestInstance active = manager.GetActiveQuest(quest.QuestID);
+                if (active != null && active.IsCompleted && !quest.AutoComplete)
+                    manager.TurnInQuest(quest.QuestID);
             }
-
-            if (string.IsNullOrWhiteSpace(
-                reward.itemID
-            ))
+            else
             {
-                Debug.LogWarning(
-                    $"[{name}] No hay Item ID configurado."
-                );
-
-                return;
-            }
-
-            if (reward.amount <= 0)
-            {
-                Debug.LogWarning(
-                    $"[{name}] La cantidad de recompensa debe ser mayor a 0."
-                );
-
-                return;
-            }
-
-            Inventory inventory =
-                player.GetComponentInChildren<Inventory>();
-
-            if (inventory == null)
-            {
-                Debug.LogWarning(
-                    $"[{name}] El jugador no tiene Inventory."
-                );
-
-                return;
-            }
-
-            inventory.RequestAddItem(
-                reward.itemID,
-                reward.amount
-            );
-
-            Debug.Log(
-                $"[{name}] Recompensa solicitada: " +
-                $"{reward.itemID} x{reward.amount}"
-            );
-        }
-
-        private void HandleDeliveryCompleted(
-            QuestManager questManager,
-            QuestData quest,
-            PlayerContext player,
-            bool delivered)
-        {
-            if (!delivered)
-            {
-                Debug.LogWarning(
-                    $"[{name}] No se pudo realizar la entrega. " +
-                    "Revisá el objeto requerido y el inventario."
-                );
-                onCompletionDialogueFinished?.Invoke();
-                return;
-            }
-
-            Debug.Log($"[{name}] Entrega realizada.");
-
-            QuestInstance activeQuest =
-                questManager.GetActiveQuest(quest.QuestID);
-
-            if (activeQuest != null && activeQuest.IsCompleted)
-            {
-                bool turnedIn =
-                    questManager.TurnInQuest(activeQuest.Data.QuestID);
-
-                if (turnedIn && quest.CompletionDialogueData != null)
-                {
-                    GiveReward(quest.CompletionDialogueData.reward, player);
-                }
+                Debug.LogWarning($"[{name}] No se pudo realizar la entrega.");
             }
 
             onCompletionDialogueFinished?.Invoke();
         }
 
-
-        //================================================//
-        // RESET DIALOGUE STATE
-        //================================================//
-
         private void ResetDialogueState()
         {
             currentDialogueState = DialogueState.None;
             currentQuest = null;
+            currentObjective = null;
             currentPlayer = null;
         }
     }

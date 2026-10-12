@@ -19,26 +19,36 @@ MonoBehaviour:
     m\xE1gico y poniendo a todos en riesgo. Enfrenta la amenaza y abrete paso hacia
     la nave invaso"
   objectives:
+  - objectiveType: 0
+    targetID: Npc_crimson_elf
+    requiredAmount: 1
+    description: 'Dirigete al bosque carmesi para hablar con la elfa carmesi  '
+    dialogue: {fileID: 0}
+    reward:
+      giveReward: 0
+      itemID: 
+      amount: 1
+  - objectiveType: 0
+    targetID: robot
+    requiredAmount: 1
+    description: 'Encuentra la vieja fabrica y habla con el robot averiado '
+    dialogue: {fileID: 0}
+    reward:
+      giveReward: 0
+      itemID: 
+      amount: 1
   - objectiveType: 3
     targetID: core
     requiredAmount: 1
     description: Dirigete al portal al centro del templo y destruye el nucleo de
       la nave polygon para acabar con la invasion definitivamente
-    requiredItems: []
+    dialogue: {fileID: 0}
+    reward:
+      giveReward: 0
+      itemID: 
+      amount: 1
   rewards: []
-  startDialogue:
-    dialogue: {fileID: 0}
-    reward:
-      giveReward: 0
-      itemID: 
-      amount: 1
   inProgressDialogue:
-    dialogue: {fileID: 0}
-    reward:
-      giveReward: 0
-      itemID: 
-      amount: 1
-  completionDialogue:
     dialogue: {fileID: 0}
     reward:
       giveReward: 0

@@ -153,12 +153,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1959381778658820132}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0.38268343, w: 0.92387956}
-  m_LocalPosition: {x: 0.75, y: -0.7, z: 0.04}
+  m_LocalRotation: {x: 0.31019473, y: -0.123405956, z: 0.12947808, w: 0.9336946}
+  m_LocalPosition: {x: 0.33462456, y: -1.0614096, z: -0.14248025}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6945967737514687726}
+  m_Father: {fileID: 4252328230625730964}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 45}
 --- !u!1 &2121066274006663339
 GameObject:
@@ -358,10 +358,11 @@ Transform:
   m_GameObject: {fileID: 3192926551893178601}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 27.54626, y: 4.3, z: 88.15388}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 2683116551801502135}
   - {fileID: 9104621947051074765}
   - {fileID: 5025413102069882173}
   - {fileID: 8830886915777274437}
@@ -401,12 +402,11 @@ MonoBehaviour:
   controller: {fileID: 4840403731964879118}
   movement: {fileID: 1095138380536831322}
   rotation: {fileID: 2593140643872428480}
-  combat: {fileID: 2876172698948846332}
+  combat: {fileID: 0}
   shooter: {fileID: 2617802286818798865}
   staffAbility: {fileID: 7902032630794507627}
-  animator: {fileID: 2934712776436334263}
-  playerAnimation: {fileID: 2072143865546649737}
-  crosshair: {fileID: 0}
+  animator: {fileID: 8348676028044190669}
+  playerAnimation: {fileID: 822310890125013420}
   craftingUI: {fileID: 0}
   mainCamera: {fileID: 0}
 --- !u!114 &4953450847359807446
@@ -485,7 +485,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 428777726
+  GlobalObjectIdHash: 1908905261
   InScenePlacedSourceGlobalObjectIdHash: 3680711321
   DeferredDespawnTick: 0
   Ownership: 1
@@ -1467,6 +1467,209 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1231241095755832135}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &2501434259720642140
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1231241095755832135}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 0ed9daf98c1787e459ef40a157326109, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0ed9daf98c1787e459ef40a157326109, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.842
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0ed9daf98c1787e459ef40a157326109, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0ed9daf98c1787e459ef40a157326109, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0ed9daf98c1787e459ef40a157326109, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0ed9daf98c1787e459ef40a157326109, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0ed9daf98c1787e459ef40a157326109, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0ed9daf98c1787e459ef40a157326109, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0ed9daf98c1787e459ef40a157326109, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0ed9daf98c1787e459ef40a157326109, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 0ed9daf98c1787e459ef40a157326109, type: 3}
+      propertyPath: m_Name
+      value: LumenModel (New)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: 0ed9daf98c1787e459ef40a157326109, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: b9af60d4832e54e41bba2b47aea11eae, type: 2}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 1852576806548013000, guid: 0ed9daf98c1787e459ef40a157326109, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6114633852358088172}
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0ed9daf98c1787e459ef40a157326109, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 822310890125013420}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0ed9daf98c1787e459ef40a157326109, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1410536683074597176}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0ed9daf98c1787e459ef40a157326109, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7352338049548454132}
+  m_SourcePrefab: {fileID: 100100000, guid: 0ed9daf98c1787e459ef40a157326109, type: 3}
+--- !u!4 &2683116551801502135 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 0ed9daf98c1787e459ef40a157326109, type: 3}
+  m_PrefabInstance: {fileID: 2501434259720642140}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &3348295366639952653 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 0ed9daf98c1787e459ef40a157326109, type: 3}
+  m_PrefabInstance: {fileID: 2501434259720642140}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &822310890125013420
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3348295366639952653}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04b1ed6d9dcc26945a4d48097b2761e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimation
+  ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &1410536683074597176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3348295366639952653}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a423748d551801e4e84799680e11c362, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCombat
+  requireAimToShoot: 1
+--- !u!114 &7352338049548454132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3348295366639952653}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkAnimator
+  ShowTopMostFoldoutHeaderGroup: 1
+  NetworkAnimatorExpanded: 0
+  AuthorityMode: 1
+  m_Animator: {fileID: 8348676028044190669}
+  TransitionStateInfoList: []
+  AnimatorParameterEntries:
+    ParameterEntries:
+    - name: VelX
+      NameHash: 767982532
+      Synchronize: 1
+      ParameterType: 1
+    - name: VelY
+      NameHash: 1522617170
+      Synchronize: 1
+      ParameterType: 1
+    - name: IsGrounded
+      NameHash: 507951781
+      Synchronize: 1
+      ParameterType: 4
+    - name: Jump
+      NameHash: 125937960
+      Synchronize: 1
+      ParameterType: 9
+    - name: Speed
+      NameHash: -823668238
+      Synchronize: 1
+      ParameterType: 1
+    - name: VelocityY
+      NameHash: -303020060
+      Synchronize: 1
+      ParameterType: 1
+    - name: IsCrouching
+      NameHash: -1154928320
+      Synchronize: 1
+      ParameterType: 4
+    - name: IsJumping
+      NameHash: 1749078233
+      Synchronize: 1
+      ParameterType: 4
+    - name: IsFalling
+      NameHash: 268975031
+      Synchronize: 1
+      ParameterType: 4
+    - name: IsMoving
+      NameHash: 120489994
+      Synchronize: 1
+      ParameterType: 4
+    - name: Shoot
+      NameHash: -1316629574
+      Synchronize: 1
+      ParameterType: 9
+    - name: AttackAnimationSpeed
+      NameHash: 1765791331
+      Synchronize: 1
+      ParameterType: 1
+    - name: Die
+      NameHash: 20298039
+      Synchronize: 1
+      ParameterType: 9
+    - name: IsAlive
+      NameHash: -695135503
+      Synchronize: 1
+      ParameterType: 4
+    - name: Dancing
+      NameHash: -1900052137
+      Synchronize: 1
+      ParameterType: 9
+    - name: IsAiming
+      NameHash: 2025090383
+      Synchronize: 1
+      ParameterType: 4
+  AnimatorParametersExpanded: 0
+--- !u!4 &4252328230625730964 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1852576806548013000, guid: 0ed9daf98c1787e459ef40a157326109, type: 3}
+  m_PrefabInstance: {fileID: 2501434259720642140}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &8348676028044190669 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 0ed9daf98c1787e459ef40a157326109, type: 3}
+  m_PrefabInstance: {fileID: 2501434259720642140}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8777696068118315814
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2347,6 +2550,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 976ed106e0ee220499c45ed158a43251, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 921391927218321214, guid: 976ed106e0ee220499c45ed158a43251, type: 3}
       propertyPath: m_Layer
       value: 7
@@ -3021,146 +3228,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 1852576806548013000, guid: 976ed106e0ee220499c45ed158a43251, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6114633852358088172}
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 976ed106e0ee220499c45ed158a43251, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2072143865546649737}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 976ed106e0ee220499c45ed158a43251, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2876172698948846332}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 976ed106e0ee220499c45ed158a43251, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 752104466709230402}
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 976ed106e0ee220499c45ed158a43251, type: 3}
---- !u!95 &2934712776436334263 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 976ed106e0ee220499c45ed158a43251, type: 3}
-  m_PrefabInstance: {fileID: 8777696068118315814}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &6945967737514687726 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1852576806548013000, guid: 976ed106e0ee220499c45ed158a43251, type: 3}
-  m_PrefabInstance: {fileID: 8777696068118315814}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &8435749804554075767 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 976ed106e0ee220499c45ed158a43251, type: 3}
-  m_PrefabInstance: {fileID: 8777696068118315814}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &2072143865546649737
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8435749804554075767}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04b1ed6d9dcc26945a4d48097b2761e4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimation
-  ShowTopMostFoldoutHeaderGroup: 1
---- !u!114 &2876172698948846332
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8435749804554075767}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a423748d551801e4e84799680e11c362, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerCombat
-  requireAimToShoot: 1
---- !u!114 &752104466709230402
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8435749804554075767}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkAnimator
-  ShowTopMostFoldoutHeaderGroup: 1
-  NetworkAnimatorExpanded: 0
-  AuthorityMode: 1
-  m_Animator: {fileID: 2934712776436334263}
-  TransitionStateInfoList: []
-  AnimatorParameterEntries:
-    ParameterEntries:
-    - name: VelX
-      NameHash: 767982532
-      Synchronize: 1
-      ParameterType: 1
-    - name: VelY
-      NameHash: 1522617170
-      Synchronize: 1
-      ParameterType: 1
-    - name: IsGrounded
-      NameHash: 507951781
-      Synchronize: 1
-      ParameterType: 4
-    - name: Jump
-      NameHash: 125937960
-      Synchronize: 1
-      ParameterType: 9
-    - name: Speed
-      NameHash: -823668238
-      Synchronize: 1
-      ParameterType: 1
-    - name: VelocityY
-      NameHash: -303020060
-      Synchronize: 1
-      ParameterType: 1
-    - name: IsCrouching
-      NameHash: -1154928320
-      Synchronize: 1
-      ParameterType: 4
-    - name: IsJumping
-      NameHash: 1749078233
-      Synchronize: 1
-      ParameterType: 4
-    - name: IsFalling
-      NameHash: 268975031
-      Synchronize: 1
-      ParameterType: 4
-    - name: IsMoving
-      NameHash: 120489994
-      Synchronize: 1
-      ParameterType: 4
-    - name: Shoot
-      NameHash: -1316629574
-      Synchronize: 1
-      ParameterType: 9
-    - name: AttackAnimationSpeed
-      NameHash: 1765791331
-      Synchronize: 1
-      ParameterType: 1
-    - name: Die
-      NameHash: 20298039
-      Synchronize: 1
-      ParameterType: 9
-    - name: IsAlive
-      NameHash: -695135503
-      Synchronize: 1
-      ParameterType: 4
-    - name: Dancing
-      NameHash: -1900052137
-      Synchronize: 1
-      ParameterType: 9
-    - name: IsAiming
-      NameHash: 2025090383
-      Synchronize: 1
-      ParameterType: 4
-  AnimatorParametersExpanded: 0
 --- !u!4 &9104621947051074765 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 976ed106e0ee220499c45ed158a43251, type: 3}

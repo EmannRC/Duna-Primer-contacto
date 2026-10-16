@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class EnemyTargeting : NetworkBehaviour
 {
+    [Header("Targeting")]
+    [SerializeField, Min(0f)] private float detectionRange = 15f;
+
     public Transform CurrentTarget { get; private set; }
 
     private void Update()
@@ -16,13 +19,17 @@ public class EnemyTargeting : NetworkBehaviour
 
     private void FindPlayer()
     {
-        float closestDistance = float.MaxValue;
+        float closestDistance = detectionRange * detectionRange;
 
         CurrentTarget = null;
 
         foreach (var player in FindObjectsByType<PlayerContext>(FindObjectsSortMode.None))
         {
-            float distance = Vector3.Distance(transform.position, player.transform.position);
+            if (player == null ||
+                (player.TryGetComponent<PlayerHealth>(out PlayerHealth health) && health.IsDead.Value))
+                continue;
+
+            float distance = (transform.position - player.transform.position).sqrMagnitude;
 
             if (distance < closestDistance)
             {

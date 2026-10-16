@@ -402,7 +402,7 @@ MonoBehaviour:
   controller: {fileID: 4840403731964879118}
   movement: {fileID: 1095138380536831322}
   rotation: {fileID: 2593140643872428480}
-  combat: {fileID: 0}
+  combat: {fileID: 1410536683074597176}
   shooter: {fileID: 2617802286818798865}
   staffAbility: {fileID: 7902032630794507627}
   animator: {fileID: 8348676028044190669}

@@ -8,6 +8,7 @@ public class EnemyMeleeCombat : NetworkBehaviour
     [SerializeField] private int damage = 10;
     [SerializeField] private float attackRange = 1.5f;
     [SerializeField] private float attackCooldown = 1f;
+    [SerializeField, Min(0.1f)] private float attackFailsafeDuration = 1.1f;
 
     private EnemyContext ctx;
 
@@ -76,6 +77,8 @@ public class EnemyMeleeCombat : NetworkBehaviour
         if (ctx.enemyAnimation != null)
         {
             ctx.enemyAnimation.NotifyAttack();
+            // Fallback for clips without an AnimationEvent.
+            StartCoroutine(FinishAttackAfterAnimation());
             return;
         }
 
@@ -86,6 +89,19 @@ public class EnemyMeleeCombat : NetworkBehaviour
 
 
     //========================================================//
+    private IEnumerator FinishAttackAfterAnimation()
+    {
+        yield return new WaitForSeconds(attackFailsafeDuration);
+
+        if (!isAttacking)
+            yield break;
+
+        Transform target = ctx.targeting != null ? ctx.targeting.CurrentTarget : null;
+        if (IsValidTarget(target))
+            DealDamage(target);
+
+        FinishAttack();
+    }
     // ANIMATION EVENT
     //========================================================//
 

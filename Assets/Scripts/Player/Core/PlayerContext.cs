@@ -29,7 +29,7 @@ public class PlayerContext : MonoBehaviour
     [Header("Combat")]
     public PlayerCombat combat;
     public ShootController shooter;
-    public PlayerStaffAbility staffAbility;
+    public PlayerAbilitySystem abilitySystem;
 
     [Header("Visual / UI")]
     public Animator animator;

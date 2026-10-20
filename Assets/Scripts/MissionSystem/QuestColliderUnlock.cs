@@ -7,8 +7,8 @@ namespace Duna.QuestSystem
         [Header("Quest")]
         [SerializeField] private string requiredQuestID;
 
-        [Header("Collider")]
-        [SerializeField] private Collider targetCollider;
+        [Header("Wall")]
+        [SerializeField] private GameObject wall;
 
         private QuestManager questManager;
 
@@ -78,7 +78,7 @@ namespace Duna.QuestSystem
         {
             if (questManager.IsQuestCompleted(requiredQuestID))
             {
-                DisableCollider();
+                DisableWall();
             }
         }
 
@@ -95,7 +95,7 @@ namespace Duna.QuestSystem
             if (quest.Data.QuestID != requiredQuestID)
                 return;
 
-            DisableCollider();
+            DisableWall();
         }
 
         //================================================//
@@ -111,28 +111,28 @@ namespace Duna.QuestSystem
             if (quest.Data.QuestID != requiredQuestID)
                 return;
 
-            DisableCollider();
+            DisableWall();
         }
 
         //================================================//
         // DISABLE COLLIDER
         //================================================//
 
-        private void DisableCollider()
+        private void DisableWall()
         {
-            if (targetCollider == null)
+            if (wall == null)
             {
                 Debug.LogWarning(
-                    $"[{name}] No tiene un Collider asignado."
+                    $"[{name}] No tiene un muro asignado."
                 );
 
                 return;
             }
 
-            if (!targetCollider.enabled)
+            if (wall.activeInHierarchy)
                 return;
 
-            targetCollider.enabled = false;
+            wall.SetActive(false);
 
             Debug.Log(
                 $"Quest '{requiredQuestID}' completada. " +

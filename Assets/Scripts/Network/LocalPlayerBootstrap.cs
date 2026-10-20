@@ -18,7 +18,7 @@ public class LocalPlayerBootstrap : MonoBehaviour
     [SerializeField] private QuestTrackerUI questTrackerUI;
     [SerializeField] private UI_Manager deathMenu;
     [SerializeField] private MenuButtonUI menuButtonUI;
-    [SerializeField] private StaffAbilityUI staffAbilityUI;
+    [SerializeField] private AbilityUI abilityUI;
 
     //==========================================================//
     private void Awake()
@@ -142,9 +142,9 @@ public class LocalPlayerBootstrap : MonoBehaviour
             questManager
         );
 
-        if (staffAbilityUI != null && ctx.staffAbility != null)
+        if (abilityUI != null && ctx.abilitySystem != null)
         {
-            staffAbilityUI.Bind(ctx.staffAbility);
+            abilityUI.Bind(ctx.abilitySystem);
         }
 
         PlayerRespawn playerRespawn = playerRoot.GetComponent<PlayerRespawn>();

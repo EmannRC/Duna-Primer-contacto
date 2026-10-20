@@ -313,7 +313,7 @@ MonoBehaviour:
   offerDialogue: {fileID: 11400000, guid: b1fa4d864959909449dce328a78d06b7, type: 2}
   offerReward:
     giveReward: 0
-    itemID:
+    itemID: 
     amount: 1
 --- !u!114 &7193486201947531001
 MonoBehaviour:
@@ -325,7 +325,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5c2dcf7137dc8fd4eb2566f4cfd07573, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Duna.QuestSystem.QuestReceiver
   quest: {fileID: 11400000, guid: a64f42fda3dc1f14ba66a41afeab91db, type: 2}
 --- !u!114 &8975484625609303349
@@ -503,8 +503,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34f8721bc6f9b2b48ad07c6a35cc114f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHover
-  amplitude: 0.5
-  frequency: 1
+  amplitude: 0.2
+  frequency: 1.5
 --- !u!4 &9043717287649887290 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 5ff66a9591bdb6448b2680c6908fca63, type: 3}

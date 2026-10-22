@@ -37,6 +37,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4984119303115087020}
+  - {fileID: 3692108817289554028}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &8068046522967383041
@@ -187,6 +188,121 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Duna.QuestSystem.NPCIdentity
   npcID: Npc_crimson_elf
+--- !u!1001 &3798707211582885767
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1770512641073573913}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: cd356ef5d649a7b459f5fa6dd85ffc0f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: cd356ef5d649a7b459f5fa6dd85ffc0f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: cd356ef5d649a7b459f5fa6dd85ffc0f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: cd356ef5d649a7b459f5fa6dd85ffc0f, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: cd356ef5d649a7b459f5fa6dd85ffc0f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: cd356ef5d649a7b459f5fa6dd85ffc0f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: cd356ef5d649a7b459f5fa6dd85ffc0f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: cd356ef5d649a7b459f5fa6dd85ffc0f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: cd356ef5d649a7b459f5fa6dd85ffc0f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: cd356ef5d649a7b459f5fa6dd85ffc0f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: cd356ef5d649a7b459f5fa6dd85ffc0f, type: 3}
+      propertyPath: m_Name
+      value: Elf_carmesi_model_npc
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: cd356ef5d649a7b459f5fa6dd85ffc0f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4475672370213003381}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: cd356ef5d649a7b459f5fa6dd85ffc0f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8282756479341310584}
+  m_SourcePrefab: {fileID: 100100000, guid: cd356ef5d649a7b459f5fa6dd85ffc0f, type: 3}
+--- !u!4 &3692108817289554028 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: cd356ef5d649a7b459f5fa6dd85ffc0f, type: 3}
+  m_PrefabInstance: {fileID: 3798707211582885767}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4068669956409127638 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: cd356ef5d649a7b459f5fa6dd85ffc0f, type: 3}
+  m_PrefabInstance: {fileID: 3798707211582885767}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &4475672370213003381
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4068669956409127638}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 3acd49fe30269b6428347bcaaaf0a37a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &8282756479341310584
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4068669956409127638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkAnimator
+  ShowTopMostFoldoutHeaderGroup: 1
+  NetworkAnimatorExpanded: 0
+  AuthorityMode: 1
+  m_Animator: {fileID: 4475672370213003381}
+  TransitionStateInfoList: []
+  AnimatorParameterEntries:
+    ParameterEntries: []
+  AnimatorParametersExpanded: 0
 --- !u!1001 &4801293930050812743
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -239,6 +355,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CrinsonElf (Placeholder)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6588e25718f189545969c2846817477c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 6588e25718f189545969c2846817477c, type: 3}
       propertyPath: m_Controller
       value: 
@@ -246,43 +366,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 6588e25718f189545969c2846817477c, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6571118518803077654}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6588e25718f189545969c2846817477c, type: 3}
---- !u!95 &1426245586355111638 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 6588e25718f189545969c2846817477c, type: 3}
-  m_PrefabInstance: {fileID: 4801293930050812743}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4984119303115087020 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6588e25718f189545969c2846817477c, type: 3}
   m_PrefabInstance: {fileID: 4801293930050812743}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &5647785194248717846 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 6588e25718f189545969c2846817477c, type: 3}
-  m_PrefabInstance: {fileID: 4801293930050812743}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &6571118518803077654
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5647785194248717846}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkAnimator
-  ShowTopMostFoldoutHeaderGroup: 1
-  NetworkAnimatorExpanded: 0
-  AuthorityMode: 0
-  m_Animator: {fileID: 1426245586355111638}
-  TransitionStateInfoList: []
-  AnimatorParameterEntries:
-    ParameterEntries: []
-  AnimatorParametersExpanded: 0

@@ -1,0 +1,199 @@
+fileFormatVersion: 2
+guid: d2c502598a7247448b7a14cc7df99a1c
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 0
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: UI_Skill_BAR_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 405
+        width: 2172
+        height: 197
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6b442f5dde302eb4a87ae31fe776d2fd
+      internalID: 1749972839
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_Skill_BAR_33
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 111
+        width: 2172
+        height: 271
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6321a6bb994ef144e9b78add9b16d133
+      internalID: 1471132824
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 427fef50f596e1244b27937e3cee3950
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      UI_Skill_BAR_0: 1749972839
+      UI_Skill_BAR_1: -1522329206
+      UI_Skill_BAR_10: -1130154863
+      UI_Skill_BAR_11: -481909208
+      UI_Skill_BAR_12: -372328167
+      UI_Skill_BAR_13: 1006208367
+      UI_Skill_BAR_14: -1198565771
+      UI_Skill_BAR_15: -1717957862
+      UI_Skill_BAR_16: -1670122324
+      UI_Skill_BAR_17: -1608801728
+      UI_Skill_BAR_18: 804240294
+      UI_Skill_BAR_19: -638654561
+      UI_Skill_BAR_2: -479271140
+      UI_Skill_BAR_20: 183320339
+      UI_Skill_BAR_21: -1483584514
+      UI_Skill_BAR_22: 43633553
+      UI_Skill_BAR_23: 2112752041
+      UI_Skill_BAR_24: 927141823
+      UI_Skill_BAR_25: 1116668012
+      UI_Skill_BAR_26: -1296008657
+      UI_Skill_BAR_27: -1838674727
+      UI_Skill_BAR_28: 1854426273
+      UI_Skill_BAR_29: -841394729
+      UI_Skill_BAR_3: 2144293124
+      UI_Skill_BAR_30: 755567018
+      UI_Skill_BAR_31: 968593196
+      UI_Skill_BAR_32: 1116949126
+      UI_Skill_BAR_33: 1471132824
+      UI_Skill_BAR_34: -120750929
+      UI_Skill_BAR_35: -1557105467
+      UI_Skill_BAR_4: -55882043
+      UI_Skill_BAR_5: 1244604714
+      UI_Skill_BAR_6: 989599369
+      UI_Skill_BAR_7: 1554177126
+      UI_Skill_BAR_8: -1561651076
+      UI_Skill_BAR_9: 1387374471
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

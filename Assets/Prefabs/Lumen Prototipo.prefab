@@ -515,7 +515,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 428777726
+  GlobalObjectIdHash: 1908905261
   InScenePlacedSourceGlobalObjectIdHash: 3680711321
   DeferredDespawnTick: 0
   Ownership: 1
@@ -605,7 +605,7 @@ MonoBehaviour:
   groundedGraceTime: 0.1
   aimMovementMultiplier: 0.6
   dashDistance: 4.5
-  dashDuration: 2
+  dashDuration: 0.2
 --- !u!114 &2593140643872428480
 MonoBehaviour:
   m_ObjectHideFlags: 0

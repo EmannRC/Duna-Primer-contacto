@@ -9,6 +9,15 @@ public abstract class EnemyMovementBase : NetworkBehaviour
     protected EnemyContext ctx;
     protected bool movementLocked;
 
+    [Header("Repel")]
+    [SerializeField] private float repelResistance = 1f;
+
+    private Vector3 repelDirection;
+    private float repelSpeed;
+    private float repelRemaining;
+
+    public bool IsBeingRepelled => repelRemaining > 0f;
+
 
     //=======================================================//
     // AWAKE
@@ -28,6 +37,17 @@ public abstract class EnemyMovementBase : NetworkBehaviour
     {
         if (!IsServer)
             return;
+
+        if (IsBeingRepelled)
+        {
+            float delta = Mathf.Min(
+                Time.deltaTime,
+                repelRemaining);
+
+            MoveDuringRepel(repelDirection * repelSpeed * delta);
+            repelRemaining -= delta;
+            return;
+        }
 
         if (movementLocked)
             return;
@@ -138,5 +158,35 @@ public abstract class EnemyMovementBase : NetworkBehaviour
 
     public abstract void SetMovementLocked(
         bool locked);
+
+    //=======================================================//
+    // REPEAL
+    //=======================================================//
+    public void ApplyRepel(
+    Vector3 sourcePosition,
+    float force,
+    float duration)
+    {
+        if (!IsServer || duration <= 0f || force <= 0f)
+            return;
+
+        repelDirection = transform.position - sourcePosition;
+        repelDirection.y = 0f;
+
+        if (repelDirection.sqrMagnitude < 0.001f)
+            repelDirection = transform.forward;
+
+        repelDirection.Normalize();
+
+        repelSpeed = force / Mathf.Max(0.1f, duration);
+        repelSpeed /= Mathf.Max(0.1f, repelResistance);
+
+        repelRemaining = duration;
+    }
+
+    protected virtual void MoveDuringRepel(Vector3 displacement)
+    {
+        transform.position += displacement;
+    }
 }
 

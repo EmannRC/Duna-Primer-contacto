@@ -434,7 +434,7 @@ MonoBehaviour:
   rotation: {fileID: 2593140643872428480}
   combat: {fileID: 1410536683074597176}
   shooter: {fileID: 2617802286818798865}
-  abilitySystem: {fileID: 7902032630794507627}
+  skillSystem: {fileID: 7902032630794507627}
   animator: {fileID: 8348676028044190669}
   playerAnimation: {fileID: 822310890125013420}
   craftingUI: {fileID: 0}
@@ -515,7 +515,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1908905261
+  GlobalObjectIdHash: 428777726
   InScenePlacedSourceGlobalObjectIdHash: 3680711321
   DeferredDespawnTick: 0
   Ownership: 1
@@ -603,12 +603,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   groundedGraceTime: 0.1
-  crouchHeight: 1.3
-  crouchSpeed: 1
   aimMovementMultiplier: 0.6
   dashDistance: 4.5
-  dashDuration: 0.25
-  dashCooldown: 1
+  dashDuration: 2
 --- !u!114 &2593140643872428480
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -947,8 +944,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 6235707199556142277}
         m_TargetAssemblyTypeName: PlayerInputEvents, Assembly-CSharp
-        m_MethodName: OnDash
-        m_Mode: 0
+        m_MethodName: OnCelerity
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -963,8 +960,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 6235707199556142277}
         m_TargetAssemblyTypeName: PlayerInputEvents, Assembly-CSharp
-        m_MethodName: OnAbility
-        m_Mode: 0
+        m_MethodName: OnRepel
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -975,6 +972,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 3d521deb-04cd-443e-b1f8-6d8854b8344e
     m_ActionName: 'Player/Ability[/Keyboard/1]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6235707199556142277}
+        m_TargetAssemblyTypeName: PlayerInputEvents, Assembly-CSharp
+        m_MethodName: OnMenu
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 5e7be11e-73cf-4a03-a82f-99a1f9fa9528
+    m_ActionName: 'UI/OpenMenu[/Keyboard/escape]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -1199,7 +1212,6 @@ GameObject:
   - component: {fileID: 642162550967021989}
   - component: {fileID: 2617802286818798865}
   - component: {fileID: 7902032630794507627}
-  - component: {fileID: 3874168562637844919}
   m_Layer: 7
   m_Name: PlayerCombat
   m_TagString: Untagged
@@ -1286,20 +1298,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAbilitySystem
   ShowTopMostFoldoutHeaderGroup: 1
-  abilityData: {fileID: 11400000, guid: 4a744a41ac1ad324f81195f7afea82e4, type: 2}
---- !u!114 &3874168562637844919
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6072154242033191434}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0faea636e3201a4c813aba8198984e7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerAbilityEffects
-  shieldVisualPrefab: {fileID: 6155210867353427163, guid: d26dcea33969461459a2288955d164c1, type: 3}
+  maxEnergy: 100
+  startingEnergy: 100
+  celerityCost: 2
+  celerityCooldown: 1
+  impulseCost: 4
+  impulseCooldown: 3
+  impulseHeight: 5
+  repelCost: 8
+  repelCooldown: 3
+  repelRadius: 5
+  repelForce: 8
+  repelDuration: 0.3
+  enemyLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  movement: {fileID: 1095138380536831322}
 --- !u!1 &6243820527704969992
 GameObject:
   m_ObjectHideFlags: 0

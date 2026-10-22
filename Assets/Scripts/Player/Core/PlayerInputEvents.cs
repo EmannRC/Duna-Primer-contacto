@@ -8,8 +8,6 @@ public class PlayerInputEvents : MonoBehaviour
 
     public event Action InteractPressed;
 
-    public event Action AbilityPressed;
-
     //==============================================//
     public void Bind(PlayerContext playerContext)
     {
@@ -35,8 +33,8 @@ public class PlayerInputEvents : MonoBehaviour
         if (ctx.health.IsDead.Value)
             return;
 
-        if (input.performed)
-            ctx.movement.SetJump(true);
+        if (ctx != null)
+            ctx.skillSystem?.TryImpulse();
     }
 
     public void OnSprint(InputAction.CallbackContext input)
@@ -69,6 +67,19 @@ public class PlayerInputEvents : MonoBehaviour
             return;
 
         UI_Manager.Instance.ToggleInventory();
+    }
+
+    //======================//
+    //== INTERACTIVE MENU ==//
+    //======================//
+    public void OnMenu(InputAction.CallbackContext input)
+    {
+        if (!input.performed)
+            return;
+        if (ctx.health.IsDead.Value)
+            return;
+
+        UI_Manager.Instance.ToggleInteractiveMenu();
     }
 
     //==================//
@@ -150,19 +161,19 @@ public class PlayerInputEvents : MonoBehaviour
     //====  ABILITY  ======//
     //=====================//
 
-    public void OnAbility(InputAction.CallbackContext input)
+    public void OnCelerity()
     {
-        if (!input.performed)
-            return;
-
-        if (ctx == null)
-            return;
-
-        if (ctx.health.IsDead.Value)
-            return;
-
-        AbilityPressed?.Invoke();
+        if (ctx != null)
+            ctx.skillSystem?.TryCelerity();
     }
+
+    public void OnRepel()
+    {
+        if (ctx != null)
+            ctx.skillSystem?.TryRepel();
+    }
+
+
 
     //=====================//
     //====  DANCE  ====//
@@ -184,12 +195,9 @@ public class PlayerInputEvents : MonoBehaviour
         if (!input.performed)
             return;
 
-        if (ctx == null)
+        if (ctx == null || ctx.health.IsDead.Value)
             return;
 
-        if (ctx.health.IsDead.Value)
-            return;
-
-        ctx.movement.SetDash(true);
+        ctx.skillSystem?.TryCelerity();
     }
 }

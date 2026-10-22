@@ -22,7 +22,7 @@ MonoBehaviour:
   - objectiveType: 0
     targetID: Npc_crimson_elf
     requiredAmount: 1
-    description: 'Dirigete al bosque carmesi para hablar con la elfa carmesi  '
+    description: 'Dirigete al bosque carmesi para hablar con la elfa carmesi y ayudala. '
     dialogue: {fileID: 0}
     reward:
       giveReward: 0

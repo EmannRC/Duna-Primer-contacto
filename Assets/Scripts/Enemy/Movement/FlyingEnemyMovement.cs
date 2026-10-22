@@ -159,6 +159,11 @@ public class FlyingEnemyMovement : EnemyMovementBase
                offset;
     }
 
+    protected override void MoveDuringRepel(Vector3 displacement)
+    {
+        transform.position += displacement;
+    }
+
 
     //=======================================================//
     // GIZMOS

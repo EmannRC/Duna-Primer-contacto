@@ -22,27 +22,24 @@ public class PlayerMovement : NetworkBehaviour
     [SerializeField] private LayerMask groundMask;
     [SerializeField] private float groundedGraceTime = 0.1f;
 
-
+    /*
     [Header("Crouch")]
     [SerializeField] private float crouchHeight = 1.3f;
     [SerializeField] private float crouchSpeed = 1f;
+    */
 
     [Header("Aim Movement")]
     [SerializeField] private float aimMovementMultiplier = 0.6f;
 
     [Header("Dash")]
-    [SerializeField] private float dashDistance = 4.5f;
-    [SerializeField] private float dashDuration = 0.25f;
-    [SerializeField] private float dashCooldown = 1f;
+    [SerializeField, Min(0.1f)] private float dashDistance = 4.5f;
+    [SerializeField, Min(0.01f)] private float dashDuration = 0.25f;
 
-    private bool dashPressed;
     private bool isDashing;
     private float dashTimer;
-    private float dashCooldownTimer;
     private Vector3 dashDirection;
 
     public bool IsDashing => isDashing;
-    public float DashCooldownRemaining => dashCooldownTimer;
 
     private bool isAiming;
 
@@ -171,12 +168,13 @@ public class PlayerMovement : NetworkBehaviour
         float targetSpeed = 0f;
 
         if (!IsMovementLocked && isMoving)
-        {
+        {   /*
             if (isCrouching)
             {
                 targetSpeed = crouchSpeed;
             }
-            else if (sprintHeld && !isAiming)
+            */
+            if (sprintHeld && !isAiming)
             {
                 // No puede correr mientras apunta.
                 targetSpeed = moveSpeed * sprintMultiplier;
@@ -336,11 +334,7 @@ public class PlayerMovement : NetworkBehaviour
         isAiming = aiming;
     }
 
-    public void SetDash(bool value)
-    {
-        if (value)
-            dashPressed = true;
-    }
+    
 
 
     //========================================================//
@@ -399,147 +393,114 @@ public class PlayerMovement : NetworkBehaviour
     // DASH
     //========================================================//
 
+
     private void UpdateDash()
     {
-        if (dashCooldownTimer > 0f)
-        {
-            dashCooldownTimer -= Time.deltaTime;
-        }
-
-        // Si ya está haciendo dash
-        if (isDashing)
-        {
-            dashTimer += Time.deltaTime;
-
-            float dashSpeed = dashDistance / dashDuration;
-
-            // Suaviza ligeramente la velocidad del dash.
-            float dashProgress = dashTimer / dashDuration;
-
-            float speedMultiplier =
-                1f - Mathf.Clamp01(dashProgress) * 0.25f;
-
-            ctx.controller.Move(
-                dashDirection *
-                dashSpeed *
-                speedMultiplier *
-                Time.deltaTime
-            );
-
-            if (dashTimer >= dashDuration)
-            {
-                EndDash();
-            }
-
-            return;
-        }
-
-        if (!dashPressed)
+        if (!isDashing)
             return;
 
-        dashPressed = false;
+        float previousTimer = dashTimer;
+        dashTimer = Mathf.Min(
+            dashTimer + Time.deltaTime,
+            dashDuration
+        );
 
-        if (!CanDash())
+        float dashFrameTime = dashTimer - previousTimer;
+        float dashSpeed = dashDistance / dashDuration;
+
+        ctx.controller.Move(
+            dashDirection * dashSpeed * dashFrameTime
+        );
+
+        if (dashTimer >= dashDuration)
+            EndDash();
+    }
+
+    private bool CanDash()
+    {
+        return !isDashing &&
+               !IsMovementLocked &&
+               !isCrouching;
+    }
+
+    public void ActivateDashFromSkill()
+    {
+        if (!IsOwner || !CanDash())
             return;
 
         StartDash();
     }
 
-
-    private bool CanDash()
-    {
-        if (isDashing)
-            return false;
-
-        if (dashCooldownTimer > 0f)
-            return false;
-
-        if (IsMovementLocked)
-            return false;
-
-        if (!IsGrounded)
-            return false;
-
-        if (isCrouching)
-            return false;
-
-        return true;
-    }
-
-
     private void StartDash()
     {
         isDashing = true;
-
         dashTimer = 0f;
-        dashCooldownTimer = dashCooldown;
 
         sprintHeld = false;
         currentSpeed = 0f;
 
         dashDirection = CalculateDashDirection();
 
-        // Aseguramos que sea horizontal.
         dashDirection.y = 0f;
 
         if (dashDirection.sqrMagnitude <= 0.001f)
-        {
             dashDirection = transform.forward;
-        }
 
         dashDirection.Normalize();
 
         OnDashStarted();
     }
 
-
     private void EndDash()
     {
         isDashing = false;
-
         dashTimer = 0f;
         currentSpeed = 0f;
 
         OnDashEnded();
     }
 
-
     private Vector3 CalculateDashDirection()
     {
         Vector3 direction = moveDirection;
 
-        // Si el jugador no está dando ninguna dirección,
-        // dash hacia donde mira la cámara.
         if (direction.sqrMagnitude <= 0.01f)
         {
-            if (cameraTransform != null)
-            {
-                direction = cameraTransform.forward;
-                direction.y = 0f;
-                direction.Normalize();
-            }
-            else
-            {
-                direction = transform.forward;
-            }
+            direction = cameraTransform != null
+                ? cameraTransform.forward
+                : transform.forward;
         }
 
-        return direction.normalized;
-    }
-    private void OnDashStarted()
-    {
-       
-        // - Animación de dash
-        // - Trail
-        // - VFX
-        // - Sonido
+        direction.y = 0f;
+
+        return direction.sqrMagnitude > 0.001f
+            ? direction.normalized
+            : transform.forward;
     }
 
+    private void OnDashStarted()
+    {
+        // Animación, trail, VFX y sonido.
+    }
 
     private void OnDashEnded()
     {
-        
-        // - Final de animación
-        // - VFX de aterrizaje
+        // Final de animación y VFX.
+    }
+
+    public bool ApplyImpulseFromSkill(float height)
+    {
+        if (!IsOwner || !IsGrounded || IsDashing)
+            return false;
+
+        jumpPressed = false;
+
+        velocity.y = Mathf.Sqrt(
+            height * -2f * gravity
+        );
+
+        groundedTimer = 0f;
+
+        return true;
     }
 }

@@ -1,4 +1,5 @@
 using Duna.InteractionSystem;
+using Duna.Player;
 using Duna.QuestSystem;
 using System.Globalization;
 using UnityEngine;
@@ -29,7 +30,7 @@ public class PlayerContext : MonoBehaviour
     [Header("Combat")]
     public PlayerCombat combat;
     public ShootController shooter;
-    public PlayerAbilitySystem abilitySystem;
+    public PlayerSkillSystem skillSystem;
 
     [Header("Visual / UI")]
     public Animator animator;

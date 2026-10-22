@@ -1,5 +1,6 @@
 using Duna.QuestSystem;
 using Duna.QuestSystem.UI;
+using Duna.UI;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -18,7 +19,7 @@ public class LocalPlayerBootstrap : MonoBehaviour
     [SerializeField] private QuestTrackerUI questTrackerUI;
     [SerializeField] private UI_Manager deathMenu;
     [SerializeField] private MenuButtonUI menuButtonUI;
-    [SerializeField] private AbilityUI abilityUI;
+    [SerializeField] private PlayerSkillUI skillUI;
 
     //==========================================================//
     private void Awake()
@@ -142,11 +143,30 @@ public class LocalPlayerBootstrap : MonoBehaviour
             questManager
         );
 
-        if (abilityUI != null && ctx.abilitySystem != null)
+        //=========================
+        // SKILL UI
+        //=========================
+
+        if (skillUI == null)
         {
-            abilityUI.Bind(ctx.abilitySystem);
+            Debug.LogError(
+                "[LocalPlayerBootstrap] SkillUI no está asignado en el Inspector."
+            );
+        }
+        else if (ctx.skillSystem == null)
+        {
+            Debug.LogError(
+                "[LocalPlayerBootstrap] PlayerContext no tiene PlayerSkillSystem asignado."
+            );
+        }
+        else
+        {
+            skillUI.Bind(ctx.skillSystem);
         }
 
+        //=========================
+        // RESPAWN
+        //=========================
         PlayerRespawn playerRespawn = playerRoot.GetComponent<PlayerRespawn>();
         if (playerRespawn == null)
         {

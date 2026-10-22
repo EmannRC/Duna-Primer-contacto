@@ -135,7 +135,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 4024758796
+  GlobalObjectIdHash: 16799809
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -181,7 +181,7 @@ MonoBehaviour:
   damageClip: {fileID: 0}
   reward: {fileID: 0}
   possibleDrops:
-  - prefab: {fileID: -3468917201845883158, guid: 4a752c015df4c7f4fadb61af658f7ed0, type: 3}
+  - prefab: {fileID: -3468917201845883158, guid: 27433b4cb5bb6fe41998db0a1e27ebee, type: 3}
     weight: 100
   dropPoint: {fileID: 6246945389190266110}
 --- !u!114 &9154717679536418510

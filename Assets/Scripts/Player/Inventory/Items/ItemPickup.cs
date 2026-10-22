@@ -23,7 +23,9 @@ public class ItemPickup : NetworkBehaviour
 
     private PickupSpawner spawner;
 
+    private const string SkillCrystalItemId = "skill_crystal";
 
+    //===========================================================================
     public override void OnNetworkSpawn()
     {
         if (!IsServer) return;
@@ -79,6 +81,26 @@ public class ItemPickup : NetworkBehaviour
         Item item = itemDatabase.GetByItemId(itemId);
 
         Debug.Log($"Item encontrado: {item}");
+
+        if (itemId == SkillCrystalItemId)
+        {
+            if (player.skillSystem != null)
+            {
+                player.skillSystem.AddEnergy(amount);
+            }
+            else
+            {
+                Debug.LogWarning(
+                    $"El jugador {player.name} no tiene PlayerSkillSystem.");
+                return;
+            }
+
+            if (spawner != null)
+                spawner.OnPickupCollected(NetworkObject);
+
+            NetworkObject.Despawn();
+            return;
+        }
 
         if (item == null)
         {

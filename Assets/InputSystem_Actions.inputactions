@@ -115,7 +115,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Ability",
+                    "name": "Repel",
                     "type": "Button",
                     "id": "3d521deb-04cd-443e-b1f8-6d8854b8344e",
                     "expectedControlType": "",
@@ -502,7 +502,7 @@
                 {
                     "name": "",
                     "id": "7bca702e-bbe9-4fb7-a21a-aa31c4936c1e",
-                    "path": "<Keyboard>/q",
+                    "path": "<Keyboard>/f1",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -513,7 +513,7 @@
                 {
                     "name": "",
                     "id": "819a816b-d06b-4d99-aa25-7a74f4f16884",
-                    "path": "<Keyboard>/ctrl",
+                    "path": "<Keyboard>/q",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -524,11 +524,11 @@
                 {
                     "name": "",
                     "id": "606af11c-20a1-42ce-af46-ac48bbb77613",
-                    "path": "<Keyboard>/1",
+                    "path": "<Keyboard>/x",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Ability",
+                    "action": "Repel",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -641,6 +641,15 @@
                     "name": "ToggleCrafting",
                     "type": "Button",
                     "id": "c3f3b482-2fe7-4e4b-b146-fbde04a3f43a",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "OpenMenu",
+                    "type": "Button",
+                    "id": "5e7be11e-73cf-4a03-a82f-99a1f9fa9528",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -1085,6 +1094,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "ToggleCrafting",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0a4acde9-42b8-4fc2-9190-1e71b7a56c14",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenMenu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

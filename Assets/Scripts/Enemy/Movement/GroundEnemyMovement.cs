@@ -106,6 +106,25 @@ public class GroundEnemyMovement : EnemyMovementBase
         agent.ResetPath();
     }
 
+    //=======================================================//
+    // REPEAL
+    //=======================================================//
+
+    protected override void MoveDuringRepel(Vector3 displacement)
+    {
+        if (agent != null &&
+            agent.isActiveAndEnabled &&
+            agent.isOnNavMesh)
+        {
+            agent.isStopped = true;
+            agent.ResetPath();
+            agent.Move(displacement);
+        }
+        else
+        {
+            transform.position += displacement;
+        }
+    }
 
     //=======================================================//
     // GIZMOS

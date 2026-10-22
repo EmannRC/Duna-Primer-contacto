@@ -10,6 +10,8 @@ public class UI_Manager : MonoBehaviour
     [SerializeField] private GameObject craftingUI;
     [SerializeField] private GameObject statsUI;
     [SerializeField] private GameObject defeatMenu;
+    [SerializeField] private GameObject interactiveMenu;
+
 
     [Header("Buttons")]
     [SerializeField] private GameObject craftingButton;
@@ -143,6 +145,18 @@ public class UI_Manager : MonoBehaviour
         OpenUIState();
     }
 
+    //============ Menu interactivo ============//
+    public void ToggleInteractiveMenu()
+    {
+        bool isOpening = !interactiveMenu.activeSelf;
+
+        interactiveMenu.SetActive(isOpening);
+
+        if (isOpening)
+            OpenUIState();
+        else
+            CloseUIState();
+    }
 
     void UpdateTabButtons(bool showingCrafting)
     {

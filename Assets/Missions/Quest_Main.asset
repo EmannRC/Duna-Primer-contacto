@@ -47,6 +47,16 @@ MonoBehaviour:
       giveReward: 0
       itemID: 
       amount: 1
+  - objectiveType: 0
+    targetID: NPC_ancient_tree
+    requiredAmount: 1
+    description: Sal de la nave y ve con el arbol ancestral para informarle la derrota
+      del enemigo.
+    dialogue: {fileID: 11400000, guid: 4e0747429b5fadb4281d07611e9d5e9d, type: 2}
+    reward:
+      giveReward: 0
+      itemID: 
+      amount: 1
   rewards: []
   inProgressDialogue:
     dialogue: {fileID: 0}

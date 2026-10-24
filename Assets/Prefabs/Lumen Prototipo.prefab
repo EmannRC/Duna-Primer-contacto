@@ -515,7 +515,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1908905261
+  GlobalObjectIdHash: 428777726
   InScenePlacedSourceGlobalObjectIdHash: 3680711321
   DeferredDespawnTick: 0
   Ownership: 1
@@ -1464,7 +1464,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Duna.QuestSystem.QuestSequenceManager
   questManager: {fileID: 6275100301816433050}
   sequences:
-  - completedQuestID: Quest_destroy_cristals
+  - completedQuestID: Mission_destroy_cristals
     nextQuestID: Quest_main
 --- !u!1 &7700987592149778687
 GameObject:

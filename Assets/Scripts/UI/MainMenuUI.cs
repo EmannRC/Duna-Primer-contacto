@@ -1,5 +1,6 @@
 using Unity.Netcode;
 using UnityEngine;
+using System.Collections;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
@@ -119,9 +120,15 @@ public class MainMenuUI : MonoBehaviour
         if (!NetworkManager.Singleton.IsServer)
             return;
 
-        NetworkManager.Singleton.SceneManager.LoadScene(
-            gameplaySceneName,
-            LoadSceneMode.Single);
+        StartCoroutine(StartGameAfterTransition());
+    }
+    IEnumerator StartGameAfterTransition()
+    {
+        SceneTransitionManager.Instance.StartTransition();
+
+        yield return new WaitForSeconds(1f);
+
+        NetworkManager.Singleton.SceneManager.LoadScene(gameplaySceneName, LoadSceneMode.Single);
     }
 
     private void SetButtonsInteractable(bool value)

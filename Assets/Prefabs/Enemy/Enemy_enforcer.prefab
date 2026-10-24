@@ -804,6 +804,8 @@ MonoBehaviour:
     weight: 10
   - prefab: {fileID: 2646410275566159743, guid: 7c08c62a883a55a499e6b4d05ccb5359, type: 3}
     weight: 0.5
+  - prefab: {fileID: -3468917201845883158, guid: 27433b4cb5bb6fe41998db0a1e27ebee, type: 3}
+    weight: 100
   dropPoint: {fileID: 2600144279418139401}
 --- !u!195 &2672155966052293101
 NavMeshAgent:
@@ -841,6 +843,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GroundEnemyMovement
   ShowTopMostFoldoutHeaderGroup: 1
   rotationSpeed: 8
+  repelResistance: 1
   moveSpeed: 3.7
   stoppingDistance: 2.5
   rotatSpeed: 720

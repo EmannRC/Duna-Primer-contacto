@@ -79,6 +79,20 @@ public class LocalPlayerBootstrap : MonoBehaviour
             return;
         }
 
+        //=========================
+        // QUEST OBJECTIVE EVENTS
+        //=========================
+
+        QuestObjectiveCompletionEvent[] objectiveEvents =
+            FindObjectsByType<QuestObjectiveCompletionEvent>(
+                FindObjectsSortMode.None
+            );
+
+        foreach (QuestObjectiveCompletionEvent objectiveEvent in objectiveEvents)
+        {
+            objectiveEvent.Initialize(questManager);
+        }
+
 
         //=========================
         // CAMERA

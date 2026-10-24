@@ -115,7 +115,7 @@ GameObject:
   - component: {fileID: 698716098241391252}
   - component: {fileID: 7345631186488115676}
   - component: {fileID: 1169802310898638431}
-  - component: {fileID: 2052534151337905053}
+  - component: {fileID: 8369465258601178683}
   - component: {fileID: 6694199661650724730}
   - component: {fileID: 7766555142302427788}
   - component: {fileID: 8349954796083445548}
@@ -135,7 +135,7 @@ Transform:
   m_GameObject: {fileID: 1248061856631207402}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 160, y: -0.2, z: 164.2}
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -215,24 +215,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f8b20d668d3d9e4fae0b28456e69057, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Duna.QuestSystem.NPCIdentity
-  npcID: Ancient_tree
---- !u!114 &2052534151337905053
+  npcID: NPC_ancient_tree
+--- !u!114 &8369465258601178683
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1248061856631207402}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d956d394eaccf254189768cbe3b7d5cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Duna.QuestSystem.QuestGiver
-  quest: {fileID: 11400000, guid: 31e7f437f786ffd42bc71d69bda9d251, type: 2}
+  quest: {fileID: 11400000, guid: 6e283b98f0b07e749a9c5ddd997779eb, type: 2}
   offerDialogue: {fileID: 11400000, guid: 06da4bd7c0ed3e54f9b4ac3e05f3dc0d, type: 2}
   offerReward:
-    giveReward: 0
-    itemID: 
+    giveReward: 1
+    itemID: Weapon_Staff_Nature
     amount: 1
 --- !u!114 &6694199661650724730
 MonoBehaviour:
@@ -246,10 +246,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: daef32b3eb5c1ce40ab62122234e9a37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Duna.DialogueSystem.DialogueController
-  defaultDialogue: {fileID: 0}
+  defaultDialogue: {fileID: 11400000, guid: 583196926efe8274681b348a904af2ea, type: 2}
   onQuestDialogueFinished:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: EnemyEncounter, Assembly-CSharp
+        m_MethodName: ActivateEnemies
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onInProgressDialogueFinished:
     m_PersistentCalls:
       m_Calls: []
@@ -263,7 +275,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1248061856631207402}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6ddcee3376d090b4eb8153f591c862e1, type: 3}
   m_Name: 
@@ -292,6 +304,98 @@ CapsuleCollider:
   m_Height: 9.666668
   m_Direction: 1
   m_Center: {x: 0, y: 1.6666673, z: 0}
+--- !u!1 &1547667836185919601
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2175725836489497291}
+  - component: {fileID: 2998940554854110574}
+  - component: {fileID: 1043313124251754916}
+  m_Layer: 0
+  m_Name: Ancient-Three-Sylphie (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2175725836489497291
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1547667836185919601}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7207147170243088861}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &2998940554854110574
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1547667836185919601}
+  m_Mesh: {fileID: -5117379086339335170, guid: df37e7a675e0e1448a3aa4fd8ae0b941, type: 3}
+--- !u!23 &1043313124251754916
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1547667836185919601}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: -6248344315206619081, guid: df37e7a675e0e1448a3aa4fd8ae0b941, type: 3}
+  - {fileID: 6556286101971488489, guid: df37e7a675e0e1448a3aa4fd8ae0b941, type: 3}
+  - {fileID: -2995919874833687306, guid: df37e7a675e0e1448a3aa4fd8ae0b941, type: 3}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &1868356422726854057
 GameObject:
   m_ObjectHideFlags: 0
@@ -412,77 +516,3 @@ Transform:
   - {fileID: 3781687639280006453}
   m_Father: {fileID: 7207147170243088861}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &1854078298270072096
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 7207147170243088861}
-    m_Modifications:
-    - target: {fileID: -8679921383154817045, guid: df37e7a675e0e1448a3aa4fd8ae0b941, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: df37e7a675e0e1448a3aa4fd8ae0b941, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: df37e7a675e0e1448a3aa4fd8ae0b941, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: df37e7a675e0e1448a3aa4fd8ae0b941, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: df37e7a675e0e1448a3aa4fd8ae0b941, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: df37e7a675e0e1448a3aa4fd8ae0b941, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: df37e7a675e0e1448a3aa4fd8ae0b941, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.7071067
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: df37e7a675e0e1448a3aa4fd8ae0b941, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: df37e7a675e0e1448a3aa4fd8ae0b941, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: df37e7a675e0e1448a3aa4fd8ae0b941, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: df37e7a675e0e1448a3aa4fd8ae0b941, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: df37e7a675e0e1448a3aa4fd8ae0b941, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: df37e7a675e0e1448a3aa4fd8ae0b941, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 919132149155446097, guid: df37e7a675e0e1448a3aa4fd8ae0b941, type: 3}
-      propertyPath: m_Name
-      value: Ancient-Three-Sylphie (1)
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: df37e7a675e0e1448a3aa4fd8ae0b941, type: 3}
---- !u!4 &2175725836489497291 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: df37e7a675e0e1448a3aa4fd8ae0b941, type: 3}
-  m_PrefabInstance: {fileID: 1854078298270072096}
-  m_PrefabAsset: {fileID: 0}

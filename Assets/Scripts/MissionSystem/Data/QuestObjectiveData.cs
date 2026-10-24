@@ -32,7 +32,6 @@ namespace Duna.QuestSystem
         [SerializeField]
         private QuestData.DialogueReward reward;
 
-
         //================================================//
         // GETTERS
         //================================================//
@@ -48,6 +47,7 @@ namespace Duna.QuestSystem
         public DialogueData Dialogue => dialogue;
 
         public QuestData.DialogueReward Reward => reward;
+
     }
 }
 

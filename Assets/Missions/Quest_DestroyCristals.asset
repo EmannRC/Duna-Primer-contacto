@@ -13,29 +13,37 @@ MonoBehaviour:
   m_Name: Quest_DestroyCristals
   m_EditorClassIdentifier: Assembly-CSharp::Duna.QuestSystem.QuestData
   questType: 0
-  questID: Quest_destroy_cristals
+  questID: Mission_destroy_cristals
   questName: Cristales estelares
-  description: Enuentra y destruye todos los cristales de la zona
+  description: 'Busca cristales magicos por el mapa y destuyelos '
   objectives:
   - objectiveType: 3
     targetID: object_cristal
     requiredAmount: 6
     description: Destruye cristales
+    dialogue: {fileID: 11400000, guid: 06da4bd7c0ed3e54f9b4ac3e05f3dc0d, type: 2}
+    reward:
+      giveReward: 0
+      itemID: 
+      amount: 0
   - objectiveType: 0
     targetID: NPC_ancient_tree
     requiredAmount: 1
-    description: "Habla con el \xE1rbol ancestral"
+    description: Regresa y habla con el arbol ancestral
     dialogue: {fileID: 11400000, guid: e61155111df77414e92f978d0ab90472, type: 2}
     reward:
       giveReward: 0
-      itemID:
-      amount: 1
-  rewards: []
+      itemID: 
+      amount: 0
+  rewards:
+  - rewardType: 2
+    amount: 0
+    itemID: 
   inProgressDialogue:
     dialogue: {fileID: 11400000, guid: e285454cea9026f4cbc5c2aae223cfb5, type: 2}
     reward:
       giveReward: 0
-      itemID:
+      itemID: 
       amount: 1
   repeatable: 0
-  autoComplete: 1
+  autoComplete: 0

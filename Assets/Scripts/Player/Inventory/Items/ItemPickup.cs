@@ -7,7 +7,7 @@ using UnityEngine;
 public class ItemPickup : NetworkBehaviour
 {
     [SerializeField] private string itemId;
-    [SerializeField] private int amount = 1;
+    [SerializeField] private int energyAmount = 1;
 
     [Header("Data Item")]
     [SerializeField] private ItemDatabase itemDatabase;
@@ -86,7 +86,7 @@ public class ItemPickup : NetworkBehaviour
         {
             if (player.skillSystem != null)
             {
-                player.skillSystem.AddEnergy(amount);
+                player.skillSystem.AddEnergy(energyAmount);
             }
             else
             {
@@ -114,8 +114,8 @@ public class ItemPickup : NetworkBehaviour
         }
         else
         {
-            player.inventory.AddItem(itemId, amount);
-            QuestEvents.RaiseCollectItem(itemId, amount);
+            player.inventory.AddItem(itemId, energyAmount);
+            QuestEvents.RaiseCollectItem(itemId, energyAmount);
         }
 
         //  avisar al spawner

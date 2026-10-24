@@ -1,11 +1,13 @@
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class MenuButtonUI : MonoBehaviour
 {
-
     public GameObject defeatMenu;
+
+    public GameObject controlPanel;
 
     private PlayerRespawn playerRespawn;
 
@@ -23,6 +25,10 @@ public class MenuButtonUI : MonoBehaviour
         );
     }
 
+    private void Start()
+    {
+        StartCoroutine(ToggleControlPanelCoroutine());
+    }
 
     //========================================================//
     // RESTART
@@ -60,6 +66,44 @@ public class MenuButtonUI : MonoBehaviour
         if (NetworkManager.Singleton != null)
             NetworkManager.Singleton.Shutdown();
 
+        StartCoroutine(ReturnAfterTransition());
+
+        //SceneManager.LoadScene("MainMenu");
+    }
+    IEnumerator ReturnAfterTransition()
+    {
+        SceneTransitionManager.Instance.StartTransition();
+
+        yield return new WaitForSeconds(1f);
+
         SceneManager.LoadScene("MainMenu");
+    }
+
+    //========================================================//
+    // CLOSE PANEL
+    //========================================================//
+
+    public void CloseControlPanel()
+    {
+        controlPanel.SetActive(false);
+
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        Time.timeScale = 1f;
+    }
+
+    IEnumerator ToggleControlPanelCoroutine()
+    {
+        yield return new WaitForSeconds(2);
+
+        ToggleControlPanel();
+    }
+
+    public void ToggleControlPanel()
+    {
+        controlPanel.SetActive(true);
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+        Time.timeScale = 0f;
     }
 }

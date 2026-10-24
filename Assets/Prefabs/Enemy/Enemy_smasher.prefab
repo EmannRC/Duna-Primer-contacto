@@ -313,6 +313,8 @@ GameObject:
   - component: {fileID: 371874749220830056}
   - component: {fileID: 1034080239648445824}
   - component: {fileID: 2956686842722746835}
+  - component: {fileID: 6872461921277626543}
+  - component: {fileID: 2639620326216377468}
   m_Layer: 6
   m_Name: Enemy_smasher
   m_TagString: Untagged
@@ -358,7 +360,7 @@ MonoBehaviour:
   rangedCombat: {fileID: 0}
   meleeCombat: {fileID: 9181602100196363287}
   targeting: {fileID: 3079263357289275601}
-  formation: {fileID: 0}
+  formation: {fileID: 2639620326216377468}
   laserAttack: {fileID: 0}
   animator: {fileID: 4879331723636682868}
   enemyAnimation: {fileID: 5097131265118138309}
@@ -434,6 +436,8 @@ MonoBehaviour:
     weight: 50
   - prefab: {fileID: 2646410275566159743, guid: 21c9ce5f8917ea84491833bae638d712, type: 3}
     weight: 0.1
+  - prefab: {fileID: -3468917201845883158, guid: 27433b4cb5bb6fe41998db0a1e27ebee, type: 3}
+    weight: 100
   dropPoint: {fileID: 3743706927994978619}
 --- !u!195 &6737502161468156323
 NavMeshAgent:
@@ -471,6 +475,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GroundEnemyMovement
   ShowTopMostFoldoutHeaderGroup: 1
   rotationSpeed: 8
+  repelResistance: 1
   moveSpeed: 3.5
   stoppingDistance: 2
   rotatSpeed: 720
@@ -504,7 +509,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyTargeting
   ShowTopMostFoldoutHeaderGroup: 1
-  detectionRange: 15
+  detectionRange: 40
 --- !u!114 &1544584619796742886
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -646,6 +651,33 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
+--- !u!114 &6872461921277626543
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5380689604958732842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2a8cff796a740b45904a592d8b132c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
+  ShowTopMostFoldoutHeaderGroup: 1
+  statsData: {fileID: 0}
+  level: 1
+--- !u!114 &2639620326216377468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5380689604958732842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7cf167d0ae94dde4b893bdead2af8d05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyFormation
 --- !u!1 &5524716683594068159
 GameObject:
   m_ObjectHideFlags: 0

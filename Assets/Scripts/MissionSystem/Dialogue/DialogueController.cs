@@ -22,6 +22,9 @@ namespace Duna.DialogueSystem
 
         private enum DialogueState { None, Offer, Objective, Progress, Default }
 
+
+
+        //=========================================================================================
         public void Interact(GameObject player)
         {
             if (player == null || DialogueManager.Instance == null)
@@ -229,5 +232,7 @@ namespace Duna.DialogueSystem
             currentObjective = null;
             currentPlayer = null;
         }
+
+        
     }
 }

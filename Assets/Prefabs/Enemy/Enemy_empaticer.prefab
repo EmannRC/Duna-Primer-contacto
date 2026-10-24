@@ -256,6 +256,11 @@ MonoBehaviour:
       MinSecondsBetweenUpdates: 0
       MaxSecondsBetweenUpdates: 0
     m_InternalValue: 0
+  IsInvulnerable:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
   damageSound: {fileID: 0}
   damageClip: {fileID: 0}
   reward: {fileID: -385266638517890957}
@@ -272,6 +277,8 @@ MonoBehaviour:
     weight: 1
   - prefab: {fileID: -3468917201845883158, guid: 5d938906ddd2b86429c8473796c1db5c, type: 3}
     weight: 0.1
+  - prefab: {fileID: -3468917201845883158, guid: 27433b4cb5bb6fe41998db0a1e27ebee, type: 3}
+    weight: 100
   dropPoint: {fileID: 8575665402650169834}
 --- !u!114 &7427699400512991140
 MonoBehaviour:
@@ -286,6 +293,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyTargeting
   ShowTopMostFoldoutHeaderGroup: 1
+  detectionRange: 15
 --- !u!114 &6548480465571849149
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -300,6 +308,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FlyingEnemyMovement
   ShowTopMostFoldoutHeaderGroup: 1
   rotationSpeed: 8
+  repelResistance: 1
   moveSpeed: 4
   stoppingDistance: 8
   hoverHeight: 2

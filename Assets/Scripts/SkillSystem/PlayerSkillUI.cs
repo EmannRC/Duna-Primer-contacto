@@ -16,15 +16,15 @@ namespace Duna.UI
 
         [Header("Celeridad - Q")]
         [SerializeField] private Image celerityCooldownFill;
-        [SerializeField] private TMP_Text celerityCooldownText;
+        //[SerializeField] private TMP_Text celerityCooldownText;
 
         [Header("Impulso - Espacio")]
         [SerializeField] private Image impulseCooldownFill;
-        [SerializeField] private TMP_Text impulseCooldownText;
+        //[SerializeField] private TMP_Text impulseCooldownText;
 
         [Header("Repeler - X")]
         [SerializeField] private Image repelCooldownFill;
-        [SerializeField] private TMP_Text repelCooldownText;
+        //[SerializeField] private TMP_Text repelCooldownText;
 
         [Header("Costes de energia")]
         [SerializeField] private int celerityCost = 2;
@@ -58,7 +58,7 @@ namespace Duna.UI
             UpdateEnergy();
             UpdateSkill(
                 celerityCooldownFill,
-                celerityCooldownText,
+                //celerityCooldownText,
                 skillSystem.CelerityCooldownRemaining,
                 celerityCooldown,
                 celerityCost
@@ -66,7 +66,7 @@ namespace Duna.UI
 
             UpdateSkill(
                 impulseCooldownFill,
-                impulseCooldownText,
+                //impulseCooldownText,
                 skillSystem.ImpulseCooldownRemaining,
                 impulseCooldown,
                 impulseCost
@@ -74,7 +74,7 @@ namespace Duna.UI
 
             UpdateSkill(
                 repelCooldownFill,
-                repelCooldownText,
+                //repelCooldownText,
                 skillSystem.RepelCooldownRemaining,
                 repelCooldown,
                 repelCost
@@ -99,7 +99,7 @@ namespace Duna.UI
 
         private void UpdateSkill(
             Image cooldownFill,
-            TMP_Text cooldownText,
+            //TMP_Text cooldownText,
             float remaining,
             float duration,
             int cost)
@@ -116,12 +116,12 @@ namespace Duna.UI
                 cooldownFill.enabled = onCooldown;
             }
 
-            if (cooldownText != null)
-            {
-                cooldownText.text = onCooldown
-                    ? remaining.ToString("0.0")
-                    : enoughEnergy ? "" : "Sin energia";
-            }
+            //if (cooldownText != null)
+            //{
+                //cooldownText.text = onCooldown
+                    //? remaining.ToString("0.0")
+                    //: enoughEnergy ? "" : "Sin energia";
+            //}
         }
 
         public void SetSkillSystem(PlayerSkillSystem system)

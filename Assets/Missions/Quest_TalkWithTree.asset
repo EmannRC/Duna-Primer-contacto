@@ -22,17 +22,17 @@ MonoBehaviour:
     targetID: NPC_ancient_tree
     requiredAmount: 1
     description: "Habla con el \xE1rbol ancestral"
-    dialogue: {fileID: 11400000, guid: 06da4bd7c0ed3e54f9b4ac3e05f3dc0d, type: 2}
+    dialogue: {fileID: 0}
     reward:
-      giveReward: 1
-      itemID: Weapon_Staff_Nature
-      amount: 1
+      giveReward: 0
+      itemID: 
+      amount: 0
   rewards:
   - rewardType: 2
     amount: 0
     itemID: 
   inProgressDialogue:
-    dialogue: {fileID: 0}
+    dialogue: {fileID: 11400000, guid: e285454cea9026f4cbc5c2aae223cfb5, type: 2}
     reward:
       giveReward: 0
       itemID: 

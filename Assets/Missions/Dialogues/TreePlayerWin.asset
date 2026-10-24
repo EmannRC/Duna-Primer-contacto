@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d96623effd3db54bbc459042cc8a6ab, type: 3}
+  m_Name: TreePlayerWin
+  m_EditorClassIdentifier: Assembly-CSharp::Duna.DialogueSystem.DialogueData
+  dialogueID: Dialogue_playerWin_tree
+  lines:
+  - speakerName: Arbol ancestral
+    text: "\xA1Lumen, has vuelvo! \xA1Santo cielo, conseguiste destruir la nave invasora!
+      Finalmente la paz volvera a nuestro mundo."
+  - speakerName: Arbol ancestral
+    text: "Esas ojalatas no se atreveran a pisar estas tierras nunca mas. \xA1Ha
+      hecho una aza\xF1a que quedara para la historia!"

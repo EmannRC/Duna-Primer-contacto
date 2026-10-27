@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Weapon
   itemName: StaffOfNature
   itemId: Weapon_Staff_Nature
-  icon: {fileID: 21300000, guid: e1f29698d5e216f46a5e6cbcd7f3cdbb, type: 3}
-  iconColor: {r: 0.6964825, g: 1, b: 0.41037738, a: 1}
+  icon: {fileID: 21300000, guid: e4404f44b97ad5340a982cce953defd8, type: 3}
+  iconColor: {r: 1, g: 1, b: 1, a: 1}
   isStackable: 0
   pickupPrefab: {fileID: 6766032273963205602, guid: e56ec1423f52c2842b4d8582fbd0b470, type: 3}
   modifiers:

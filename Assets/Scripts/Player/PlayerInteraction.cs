@@ -14,26 +14,20 @@ namespace Duna.InteractionSystem
         // BIND
         //================================================//
 
-        public void Bind(
-            PlayerContext playerContext
-        )
+        public void Bind(PlayerContext playerContext)
         {
-            ctx =
-                playerContext;
+            ctx = playerContext;
 
 
             if (ctx == null)
             {
-                Debug.LogError(
-                    "PlayerInteraction recibió PlayerContext NULL."
-                );
+                Debug.LogError("PlayerInteraction recibió PlayerContext NULL.");
 
                 return;
             }
 
 
-            ctx.inputEvents.InteractPressed
-                += HandleInteract;
+            ctx.inputEvents.InteractPressed += HandleInteract;
         }
 
 
@@ -47,8 +41,7 @@ namespace Duna.InteractionSystem
                 return;
 
 
-            ctx.inputEvents.InteractPressed
-                -= HandleInteract;
+            ctx.inputEvents.InteractPressed -= HandleInteract;
         }
 
 
@@ -75,9 +68,7 @@ namespace Duna.InteractionSystem
                 DialogueManager.Instance.IsDialogueActive
             )
             {
-                DialogueManager.Instance
-                    .AdvanceDialogue();
-
+                DialogueManager.Instance.AdvanceDialogue();
 
                 return;
             }
@@ -89,18 +80,12 @@ namespace Duna.InteractionSystem
 
             if (currentInteractable == null)
             {
-                Debug.Log(
-                    "No hay nada interactuable cerca."
-                );
-
+                Debug.Log("No hay nada interactuable cerca.");
 
                 return;
             }
 
-
-            currentInteractable.Interact(
-                gameObject
-            );
+            currentInteractable.Interact(gameObject);
         }
 
 
@@ -108,20 +93,15 @@ namespace Duna.InteractionSystem
         // SET INTERACTABLE
         //================================================//
 
-        public void SetInteractable(
-            IInteractable interactable
-        )
+        public void SetInteractable(IInteractable interactable)
         {
             if (interactable == null || currentInteractable == interactable)
                 return;
 
-            currentInteractable =
-                interactable;
+            currentInteractable = interactable;
 
 
-            Debug.Log(
-                "Interactuable detectado."
-            );
+            Debug.Log("Interactuable detectado.");
         }
 
 
@@ -129,22 +109,13 @@ namespace Duna.InteractionSystem
         // CLEAR INTERACTABLE
         //================================================//
 
-        public void ClearInteractable(
-            IInteractable interactable
-        )
+        public void ClearInteractable(IInteractable interactable)
         {
-            if (
-                currentInteractable ==
-                interactable
-            )
+            if (currentInteractable == interactable)
             {
-                currentInteractable =
-                    null;
+                currentInteractable = null;
 
-
-                Debug.Log(
-                    "Interactuable abandonado."
-                );
+                Debug.Log("Interactuable abandonado.");
             }
         }
     }

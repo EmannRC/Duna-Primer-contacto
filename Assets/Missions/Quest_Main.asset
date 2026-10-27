@@ -15,14 +15,15 @@ MonoBehaviour:
   questType: 0
   questID: Quest_main
   questName: La amenaza de los polygon
-  description: "Una peligrosa amezaza de otro mundo est\xE1 alterando el equilibrio
-    m\xE1gico y poniendo a todos en riesgo. Enfrenta la amenaza y abrete paso hacia
-    la nave invaso"
+  description: Una peligrosa amenaza de otro mundo esta alterando el equilibrio magico
+    y dranando la energia de este mundo. Enfrenta la amenaza y abrete paso hacia
+    la nave invasora para destruirla.
   objectives:
   - objectiveType: 0
     targetID: Npc_crimson_elf
     requiredAmount: 1
-    description: 'Dirigete al bosque carmesi para hablar con la elfa carmesi y ayudala. '
+    description: 'Dirigete al bosque carmesi para hablar con la elfa que resguarda
+      el lugar y ayudala. '
     dialogue: {fileID: 0}
     reward:
       giveReward: 0
@@ -31,7 +32,7 @@ MonoBehaviour:
   - objectiveType: 0
     targetID: robot
     requiredAmount: 1
-    description: 'Encuentra la vieja fabrica y habla con el robot averiado '
+    description: 'Encuentra la vieja fabrica y habla con el robot averiado. '
     dialogue: {fileID: 0}
     reward:
       giveReward: 0

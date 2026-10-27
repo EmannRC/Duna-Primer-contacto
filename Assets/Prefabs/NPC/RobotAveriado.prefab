@@ -352,7 +352,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: daef32b3eb5c1ce40ab62122234e9a37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Duna.DialogueSystem.DialogueController
-  defaultDialogue: {fileID: 0}
+  defaultDialogue: {fileID: 11400000, guid: 78fbd5d0c57d6ce468aac8472bcddcde, type: 2}
   onQuestDialogueFinished:
     m_PersistentCalls:
       m_Calls: []

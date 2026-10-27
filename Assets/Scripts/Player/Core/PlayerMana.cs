@@ -103,4 +103,19 @@ public class PlayerMana : NetworkBehaviour
 
         return CurrentMana.Value / MaxMana;
     }
+
+    //===========================================================//
+    public void RestoreMana(float amount)
+    {
+        if (!IsServer)
+            return;
+
+        if (amount <= 0f)
+            return;
+
+        CurrentMana.Value = Mathf.Min(
+            CurrentMana.Value + amount,
+            MaxMana
+        );
+    }
 }

@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d96623effd3db54bbc459042cc8a6ab, type: 3}
+  m_Name: KnightDeliverInit
+  m_EditorClassIdentifier: Assembly-CSharp::Duna.DialogueSystem.DialogueData
+  dialogueID: Dialogue_deliver_knight
+  lines:
+  - speakerName: Caballero timido
+    text: Maldicion, llevo tanto tiempo paralizado por el miedo que no he podido
+      salir a buscar nada para comer.
+  - speakerName: Caballero timido
+    text: Si fueras tan amable de traerme algo para comer te lo agradeceria mucho,
+      tal vez incluso te pague con algo.
+  - speakerName: Caballero timido
+    text: Mi casa esta  muy cerca de aqui. Puedes encontrar todo lo necesario para
+      que pueda prepararme una buena sopa. No voy yo mismo porque no pienso cruzarme
+      a esas maquinas den infierno, asi que confio en ti camarada. Tienes un estomago
+      que salvar.

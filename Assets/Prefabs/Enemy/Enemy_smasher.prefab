@@ -310,11 +310,11 @@ GameObject:
   - component: {fileID: 1544584619796742886}
   - component: {fileID: 1089934668010810431}
   - component: {fileID: 254239871229958863}
-  - component: {fileID: 371874749220830056}
   - component: {fileID: 1034080239648445824}
   - component: {fileID: 2956686842722746835}
   - component: {fileID: 6872461921277626543}
   - component: {fileID: 2639620326216377468}
+  - component: {fileID: 3982346607036504590}
   m_Layer: 6
   m_Name: Enemy_smasher
   m_TagString: Untagged
@@ -564,27 +564,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 1
---- !u!65 &371874749220830056
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5380689604958732842}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1.0910977, y: 0.7044979, z: 1.1062121}
-  m_Center: {x: 0.0010983348, y: 0.3587105, z: 0.003595829}
 --- !u!114 &1034080239648445824
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -678,6 +657,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cf167d0ae94dde4b893bdead2af8d05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyFormation
+--- !u!136 &3982346607036504590
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5380689604958732842}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.65
+  m_Height: 1.9124061
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.29351026, z: 0}
 --- !u!1 &5524716683594068159
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b25e54f96d329b4a86cc8c65defcab2, type: 3}
+  m_Name: Armor Leather
+  m_EditorClassIdentifier: Assembly-CSharp::Armor
+  itemName: Armadura de cuero
+  itemId: Equipable_Armor_Leather
+  icon: {fileID: 21300000, guid: a376b318a3446e345848ce3496792860, type: 3}
+  iconColor: {r: 1, g: 1, b: 1, a: 1}
+  isStackable: 0
+  pickupPrefab: {fileID: 1596567255347774514, guid: 062216db1124ea144ae1cb06929574b2, type: 3}
+  modifiers:
+  - stat: 1
+    value: 15
+  armorPrefab: {fileID: 0}

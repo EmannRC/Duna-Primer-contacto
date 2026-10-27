@@ -15,13 +15,45 @@ MonoBehaviour:
   questType: 1
   questID: Quest_robot
   questName: Piezas perdidas
-  description: "Adentrate en la f\xE1brica y consigue las piezas necesarias para
-    ayudar al robot averiado"
+  description: Adentrate en la fabrica y consigue las piezas necesarias para ayudar
+    al robot averiado
   objectives:
   - objectiveType: 1
-    targetID: Ingredient_Metal_Piece
-    requiredAmount: 4
-    description: Derrota enemigos y recolecta piezas metalicas
+    targetID: Ingredient_circuits
+    requiredAmount: 1
+    description: Recolecta circuitos
+    dialogue: {fileID: 0}
+    reward:
+      giveReward: 0
+      itemID: 
+      amount: 1
+  - objectiveType: 1
+    targetID: Ingredient_counter
+    requiredAmount: 1
+    description: Recolecta un contador
+    dialogue: {fileID: 0}
+    reward:
+      giveReward: 0
+      itemID: 
+      amount: 1
+  - objectiveType: 1
+    targetID: Ingredient_led
+    requiredAmount: 1
+    description: Recolecta LED
+    dialogue: {fileID: 0}
+    reward:
+      giveReward: 0
+      itemID: 
+      amount: 1
+  - objectiveType: 1
+    targetID: Ingredient_battery
+    requiredAmount: 1
+    description: Recolecta baterias
+    dialogue: {fileID: 0}
+    reward:
+      giveReward: 0
+      itemID: 
+      amount: 1
   - objectiveType: 2
     targetID: calibrador
     requiredAmount: 1
@@ -37,7 +69,7 @@ MonoBehaviour:
     dialogue: {fileID: 11400000, guid: 5a696ad95fee0a64587a73ff6952e3a1, type: 2}
     reward:
       giveReward: 0
-      itemID:
+      itemID: 
       amount: 1
   repeatable: 0
   autoComplete: 0

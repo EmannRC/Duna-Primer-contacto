@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Potion
   itemName: Pocion de vida
   itemId: Consumable_Potion_Health
-  icon: {fileID: 21300000, guid: a47e66d6a1d0bdd488e2660e89ef84c3, type: 3}
+  icon: {fileID: 21300000, guid: a7a886ae52f02f94ea866e031704d3b0, type: 3}
+  iconColor: {r: 1, g: 1, b: 1, a: 1}
   isStackable: 1
   pickupPrefab: {fileID: 1506505253670105428, guid: d3fe9e42e1a4aad4aba5cfe3214998d9, type: 3}
   healAmount: 20

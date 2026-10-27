@@ -15,8 +15,6 @@ MonoBehaviour:
   ingredients:
   - itemId: Ingredient_glass_magic
     amount: 1
-  - itemId: Ingredient_essence_magic
-    amount: 1
   - itemId: Ingredient_wood
     amount: 1
   recipeId: Recipe_Staff_Magic

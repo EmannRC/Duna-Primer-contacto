@@ -27,6 +27,9 @@ namespace Duna.QuestSystem
         [Header("Spawn Points")]
         [SerializeField] private Transform[] spawnPoints;
 
+        [Header("Trigger Settings")]
+        [SerializeField] private string playerTag = "Player";
+
         [Header("Respawn Settings")]
         [SerializeField, Min(0f)]
         private float respawnDelay = 10f;
@@ -39,6 +42,31 @@ namespace Duna.QuestSystem
 
         private bool initialized;
 
+        private void OnTriggerEnter(Collider other)
+        {
+            // Solo el servidor puede activar el spawner.
+            if (!IsServer || initialized)
+                return;
+
+            // Busca el NetworkObject del jugador.
+            NetworkObject playerNetworkObject =
+                other.GetComponentInParent<NetworkObject>();
+
+            if (playerNetworkObject == null)
+                return;
+
+            // Comprueba que el objeto detectado sea un jugador.
+            if (!playerNetworkObject.CompareTag(playerTag))
+                return;
+
+            SpawnEnemies();
+
+            Debug.Log(
+                $"[EnemySpawner] Activado por {playerNetworkObject.name}.",
+                this
+            );
+        }
+
         public void SpawnEnemies()
         {
             if (!IsServer || initialized)
@@ -46,19 +74,31 @@ namespace Duna.QuestSystem
 
             initialized = true;
 
+            if (enemies == null || spawnPoints == null)
+            {
+                Debug.LogError(
+                    "[EnemySpawner] Faltan referencias en el Inspector.",
+                    this
+                );
+                return;
+            }
+
             int spawnIndex = 0;
 
             foreach (EnemySpawnData enemyData in enemies)
             {
-                if (enemyData.enemyPrefab == null || enemyData.amount <= 0)
+                if (enemyData.enemyPrefab == null ||
+                    enemyData.amount <= 0)
+                {
                     continue;
+                }
 
                 for (int i = 0; i < enemyData.amount; i++)
                 {
                     if (spawnIndex >= spawnPoints.Length)
                     {
                         Debug.LogWarning(
-                            "No hay suficientes Spawn Points para todos los enemigos.",
+                            "[EnemySpawner] No hay suficientes Spawn Points.",
                             this
                         );
 
@@ -66,15 +106,15 @@ namespace Duna.QuestSystem
                     }
 
                     Transform spawnPoint = spawnPoints[spawnIndex];
+                    spawnIndex++;
 
                     if (spawnPoint == null)
                     {
                         Debug.LogWarning(
-                            $"El Spawn Point {spawnIndex} no está asignado.",
+                            "[EnemySpawner] Hay un Spawn Point sin asignar.",
                             this
                         );
 
-                        spawnIndex++;
                         continue;
                     }
 
@@ -91,8 +131,6 @@ namespace Duna.QuestSystem
                     );
 
                     respawnRoutines.Add(routine);
-
-                    spawnIndex++;
                 }
             }
         }
@@ -104,8 +142,7 @@ namespace Duna.QuestSystem
 
             while (true)
             {
-                // Espera hasta que el enemigo muera o desaparezca
-                // de la sesión de red.
+                // Espera hasta que el enemigo muera o desaparezca.
                 while (slot.currentEnemy != null &&
                        slot.currentEnemy.IsSpawned)
                 {
@@ -115,10 +152,13 @@ namespace Duna.QuestSystem
                 // Espera antes de regenerarlo.
                 yield return new WaitForSeconds(respawnDelay);
 
-                // Solo el servidor puede crear enemigos.
                 if (IsServer)
                 {
                     SpawnEnemy(slot);
+                }
+                else
+                {
+                    yield break;
                 }
             }
         }
@@ -141,6 +181,26 @@ namespace Duna.QuestSystem
             enemy.Spawn();
 
             slot.currentEnemy = enemy;
+
+            Debug.Log(
+                $"[EnemySpawner] Enemigo generado: {enemy.name}",
+                this
+            );
+        }
+
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            foreach (Coroutine routine in respawnRoutines)
+            {
+                if (routine != null)
+                {
+                    StopCoroutine(routine);
+                }
+            }
+
+            respawnRoutines.Clear();
         }
     }
 }

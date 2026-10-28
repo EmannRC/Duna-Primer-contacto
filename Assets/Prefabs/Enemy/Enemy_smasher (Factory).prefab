@@ -564,21 +564,21 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8182584657651018853}
-  - component: {fileID: 1443736263907079304}
+  - component: {fileID: 5035151693910302737}
+  - component: {fileID: 2074594246565400397}
+  - component: {fileID: 7860725680734672313}
   - component: {fileID: 1549276055974452748}
+  - component: {fileID: 1443736263907079304}
   - component: {fileID: 1353221106479930889}
   - component: {fileID: 3371579664342821500}
   - component: {fileID: 5739637341593647723}
   - component: {fileID: 7636299488951502052}
   - component: {fileID: 5795887268554426951}
-  - component: {fileID: 7860725680734672313}
   - component: {fileID: 9023910582175011919}
-  - component: {fileID: 5035151693910302737}
   - component: {fileID: 7985025406576308148}
   - component: {fileID: 5173345595522261224}
   - component: {fileID: 3695084071279465521}
   - component: {fileID: 4023318695829388795}
-  - component: {fileID: 2074594246565400397}
   m_Layer: 6
   m_Name: Enemy_smasher (Factory)
   m_TagString: Untagged
@@ -605,7 +605,57 @@ Transform:
   - {fileID: 323093382956216442}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1443736263907079304
+--- !u!54 &5035151693910302737
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8092532737843723575}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 126
+  m_CollisionDetection: 1
+--- !u!136 &2074594246565400397
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8092532737843723575}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.65
+  m_Height: 1.9124061
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.29351026, z: 0}
+--- !u!114 &7860725680734672313
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -614,20 +664,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 8092532737843723575}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04e9aed161ce65e468ababd6b303f53f, type: 3}
+  m_Script: {fileID: 11500000, guid: 472a01e3525d6c0428a3cae37db3b2f2, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyContext
-  stats: {fileID: 0}
-  health: {fileID: 1353221106479930889}
-  groundMovement: {fileID: 5739637341593647723}
-  flyingMovement: {fileID: 0}
-  rangedCombat: {fileID: 0}
-  meleeCombat: {fileID: 7636299488951502052}
-  targeting: {fileID: 5795887268554426951}
-  formation: {fileID: 4023318695829388795}
-  laserAttack: {fileID: 0}
-  animator: {fileID: 5230108572652528734}
-  enemyAnimation: {fileID: 6102605401034563274}
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyIdentity
+  enemyID: Enemy_smasher
 --- !u!114 &1549276055974452748
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -653,6 +693,30 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
+--- !u!114 &1443736263907079304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8092532737843723575}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04e9aed161ce65e468ababd6b303f53f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyContext
+  stats: {fileID: 3695084071279465521}
+  health: {fileID: 1353221106479930889}
+  rb: {fileID: 5035151693910302737}
+  groundMovement: {fileID: 5739637341593647723}
+  flyingMovement: {fileID: 0}
+  rangedCombat: {fileID: 0}
+  meleeCombat: {fileID: 7636299488951502052}
+  targeting: {fileID: 5795887268554426951}
+  formation: {fileID: 4023318695829388795}
+  laserAttack: {fileID: 0}
+  animator: {fileID: 5230108572652528734}
+  enemyAnimation: {fileID: 6102605401034563274}
 --- !u!114 &1353221106479930889
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -732,7 +796,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   rotationSpeed: 8
   repelResistance: 1
-  moveSpeed: 3.5
+  moveSpeed: 4
   stoppingDistance: 2
   rotatSpeed: 720
 --- !u!114 &7636299488951502052
@@ -766,19 +830,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyTargeting
   ShowTopMostFoldoutHeaderGroup: 1
   detectionRange: 40
---- !u!114 &7860725680734672313
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8092532737843723575}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 472a01e3525d6c0428a3cae37db3b2f2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyIdentity
-  enemyID: Enemy_smasher
+  showDetectionRange: 1
+  detectionColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  targetColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!114 &9023910582175011919
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -793,33 +847,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyReward
   xpReward: 5
   playerLevel: {fileID: 0}
---- !u!54 &5035151693910302737
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8092532737843723575}
-  serializedVersion: 5
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 1
 --- !u!114 &7985025406576308148
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -899,7 +926,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
   ShowTopMostFoldoutHeaderGroup: 1
-  statsData: {fileID: 0}
+  statsData: {fileID: 11400000, guid: 56d9000eae457d749bc65bf3eaef40fd, type: 2}
   level: 1
 --- !u!114 &4023318695829388795
 MonoBehaviour:
@@ -913,29 +940,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cf167d0ae94dde4b893bdead2af8d05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyFormation
---- !u!136 &2074594246565400397
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8092532737843723575}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.65
-  m_Height: 1.9124061
-  m_Direction: 1
-  m_Center: {x: 0, y: 0.29351026, z: 0}
 --- !u!1 &8566220201133791831
 GameObject:
   m_ObjectHideFlags: 0

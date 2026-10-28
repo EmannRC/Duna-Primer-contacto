@@ -671,17 +671,17 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5637896016385456233}
-  - component: {fileID: 4415078855215627018}
+  - component: {fileID: 9157681933946727567}
+  - component: {fileID: 5134537729358781099}
+  - component: {fileID: -4718539445787199061}
   - component: {fileID: 475998959779334991}
+  - component: {fileID: 4415078855215627018}
   - component: {fileID: 7646577446763397831}
   - component: {fileID: 2672155966052293101}
   - component: {fileID: 6203022585917907852}
-  - component: {fileID: 6613548246444193388}
   - component: {fileID: 1539724883744062499}
-  - component: {fileID: -4718539445787199061}
+  - component: {fileID: 6613548246444193388}
   - component: {fileID: 7680477722212220428}
-  - component: {fileID: 9157681933946727567}
-  - component: {fileID: 5134537729358781099}
   - component: {fileID: 8436674617329564099}
   - component: {fileID: 96770285929334912}
   - component: {fileID: 8986397154995665939}
@@ -711,7 +711,55 @@ Transform:
   - {fileID: 5524308404906285129}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4415078855215627018
+--- !u!54 &9157681933946727567
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5029188010892583067}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 126
+  m_CollisionDetection: 0
+--- !u!65 &5134537729358781099
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5029188010892583067}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 2.2782125, z: 1}
+  m_Center: {x: 0, y: 1.2337396, z: 0}
+--- !u!114 &-4718539445787199061
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -720,20 +768,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 5029188010892583067}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04e9aed161ce65e468ababd6b303f53f, type: 3}
+  m_Script: {fileID: 11500000, guid: 472a01e3525d6c0428a3cae37db3b2f2, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyContext
-  stats: {fileID: 8986397154995665939}
-  health: {fileID: 7646577446763397831}
-  groundMovement: {fileID: 6203022585917907852}
-  flyingMovement: {fileID: 0}
-  rangedCombat: {fileID: 0}
-  meleeCombat: {fileID: 6613548246444193388}
-  targeting: {fileID: 1539724883744062499}
-  formation: {fileID: 0}
-  laserAttack: {fileID: 5171422171692757946}
-  animator: {fileID: 5953539510744021020}
-  enemyAnimation: {fileID: 6228420180598454469}
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyIdentity
+  enemyID: Enemy_smasher
 --- !u!114 &475998959779334991
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -759,6 +797,30 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
+--- !u!114 &4415078855215627018
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5029188010892583067}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04e9aed161ce65e468ababd6b303f53f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyContext
+  stats: {fileID: 8986397154995665939}
+  health: {fileID: 7646577446763397831}
+  rb: {fileID: 9157681933946727567}
+  groundMovement: {fileID: 6203022585917907852}
+  flyingMovement: {fileID: 0}
+  rangedCombat: {fileID: 0}
+  meleeCombat: {fileID: 6613548246444193388}
+  targeting: {fileID: 1539724883744062499}
+  formation: {fileID: 0}
+  laserAttack: {fileID: 5171422171692757946}
+  animator: {fileID: 5953539510744021020}
+  enemyAnimation: {fileID: 6228420180598454469}
 --- !u!114 &7646577446763397831
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -847,6 +909,23 @@ MonoBehaviour:
   moveSpeed: 3.7
   stoppingDistance: 2.5
   rotatSpeed: 720
+--- !u!114 &1539724883744062499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5029188010892583067}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df5dca852b89505419e2873a66d33522, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyTargeting
+  ShowTopMostFoldoutHeaderGroup: 1
+  detectionRange: 15
+  showDetectionRange: 1
+  detectionColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  targetColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!114 &6613548246444193388
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -864,33 +943,6 @@ MonoBehaviour:
   attackRange: 2.5
   attackCooldown: 1
   attackFailsafeDuration: 1.1
---- !u!114 &1539724883744062499
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5029188010892583067}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df5dca852b89505419e2873a66d33522, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyTargeting
-  ShowTopMostFoldoutHeaderGroup: 1
-  detectionRange: 15
---- !u!114 &-4718539445787199061
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5029188010892583067}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 472a01e3525d6c0428a3cae37db3b2f2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyIdentity
-  enemyID: Enemy_smasher
 --- !u!114 &7680477722212220428
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -905,54 +957,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyReward
   xpReward: 50
   playerLevel: {fileID: 0}
---- !u!54 &9157681933946727567
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5029188010892583067}
-  serializedVersion: 5
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
---- !u!65 &5134537729358781099
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5029188010892583067}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 2.2782125, z: 1}
-  m_Center: {x: 0, y: 1.2337396, z: 0}
 --- !u!114 &8436674617329564099
 MonoBehaviour:
   m_ObjectHideFlags: 0

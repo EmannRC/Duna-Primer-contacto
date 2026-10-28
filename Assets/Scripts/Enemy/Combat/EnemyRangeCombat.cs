@@ -14,6 +14,7 @@ public class EnemyRangeCombat : NetworkBehaviour
     [SerializeField] private Transform rightCannon;
 
     private float nextShotTime;
+    private bool useLeftCannon = true;
 
     private EnemyContext ctx;
 
@@ -29,6 +30,9 @@ public class EnemyRangeCombat : NetworkBehaviour
         if (!IsServer)
             return;
 
+        if (ctx.health != null && ctx.health.IsDead.Value)
+            return;
+
         TryAttack();
     }
 
@@ -36,6 +40,9 @@ public class EnemyRangeCombat : NetworkBehaviour
 
     private void TryAttack()
     {
+        if (ctx == null || ctx.targeting == null)
+            return;
+
         Transform target = ctx.targeting.CurrentTarget;
 
         if (target == null)
@@ -43,7 +50,8 @@ public class EnemyRangeCombat : NetworkBehaviour
 
         float distance = Vector3.Distance(
             transform.position,
-            target.position);
+            target.position
+        );
 
         if (distance > attackRange)
             return;
@@ -53,52 +61,66 @@ public class EnemyRangeCombat : NetworkBehaviour
 
         nextShotTime = Time.time + (1f / fireRate);
 
-        ctx.enemyAnimation.NotifyAttack();
-    }
+        Transform cannon = GetNextCannon();
 
-    public void Shoot(Transform cannon)
-    {
         if (cannon == null)
             return;
 
-        NetworkObject projectileObject =
-            Instantiate(
-                projectilePrefab,
-                cannon.position,
-                cannon.rotation);
+        Shoot(cannon, target);
+    }
+
+    //================================================//
+
+    private Transform GetNextCannon()
+    {
+        Transform cannon = useLeftCannon
+            ? leftCannon
+            : rightCannon;
+
+        // Alterna entre los dos cañones.
+        useLeftCannon = !useLeftCannon;
+
+        // Si uno no está asignado, utiliza el otro.
+        if (cannon == null)
+            cannon = leftCannon != null ? leftCannon : rightCannon;
+
+        return cannon;
+    }
+
+    private void Shoot(Transform cannon, Transform target)
+    {
+        if (cannon == null || target == null || projectilePrefab == null)
+            return;
+
+        Vector3 direction =
+            (target.position - cannon.position).normalized;
+
+        NetworkObject projectileObject = Instantiate(
+            projectilePrefab,
+            cannon.position,
+            Quaternion.LookRotation(direction)
+        );
 
         Projectile projectile =
             projectileObject.GetComponent<Projectile>();
 
-        Vector3 direction = (ctx.targeting.CurrentTarget.position - cannon.position).normalized;
+        if (projectile == null)
+        {
+            Destroy(projectileObject.gameObject);
+            return;
+        }
 
         projectile.Initialize(direction);
 
         projectileObject.Spawn();
     }
 
-    public void AnimationEventShootLeft()
-    {
-        if (!IsServer)
-            return;
-
-        Shoot(leftCannon);
-    }
-
-    public void AnimationEventShootRight()
-    {
-        if (!IsServer)
-            return;
-
-        Shoot(rightCannon);
-    }
+    //================================================//
 
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
 
-        Gizmos.DrawWireSphere(
-            transform.position,
-            attackRange);
+        Gizmos.DrawWireSphere(transform.position, attackRange);
     }
 }

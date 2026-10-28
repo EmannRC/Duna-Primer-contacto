@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 299041528478491295}
   - component: {fileID: 9070817550812139384}
   - component: {fileID: 4406129748661948629}
+  - component: {fileID: 4074397060805938374}
   m_Layer: 0
   m_Name: DarkKnight
   m_TagString: Untagged
@@ -123,6 +124,19 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4074397060805938374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5947006657854224015}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9437847f6df378458b2a0a08e5db66a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Duna.QuestSystem.QuestItemDelivery
+  quest: {fileID: 11400000, guid: 88b755b0324ca3e4db5ac8a7f76aafe1, type: 2}
 --- !u!1001 &5592673866447097671
 PrefabInstance:
   m_ObjectHideFlags: 0

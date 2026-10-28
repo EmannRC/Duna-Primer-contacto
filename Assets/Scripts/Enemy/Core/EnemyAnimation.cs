@@ -114,7 +114,7 @@ public class EnemyAnimation : NetworkBehaviour
         if (ctx.rangedCombat == null)
             return;
 
-        ctx.rangedCombat.AnimationEventShootLeft();
+        //ctx.rangedCombat.AnimationEventShootLeft();
     }
 
     public void AnimationEventShootRight()
@@ -125,6 +125,6 @@ public class EnemyAnimation : NetworkBehaviour
         if (ctx.rangedCombat == null)
             return;
 
-        ctx.rangedCombat.AnimationEventShootRight();
+        //ctx.rangedCombat.AnimationEventShootRight();
     }
 }

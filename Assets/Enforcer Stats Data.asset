@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Enforcer Stats Data
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStatsData
   levels:
-  - level: 1
+  - level: 50
     maxHealth: 100
     attackDamage: 20

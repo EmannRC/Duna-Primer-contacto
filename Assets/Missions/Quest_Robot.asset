@@ -55,7 +55,7 @@ MonoBehaviour:
       itemID: 
       amount: 1
   - objectiveType: 2
-    targetID: calibrador
+    targetID: Item_controller
     requiredAmount: 1
     description: Construye el calibrador en la interfaz de crafteo y entregaselo
       al robot averiado

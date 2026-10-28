@@ -147,19 +147,20 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7557362337144757127}
-  - component: {fileID: 6072623789222656756}
+  - component: {fileID: 7262840521071300179}
+  - component: {fileID: 6917441693510559875}
+  - component: {fileID: 2713481389145370198}
   - component: {fileID: 6767598305794059104}
+  - component: {fileID: 6072623789222656756}
   - component: {fileID: 4052250784373104021}
+  - component: {fileID: 2700027427703104316}
   - component: {fileID: 7427699400512991140}
   - component: {fileID: 6548480465571849149}
   - component: {fileID: 4180308237249836639}
-  - component: {fileID: 2713481389145370198}
   - component: {fileID: -385266638517890957}
   - component: {fileID: -8699905865848186037}
-  - component: {fileID: 7262840521071300179}
-  - component: {fileID: 6917441693510559875}
-  - component: {fileID: 2700027427703104316}
   - component: {fileID: 8444359828581241229}
+  - component: {fileID: 6031944733335483869}
   m_Layer: 6
   m_Name: Enemy_empaticer
   m_TagString: Untagged
@@ -184,7 +185,55 @@ Transform:
   - {fileID: 8575665402650169834}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6072623789222656756
+--- !u!54 &7262840521071300179
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 872235789278910150}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 72
+  m_CollisionDetection: 0
+--- !u!65 &6917441693510559875
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 872235789278910150}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 3.3432548, y: 1.4969531, z: 1.1044326}
+  m_Center: {x: 0.097892456, y: 0.67771584, z: -0.33999372}
+--- !u!114 &2713481389145370198
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -193,20 +242,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 872235789278910150}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04e9aed161ce65e468ababd6b303f53f, type: 3}
+  m_Script: {fileID: 11500000, guid: 472a01e3525d6c0428a3cae37db3b2f2, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyContext
-  stats: {fileID: 0}
-  health: {fileID: 4052250784373104021}
-  groundMovement: {fileID: 0}
-  flyingMovement: {fileID: 6548480465571849149}
-  rangedCombat: {fileID: 4180308237249836639}
-  meleeCombat: {fileID: 0}
-  targeting: {fileID: 7427699400512991140}
-  formation: {fileID: -8699905865848186037}
-  laserAttack: {fileID: 0}
-  animator: {fileID: 3820908997340863470}
-  enemyAnimation: {fileID: 1797160780276964056}
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyIdentity
+  enemyID: Enemy_smasher
 --- !u!114 &6767598305794059104
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -219,7 +258,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 28130089
+  GlobalObjectIdHash: 395922573
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -232,6 +271,30 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
+--- !u!114 &6072623789222656756
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 872235789278910150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04e9aed161ce65e468ababd6b303f53f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyContext
+  stats: {fileID: 6031944733335483869}
+  health: {fileID: 4052250784373104021}
+  rb: {fileID: 7262840521071300179}
+  groundMovement: {fileID: 0}
+  flyingMovement: {fileID: 6548480465571849149}
+  rangedCombat: {fileID: 4180308237249836639}
+  meleeCombat: {fileID: 0}
+  targeting: {fileID: 7427699400512991140}
+  formation: {fileID: -8699905865848186037}
+  laserAttack: {fileID: 0}
+  animator: {fileID: 3820908997340863470}
+  enemyAnimation: {fileID: 1797160780276964056}
 --- !u!114 &4052250784373104021
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -280,6 +343,26 @@ MonoBehaviour:
   - prefab: {fileID: -3468917201845883158, guid: 27433b4cb5bb6fe41998db0a1e27ebee, type: 3}
     weight: 100
   dropPoint: {fileID: 8575665402650169834}
+--- !u!114 &2700027427703104316
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 872235789278910150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb8f1c237a7fe324ab25f267e83dd916, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeathController
+  ShowTopMostFoldoutHeaderGroup: 1
+  entityType: 1
+  disableMovement: 1
+  destroyOnDeath: 1
+  destroyDelay: 3
+  deathSound: {fileID: 0}
+  deathVFXPrefab: {fileID: 0}
+  deathVFXPoint: {fileID: 0}
 --- !u!114 &7427699400512991140
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -293,7 +376,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyTargeting
   ShowTopMostFoldoutHeaderGroup: 1
-  detectionRange: 15
+  detectionRange: 25
+  showDetectionRange: 1
+  detectionColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  targetColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!114 &6548480465571849149
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -313,7 +399,7 @@ MonoBehaviour:
   stoppingDistance: 8
   hoverHeight: 2
   heightAdjustSpeed: 5
-  groundCheckDistance: 20
+  groundCheckDistance: 10
   groundMask:
     serializedVersion: 2
     m_Bits: 8
@@ -331,24 +417,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyRangeCombat
   ShowTopMostFoldoutHeaderGroup: 1
-  fireRate: 2
+  fireRate: 1
   attackRange: 12
   projectilePrefab: {fileID: 7301886750513406657, guid: b99a55da616403a45a002458aab03d08, type: 3}
   leftCannon: {fileID: 3226150834245816872}
   rightCannon: {fileID: 7692452873282815555}
---- !u!114 &2713481389145370198
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 872235789278910150}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 472a01e3525d6c0428a3cae37db3b2f2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyIdentity
-  enemyID: Enemy_smasher
 --- !u!114 &-385266638517890957
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -375,74 +448,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cf167d0ae94dde4b893bdead2af8d05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyFormation
---- !u!54 &7262840521071300179
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 872235789278910150}
-  serializedVersion: 5
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 72
-  m_CollisionDetection: 0
---- !u!65 &6917441693510559875
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 872235789278910150}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 4.683297, y: 1.7997526, z: 1.5862119}
-  m_Center: {x: 0.014106274, y: 0.20782512, z: -0.04564631}
---- !u!114 &2700027427703104316
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 872235789278910150}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb8f1c237a7fe324ab25f267e83dd916, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DeathController
-  ShowTopMostFoldoutHeaderGroup: 1
-  entityType: 1
-  disableMovement: 1
-  destroyOnDeath: 1
-  destroyDelay: 3
-  deathSound: {fileID: 0}
-  deathVFXPrefab: {fileID: 0}
-  deathVFXPoint: {fileID: 0}
 --- !u!114 &8444359828581241229
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -489,6 +494,21 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
+--- !u!114 &6031944733335483869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 872235789278910150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2a8cff796a740b45904a592d8b132c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
+  ShowTopMostFoldoutHeaderGroup: 1
+  statsData: {fileID: 11400000, guid: 1ecaae6c8eefb3e49ba72609d4caf85a, type: 2}
+  level: 1
 --- !u!1 &947384075688367816
 GameObject:
   m_ObjectHideFlags: 0

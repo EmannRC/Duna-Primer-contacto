@@ -5,6 +5,7 @@ public class EnemyContext : MonoBehaviour
     [Header("Core")]
     public EnemyStats stats;
     public EnemyHealth health;
+    public Rigidbody rb;
 
     [Header("Movement")]
     public GroundEnemyMovement groundMovement;

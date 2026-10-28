@@ -21,7 +21,11 @@ MonoBehaviour:
     targetID: Enemy_smasher
     requiredAmount: 5
     description: 'Elimina enemigos '
-    requiredItems: []
+    dialogue: {fileID: 0}
+    reward:
+      giveReward: 0
+      itemID: 
+      amount: 1
   - objectiveType: 0
     targetID: Npc_crimson_elf
     requiredAmount: 1
@@ -29,15 +33,14 @@ MonoBehaviour:
     dialogue: {fileID: 11400000, guid: e31e88bc9771d234993ede8428970094, type: 2}
     reward:
       giveReward: 1
-      itemID: Weapon_Staff_Fire
+      itemID: Ingredient_glass_fire
       amount: 1
-    requiredItems: []
   rewards: []
   inProgressDialogue:
     dialogue: {fileID: 11400000, guid: ae2cf234dafb3604ea3a6191a1b99783, type: 2}
     reward:
       giveReward: 0
-      itemID:
+      itemID: 
       amount: 1
   repeatable: 0
   autoComplete: 0

@@ -52,7 +52,7 @@ MonoBehaviour:
     dialogue: {fileID: 11400000, guid: 255dc51e2fe275f4b89fc66c0f818c21, type: 2}
     reward:
       giveReward: 1
-      itemID: Weapon_Staff_Ice
+      itemID: Weapon_Staff_Baston
       amount: 1
   rewards: []
   inProgressDialogue:

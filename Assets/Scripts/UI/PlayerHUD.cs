@@ -110,7 +110,7 @@ public class PlayerHUD : MonoBehaviour
     //=========================================================//
     void UpdateTexts()
     {
-        levelText.text = $"Lvl: {levelSystem.level.Value} / Power: {stats.GetStat(StatType.Power):0}";
+        levelText.text = $"Lvl: {levelSystem.level.Value}"; // Power: {stats.GetStat(StatType.Power):0}
     }
 
     //=========================================================//

@@ -19,7 +19,7 @@ MonoBehaviour:
   objectives:
   - objectiveType: 3
     targetID: Enemy_smasher
-    requiredAmount: 5
+    requiredAmount: 23
     description: 'Elimina enemigos '
     dialogue: {fileID: 0}
     reward:

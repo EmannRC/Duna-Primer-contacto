@@ -59,6 +59,7 @@ public class DeathController : NetworkBehaviour
 
         deathHandled = true;
 
+        if (enemyCtx.rb != null)
         enemyCtx.rb.useGravity = true;
 
         PlayDeathVFXClientRpc();

@@ -8279,6 +8279,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy_empaticer (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 872235789278910150, guid: 7b395daf5db22a648b1201f653d03d9d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2261522716793928824, guid: 7b395daf5db22a648b1201f653d03d9d, type: 3}
       propertyPath: patrolPoints.Array.size
       value: 2
@@ -17309,6 +17313,50 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 9193243368075713811, guid: 459d1100c5afd71459bffa38865bac69, type: 3}
   m_PrefabInstance: {fileID: 1147510304}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1151354993
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1151354995}
+  - component: {fileID: 1151354994}
+  m_Layer: 0
+  m_Name: GameSettings
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1151354994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1151354993}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09da13deb01fe7a4ea8f630f837fda83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameSettings
+--- !u!4 &1151354995
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1151354993}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 223.1377, y: -0, z: 255.78879}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1151929922
 GameObject:
   m_ObjectHideFlags: 0
@@ -27354,7 +27402,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 0}
+  m_NavMeshData: {fileID: 23800000, guid: 69e3421b21489ff42ae9965b8e69e4a1, type: 2}
   m_BuildHeightMesh: 0
 --- !u!1001 &1790566702
 PrefabInstance:
@@ -29566,7 +29614,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1923335201}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -34889,3 +34937,4 @@ SceneRoots:
   - {fileID: 126636516}
   - {fileID: 1124485724}
   - {fileID: 1260318711}
+  - {fileID: 1151354995}

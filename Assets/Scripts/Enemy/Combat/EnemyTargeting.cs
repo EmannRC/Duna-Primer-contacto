@@ -6,6 +6,7 @@ public class EnemyTargeting : NetworkBehaviour
 {
     [Header("Targeting")]
     [SerializeField, Min(0f)] private float detectionRange = 15f;
+    [SerializeField, Min(0.05f)] private float scanInterval = 0.2f;
 
     [Header("Gizmos")]
     [SerializeField] private bool showDetectionRange = true;
@@ -14,10 +15,17 @@ public class EnemyTargeting : NetworkBehaviour
 
     public Transform CurrentTarget { get; private set; }
 
+    private float nextScanTime;
+
     private void Update()
     {
         if (!IsServer)
             return;
+
+        if (Time.time < nextScanTime)
+            return;
+
+        nextScanTime = Time.time + scanInterval;
 
         FindPlayer();
     }
@@ -25,46 +33,45 @@ public class EnemyTargeting : NetworkBehaviour
     private void FindPlayer()
     {
         float closestDistance = detectionRange * detectionRange;
+        PlayerContext closestPlayer = null;
 
-        CurrentTarget = null;
-
-        foreach (var player in FindObjectsByType<PlayerContext>(FindObjectsSortMode.None))
+        foreach (PlayerContext player in PlayerRegistry.Players)
         {
-            if (player == null ||
-                (player.TryGetComponent<PlayerHealth>(out PlayerHealth health) && health.IsDead.Value))
+            if (player == null)
                 continue;
 
-            float distance = (transform.position - player.transform.position).sqrMagnitude;
+            if (player.TryGetComponent<PlayerHealth>(out PlayerHealth health)
+                && health.IsDead.Value)
+                continue;
+
+            float distance =
+                (transform.position - player.transform.position).sqrMagnitude;
 
             if (distance < closestDistance)
             {
                 closestDistance = distance;
-                CurrentTarget = player.transform;
+                closestPlayer = player;
             }
         }
+
+        CurrentTarget = closestPlayer != null
+            ? closestPlayer.transform
+            : null;
     }
+
     private void OnDrawGizmosSelected()
     {
         if (!showDetectionRange)
             return;
 
-        // Radio de detección.
         Gizmos.color = detectionColor;
         Gizmos.DrawWireSphere(transform.position, detectionRange);
 
-        // Línea hacia el objetivo actual.
         if (CurrentTarget != null)
         {
             Gizmos.color = targetColor;
-            Gizmos.DrawLine(
-                transform.position,
-                CurrentTarget.position
-            );
-
-            Gizmos.DrawWireSphere(
-                CurrentTarget.position,
-                0.4f
-            );
+            Gizmos.DrawLine(transform.position, CurrentTarget.position);
+            Gizmos.DrawWireSphere(CurrentTarget.position, 0.4f);
         }
     }
 }

@@ -15,12 +15,20 @@ public class EnemyHealth : HealthController
 
     private bool killEventSent;
 
+    private EnemyStats enemyStats;
+
+    public override float MaxHealth =>
+       enemyStats != null && enemyStats.MaxHealth > 0f
+           ? enemyStats.MaxHealth
+           : base.MaxHealth;
+
     //==============================================================//
 
     private void Awake()
     {
         reward = GetComponent<EnemyReward>();
         identity = GetComponent<EnemyIdentity>();
+        enemyStats = GetComponent<EnemyStats>();
     }
 
 

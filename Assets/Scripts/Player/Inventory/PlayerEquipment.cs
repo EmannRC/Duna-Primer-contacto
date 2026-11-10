@@ -68,32 +68,61 @@ public class PlayerEquipment : NetworkBehaviour
     {
         Inventory inventory = ctx.inventory;
 
-        bool hasItem = false;
+        if (inventory == null)
+            return;
 
-        foreach (var slot in inventory.items)
-        {
-            if (slot.itemId == itemId)
-            {
-                hasItem = true;
-                break;
-            }
-        }
-
-        if (!hasItem)
+        // Comprobar que el objeto esté en el inventario.
+        if (!inventory.HasItem(itemId, 1))
             return;
 
         Item item = itemDatabase.GetByItemId(itemId);
+
         if (item == null)
             return;
 
-        //consumir del inventario
+        string previousItemId = string.Empty;
+
+        // Obtener el objeto actualmente equipado
+        // de la misma categoría.
+        if (item is Weapon)
+        {
+            previousItemId = weaponId.Value.ToString();
+        }
+        else if (item is Armor)
+        {
+            previousItemId = armorId.Value.ToString();
+        }
+        else
+        {
+            return;
+        }
+
+        // Retirar el objeto nuevo del inventario.
         inventory.RemoveItem(itemId, 1);
 
-        // sincronizar equipamiento
+        // Devolver el objeto anterior al inventario.
+        if (!string.IsNullOrEmpty(previousItemId))
+        {
+            bool returned = inventory.TryAddItem(previousItemId, 1);
+
+            // Si no se pudo devolver el anterior,
+            // restaurar el nuevo y cancelar el intercambio.
+            if (!returned)
+            {
+                inventory.TryAddItem(itemId, 1);
+                return;
+            }
+        }
+
+        // Actualizar el equipamiento.
         if (item is Weapon)
+        {
             weaponId.Value = itemId;
+        }
         else if (item is Armor)
+        {
             armorId.Value = itemId;
+        }
     }
 
     //====================================================//

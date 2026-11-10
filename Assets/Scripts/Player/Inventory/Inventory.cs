@@ -219,6 +219,30 @@ public class Inventory : NetworkBehaviour, IQuestItemProvider
             amount
         );
     }
+
+    public bool TryAddItem(string itemId, int amount = 1)
+    {
+        if (!IsServer || string.IsNullOrWhiteSpace(itemId) || amount <= 0)
+            return false;
+
+        Item item = itemDatabase.GetByItemId(itemId);
+
+        if (item == null)
+            return false;
+
+        if (item.isStackable)
+        {
+            if (TryStackItem(itemId, amount))
+                return true;
+        }
+
+        if (items.Count >= maxSlots)
+            return false;
+
+        items.Add(new InventorySlot(itemId, amount));
+
+        return true;
+    }
 }
 
 

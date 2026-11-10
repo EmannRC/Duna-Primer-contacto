@@ -437,9 +437,9 @@ MonoBehaviour:
   lifeTime: 1
   damage: 10
   radius: 0.3
-  damageLayers:
+  damageableLayer:
     serializedVersion: 2
-    m_Bits: 192
+    m_Bits: 64
   destroyEffect: {fileID: 6155210867353427163, guid: d26dcea33969461459a2288955d164c1, type: 3}
 --- !u!114 &6829827621205371161
 MonoBehaviour:

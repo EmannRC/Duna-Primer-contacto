@@ -59,8 +59,6 @@ public class DeathController : NetworkBehaviour
 
         deathHandled = true;
 
-        if (enemyCtx.rb != null)
-        enemyCtx.rb.useGravity = true;
 
         PlayDeathVFXClientRpc();
 
@@ -142,6 +140,9 @@ public class DeathController : NetworkBehaviour
     {
         if (enemyCtx == null)
             return;
+
+        if (enemyCtx.rb != null)
+            enemyCtx.rb.useGravity = true;
 
         // Bloquear movimiento.
         if (disableMovement &&

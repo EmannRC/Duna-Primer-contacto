@@ -3,27 +3,34 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Enemies/Enemy Stats Data")]
 public class EnemyStatsData : ScriptableObject
 {
-    [System.Serializable]
-    public class LevelStats
+    [Header("Base Stats")]
+    [SerializeField, Min(1f)] private float baseHealth = 100f;
+    [SerializeField, Min(0f)] private float baseDamage = 15f;
+
+    [Header("Level Growth")]
+    [SerializeField, Range(0f, 1f)]
+    private float healthGrowth = 0.15f;
+
+    [SerializeField, Range(0f, 1f)]
+    private float damageGrowth = 0.10f;
+
+    public float GetMaxHealth(int level)
     {
-        public int level;
-        public float maxHealth;
-        public float attackDamage;
+        level = Mathf.Max(1, level);
+
+        return baseHealth * Mathf.Pow(
+            1f + healthGrowth,
+            level - 1
+        );
     }
 
-    [SerializeField] private LevelStats[] levels;
-
-    public LevelStats GetStats(int level)
+    public float GetAttackDamage(int level)
     {
-        if (levels == null || levels.Length == 0)
-            return null;
+        level = Mathf.Max(1, level);
 
-        foreach (LevelStats stats in levels)
-        {
-            if (stats.level == level)
-                return stats;
-        }
-
-        return null;
+        return baseDamage * Mathf.Pow(
+            1f + damageGrowth,
+            level - 1
+        );
     }
 }

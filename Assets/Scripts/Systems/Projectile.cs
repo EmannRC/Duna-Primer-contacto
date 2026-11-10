@@ -11,7 +11,8 @@ public class Projectile : NetworkBehaviour
     [SerializeField] protected float radius = 0.2f;
 
     [Header("Damage")]
-    [SerializeField] private LayerMask damageLayers;
+    [SerializeField] private LayerMask damageableLayer;
+    //[SerializeField] private LayerMask resourceLayers;
 
     [Header("Effects")]
     [SerializeField] private GameObject destroyEffect;
@@ -57,12 +58,7 @@ public class Projectile : NetworkBehaviour
         if (direction.sqrMagnitude < 0.001f)
             return;
 
-        float distance =
-            speed * Time.fixedDeltaTime;
-
-        //================================================//
-        // DETECTAR IMPACTO
-        //================================================//
+        float distance = speed * Time.fixedDeltaTime;
 
         if (Physics.SphereCast(
             transform.position,
@@ -70,32 +66,42 @@ public class Projectile : NetworkBehaviour
             direction,
             out RaycastHit hit,
             distance,
-            damageLayers,
+            damageableLayer,
             QueryTriggerInteraction.Ignore))
         {
-            if (hit.collider.TryGetComponent(
-                out HealthController health))
+            // Comprobar si impactó contra un recurso.
+            FarmController resource =
+                hit.collider.GetComponentInParent<FarmController>();
+
+            if (resource != null)
             {
-                health.TakeDamage(damage);
+                resource.TryGather();
+            }
+            else
+            {
+                // Comprobar si impactó contra un enemigo.
+                HealthController health =
+                    hit.collider.GetComponentInParent<HealthController>();
+
+                if (health != null)
+                {
+                    health.TakeDamage(damage);
+                }
             }
 
-            SpawnDestroyEffectClientRpc(hit.point, Quaternion.LookRotation(hit.normal));
+            SpawnDestroyEffectClientRpc(
+                hit.point,
+                Quaternion.LookRotation(hit.normal)
+            );
 
             Despawn();
             return;
         }
 
-        //================================================//
-        // MOVIMIENTO
-        //================================================//
+        // Movimiento del proyectil.
+        transform.position += direction * distance;
 
-        transform.position +=
-            direction * distance;
-
-        // Mantener visualmente el proyectil orientado
-        // hacia su dirección de movimiento.
-        transform.rotation =
-            Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.LookRotation(direction);
     }
 
     //================================================//

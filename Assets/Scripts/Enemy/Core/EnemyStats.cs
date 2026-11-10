@@ -5,33 +5,13 @@ public class EnemyStats : NetworkBehaviour
 {
     [Header("Stats")]
     [SerializeField] private EnemyStatsData statsData;
-    [SerializeField] private int level = 1;
+    [SerializeField, Min(1)] private int level = 1;
 
     public int Level => level;
 
-    public float MaxHealth
-    {
-        get
-        {
-            EnemyStatsData.LevelStats stats = statsData.GetStats(level);
+    public float MaxHealth =>
+        statsData != null ? statsData.GetMaxHealth(level) : 0f;
 
-            if (stats == null)
-                return 0f;
-
-            return stats.maxHealth;
-        }
-    }
-
-    public float AttackDamage
-    {
-        get
-        {
-            EnemyStatsData.LevelStats stats = statsData.GetStats(level);
-
-            if (stats == null)
-                return 0f;
-
-            return stats.attackDamage;
-        }
-    }
+    public float AttackDamage =>
+        statsData != null ? statsData.GetAttackDamage(level) : 0f;
 }

@@ -437,7 +437,7 @@ public class PlayerMovement : NetworkBehaviour
         dashTimer = 0f;
 
         sprintHeld = false;
-        currentSpeed = 0f;
+        //currentSpeed = 0f;
 
         dashDirection = CalculateDashDirection();
 
@@ -455,7 +455,7 @@ public class PlayerMovement : NetworkBehaviour
     {
         isDashing = false;
         dashTimer = 0f;
-        currentSpeed = 0f;
+        //currentSpeed = 0f;
 
         OnDashEnded();
     }

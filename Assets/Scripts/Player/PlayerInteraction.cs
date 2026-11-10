@@ -51,9 +51,10 @@ namespace Duna.InteractionSystem
 
         private void HandleInteract()
         {
+            Debug.Log("[INTERACTION] HandleInteract ejecutado.");
+
             if (ctx == null)
                 return;
-
 
             if (ctx.health.IsDead.Value)
                 return;
@@ -66,8 +67,10 @@ namespace Duna.InteractionSystem
             if (
                 DialogueManager.Instance != null &&
                 DialogueManager.Instance.IsDialogueActive
-            )
+            )  
             {
+                Debug.Log("[INTERACTION] Avanzando diálogo.");
+
                 DialogueManager.Instance.AdvanceDialogue();
 
                 return;
@@ -84,6 +87,8 @@ namespace Duna.InteractionSystem
 
                 return;
             }
+
+            Debug.Log("[INTERACTION] Ejecutando interacción.");
 
             currentInteractable.Interact(gameObject);
         }

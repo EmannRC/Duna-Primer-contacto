@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5028bc0a7c2985a44b6342edab6f7639, type: 3}
   m_Name: Enforcer Stats Data
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStatsData
-  levels:
-  - level: 50
-    maxHealth: 100
-    attackDamage: 20
+  baseHealth: 100
+  baseDamage: 15
+  healthGrowth: 0.15
+  damageGrowth: 0.1

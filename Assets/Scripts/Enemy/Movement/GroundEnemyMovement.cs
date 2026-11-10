@@ -32,12 +32,36 @@ public class GroundEnemyMovement : EnemyMovementBase
 
         agent.speed = moveSpeed;
         agent.stoppingDistance = stoppingDistance;
-        agent.angularSpeed = rotationSpeed;
+        agent.angularSpeed = rotatSpeed;
 
         // La rotación la manejamos nosotros.
         agent.updateRotation = false;
     }
 
+    protected override void Update()
+    {
+        base.Update();
+
+        if (!IsServer || agent == null || !agent.isActiveAndEnabled)
+            return;
+
+        if (IsBeingRepelled || movementLocked || IsMovementPaused)
+            return;
+
+        Vector3 direction = agent.desiredVelocity;
+        direction.y = 0f;
+
+        if (direction.sqrMagnitude < 0.01f)
+            return;
+
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+
+        transform.rotation = Quaternion.Slerp(
+            transform.rotation,
+            targetRotation,
+            rotatSpeed * Time.deltaTime
+        );
+    }
 
     //=======================================================//
     // MOVEMENT LOCK
@@ -123,6 +147,36 @@ public class GroundEnemyMovement : EnemyMovementBase
         else
         {
             transform.position += displacement;
+        }
+    }
+
+
+    public override void MoveToPosition(Vector3 position)
+    {
+        if (!IsServer || movementLocked)
+            return;
+
+        if (agent == null ||
+            !agent.isActiveAndEnabled ||
+            !agent.isOnNavMesh)
+            return;
+
+        agent.isStopped = false;
+        agent.SetDestination(position);
+    }
+
+    public override bool HasReachedDestination
+    {
+        get
+        {
+            if (agent == null ||
+                !agent.isActiveAndEnabled ||
+                !agent.isOnNavMesh)
+                return false;
+
+            return !agent.pathPending &&
+                   agent.hasPath &&
+                   agent.remainingDistance <= agent.stoppingDistance + 0.2f;
         }
     }
 

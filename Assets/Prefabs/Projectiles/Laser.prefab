@@ -127,7 +127,7 @@ MonoBehaviour:
   lifeTime: 2
   damage: 5
   radius: 0.1
-  damageLayers:
+  damageableLayer:
     serializedVersion: 2
     m_Bits: 128
   destroyEffect: {fileID: 0}

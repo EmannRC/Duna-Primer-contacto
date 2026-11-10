@@ -5,6 +5,11 @@ ModelImporter:
   internalIDToNameTable: []
   externalObjects:
   - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: BasePlanterMaterial
+    second: {fileID: 2100000, guid: a5404fc42ab916846bc0a34bc8cdadb9, type: 2}
+  - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
       name: TextureAtlasPlants

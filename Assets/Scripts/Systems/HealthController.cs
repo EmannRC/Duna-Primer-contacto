@@ -6,7 +6,7 @@ public class HealthController : NetworkBehaviour
 {
     [Header("Vida")]
     [SerializeField] private float maxHealth = 100f;
-    public float MaxHealth => maxHealth;
+    public virtual float MaxHealth => maxHealth;
 
     public float HealthPercent =>
         maxHealth > 0f ? CurrentHealth.Value / maxHealth : 0f;
@@ -57,7 +57,7 @@ public class HealthController : NetworkBehaviour
         deathController = GetComponent<DeathController>();
 
         if (IsServer)
-            CurrentHealth.Value = maxHealth;
+            CurrentHealth.Value = MaxHealth;
 
         CurrentHealth.OnValueChanged += OnHealthValueChanged;
     }
@@ -75,7 +75,7 @@ public class HealthController : NetworkBehaviour
 
     private void OnHealthValueChanged(float previous, float current)
     {
-        OnHealthChanged?.Invoke(current, maxHealth);
+        OnHealthChanged?.Invoke(current, MaxHealth);
     }
 
 
@@ -107,7 +107,7 @@ public class HealthController : NetworkBehaviour
 
         CurrentHealth.Value = Mathf.Min(
             CurrentHealth.Value + amount,
-            maxHealth
+            MaxHealth
         );
 
 
@@ -140,7 +140,7 @@ public class HealthController : NetworkBehaviour
         if (!IsServer)
             return;
 
-        CurrentHealth.Value = maxHealth;
+        CurrentHealth.Value = MaxHealth;
         IsDead.Value = false;
     }
 

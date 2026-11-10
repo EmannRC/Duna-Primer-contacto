@@ -40,29 +40,15 @@ public abstract class EnemyMovementBase : NetworkBehaviour
 
         if (IsBeingRepelled)
         {
-            float delta = Mathf.Min(
-                Time.deltaTime,
-                repelRemaining);
+            float delta = Mathf.Min(Time.deltaTime, repelRemaining);
 
             MoveDuringRepel(repelDirection * repelSpeed * delta);
             repelRemaining -= delta;
             return;
         }
 
-        if (movementLocked)
+        if (movementLocked || IsMovementPaused)
             return;
-
-        if (IsMovementPaused)
-            return;
-
-        if (!TryGetValidTarget(out Transform target))
-        {
-            StopMovement();
-            return;
-        }
-
-        Move(target);
-        LookAtTarget(target);
     }
 
 
@@ -187,6 +173,34 @@ public abstract class EnemyMovementBase : NetworkBehaviour
     protected virtual void MoveDuringRepel(Vector3 displacement)
     {
         transform.position += displacement;
+    }
+
+
+    //=======================================================//
+    // MOVEMENT COMMANDS
+    //=======================================================//
+
+    public void MoveTo(Transform target)
+    {
+        if (!IsServer || movementLocked || IsMovementPaused || target == null)
+            return;
+
+        Move(target);
+        LookAtTarget(target);
+    }
+
+    public virtual void MoveToPosition(Vector3 position)
+    {
+    }
+
+    public virtual bool HasReachedDestination => true;
+
+    public void Stop()
+    {
+        if (!IsServer)
+            return;
+
+        StopMovement();
     }
 }
 

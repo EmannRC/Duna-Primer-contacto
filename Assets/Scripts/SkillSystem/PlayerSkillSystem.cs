@@ -81,7 +81,7 @@ namespace Duna.Player
 
         private void Awake()
         {
-            playerContext = GetComponent<PlayerContext>();
+            playerContext = GetComponentInParent<PlayerContext>();
 
             if (movement == null)
                 movement = GetComponent<PlayerMovement>();
@@ -129,10 +129,7 @@ namespace Duna.Player
             );
         }
 
-        // --------------------------------------------------
-        // PUBLIC SKILL REQUESTS
-        // Call these from the player's input events.
-        // --------------------------------------------------
+        //--------------------------------------------------
 
         public void TryCelerity()
         {
@@ -153,10 +150,7 @@ namespace Duna.Player
         // ENERGY
         // --------------------------------------------------
 
-        /// <summary>
-        /// Adds energy on the server, for example when collecting
-        /// a skill crystal. The pickup should call this on the server.
-        /// </summary>
+        
         public void AddEnergy(int amount)
         {
             if (!IsServer || amount <= 0)
@@ -198,7 +192,7 @@ namespace Duna.Player
             if (!IsServer || !isInitialized)
                 return;
 
-            // Only the owner of this player can request its skills.
+            
             if (rpcParams.Receive.SenderClientId != OwnerClientId)
                 return;
 
@@ -267,23 +261,21 @@ namespace Duna.Player
             if (now < nextRepelTime)
                 return;
 
-            // Repel requires the player to be grounded and not dashing.
-            // This checks the movement state available on the server.
             if (movement != null)
             {
                 if (!movement.IsGrounded || movement.IsDashing)
                     return;
             }
 
+            
+
             if (!TrySpendEnergy(repelCost))
                 return;
 
             nextRepelTime = now + repelCooldown;
 
-            // The enemy knockback is executed on the server.
             ExecuteRepelOnServer();
 
-            // The owner's player performs the corresponding local action.
             ExecuteSkillOnOwnerRpc((int)Skill.Repel);
         }
 
@@ -320,7 +312,7 @@ namespace Duna.Player
                     break;
 
                 case Skill.Repel:
-                    
+                    playerContext.playerAnimation.PlayRepelAnimation();
                     break;
             }
         }
@@ -333,6 +325,8 @@ namespace Duna.Player
         {
             if (!IsServer)
                 return;
+
+            
 
             Collider[] hits = Physics.OverlapSphere(
                 transform.position,

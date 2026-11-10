@@ -172,8 +172,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -3.93}
-  m_SizeDelta: {x: 5, y: 5}
+  m_AnchoredPosition: {x: 0, y: -4.94}
+  m_SizeDelta: {x: 4, y: 4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9199707774468543326
 CanvasRenderer:
@@ -331,7 +331,7 @@ MonoBehaviour:
   farmController: {fileID: 1544983998417850193}
   radialFill: {fileID: 4426418744858333514}
   timerText: {fileID: 6786429450137375458}
-  showOnlyDuringCooldown: 1
+  showOnlyDuringCooldown: 0
 --- !u!1 &3256937003386084260
 GameObject:
   m_ObjectHideFlags: 0

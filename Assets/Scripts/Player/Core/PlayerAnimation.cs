@@ -53,6 +53,9 @@ public class PlayerAnimation : NetworkBehaviour
     private static readonly int IsAimingHash =
         Animator.StringToHash("IsAiming");
 
+    private static readonly int RepelHash =
+        Animator.StringToHash("Repel");
+
 
     //========================================================//
     // AWAKE
@@ -203,6 +206,18 @@ public class PlayerAnimation : NetworkBehaviour
             attackSpeed);
 
         ctx.animator.SetTrigger(ShootHash);
+    }
+
+    public void PlayRepelAnimation()
+    {
+        if (!IsOwner)
+            return;
+
+        if (ctx == null || ctx.animator == null)
+            return;
+
+        ctx.animator.SetTrigger(RepelHash);
+        
     }
 
 

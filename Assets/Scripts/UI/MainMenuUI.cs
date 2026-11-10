@@ -210,10 +210,10 @@ public class MainMenuUI : MonoBehaviour
 
     public void ShowJoinPanel()
     {
-        //playPanel.SetActive(false);
+        playPanel.SetActive(false);
 
-        //joinPanel.SetActive(true);
-        ChangePanel(joinPanel, mainPanel);
+        joinPanel.SetActive(true);
+        //ChangePanel(joinPanel, mainPanel);
     }
 
     public void BackToMain()

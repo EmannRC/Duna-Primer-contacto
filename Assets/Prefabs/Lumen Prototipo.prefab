@@ -1646,7 +1646,14 @@ MonoBehaviour:
   NetworkAnimatorExpanded: 0
   AuthorityMode: 1
   m_Animator: {fileID: 8396660476745707073}
-  TransitionStateInfoList: []
+  TransitionStateInfoList:
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: -1136192928
+    DestinationState: 1137391654
+    TransitionDuration: 0.1
+    TriggerNameHash: 125937960
+    TransitionIndex: 1
   AnimatorParameterEntries:
     ParameterEntries:
     - name: VelX
@@ -1854,7 +1861,14 @@ MonoBehaviour:
   NetworkAnimatorExpanded: 0
   AuthorityMode: 1
   m_Animator: {fileID: 1632163757098813233}
-  TransitionStateInfoList: []
+  TransitionStateInfoList:
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: -1136192928
+    DestinationState: 1137391654
+    TransitionDuration: 0.1
+    TriggerNameHash: 125937960
+    TransitionIndex: 1
   AnimatorParameterEntries:
     ParameterEntries:
     - name: VelX
@@ -2769,7 +2783,14 @@ MonoBehaviour:
   NetworkAnimatorExpanded: 0
   AuthorityMode: 1
   m_Animator: {fileID: 9064551386282989938}
-  TransitionStateInfoList: []
+  TransitionStateInfoList:
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: -1136192928
+    DestinationState: 1137391654
+    TransitionDuration: 0.1
+    TriggerNameHash: 125937960
+    TransitionIndex: 1
   AnimatorParameterEntries:
     ParameterEntries:
     - name: VelX

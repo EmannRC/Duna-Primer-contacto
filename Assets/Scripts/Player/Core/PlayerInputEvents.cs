@@ -35,6 +35,7 @@ public class PlayerInputEvents : MonoBehaviour
 
         if (ctx != null)
             ctx.skillSystem?.TryImpulse();
+            //ctx.playerAnimation.PlayJumpAnimation();
     }
 
     public void OnSprint(InputAction.CallbackContext input)

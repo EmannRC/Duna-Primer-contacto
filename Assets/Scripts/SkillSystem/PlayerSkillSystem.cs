@@ -311,8 +311,8 @@ namespace Duna.Player
                     break;
 
                 case Skill.Impulse:
-                    playerContext.playerAnimation.PlayJumpAnimation();
-                    //movement.ApplyImpulseFromSkill(impulseHeight);
+                    //playerContext.playerAnimation.PlayJumpAnimation();
+                    movement.ApplyImpulseFromSkill(impulseHeight);
                     break;
 
                 case Skill.Repel:

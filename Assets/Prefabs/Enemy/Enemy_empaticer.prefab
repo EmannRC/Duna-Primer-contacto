@@ -377,7 +377,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyTargeting
   ShowTopMostFoldoutHeaderGroup: 1
-  detectionRange: 25
+  detectionRange: 20
+  scanInterval: 0.2
   showDetectionRange: 1
   detectionColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   targetColor: {r: 1, g: 0, b: 0, a: 1}

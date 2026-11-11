@@ -193,7 +193,8 @@ public class PlayerAnimation : NetworkBehaviour
         if (!IsOwner || ctx == null || ctx.animator == null)
             return;
 
-        ctx.animator.SetTrigger(JumpHash);
+        //ctx.animator.SetTrigger(JumpHash);
+        UpdateAirState();
     }
 
     public void OnJumpImpulseEvent()

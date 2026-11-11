@@ -579,6 +579,7 @@ GameObject:
   - component: {fileID: 5173345595522261224}
   - component: {fileID: 3695084071279465521}
   - component: {fileID: 4023318695829388795}
+  - component: {fileID: 3889968925805537406}
   m_Layer: 6
   m_Name: Enemy_smasher (Factory)
   m_TagString: Untagged
@@ -830,6 +831,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyTargeting
   ShowTopMostFoldoutHeaderGroup: 1
   detectionRange: 40
+  scanInterval: 0.2
   showDetectionRange: 1
   detectionColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   targetColor: {r: 1, g: 0, b: 0, a: 1}
@@ -940,6 +942,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cf167d0ae94dde4b893bdead2af8d05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyFormation
+--- !u!114 &3889968925805537406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8092532737843723575}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a209c3eae4f53c34e88c627c58e3c836, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAIController
+  ShowTopMostFoldoutHeaderGroup: 1
+  targeting: {fileID: 5795887268554426951}
+  movement: {fileID: 5739637341593647723}
+  patrolPoints: []
+  waitAtPoint: 2
 --- !u!1 &8566220201133791831
 GameObject:
   m_ObjectHideFlags: 0

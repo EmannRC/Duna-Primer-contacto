@@ -56,6 +56,9 @@ public class PlayerAnimation : NetworkBehaviour
     private static readonly int RepelHash =
         Animator.StringToHash("Repel");
 
+    private static readonly int JumpHash =
+    Animator.StringToHash("Jump");
+
 
     //========================================================//
     // AWAKE
@@ -182,6 +185,26 @@ public class PlayerAnimation : NetworkBehaviour
             ctx.movement.IsCrouching);
     }
 
+    //========================================================//
+    // JUMP
+    //========================================================//
+    public void PlayJumpAnimation()
+    {
+        if (!IsOwner || ctx == null || ctx.animator == null)
+            return;
+
+        ctx.animator.SetTrigger(JumpHash);
+    }
+
+    public void OnJumpImpulseEvent()
+    {
+        if (!IsOwner || ctx == null)
+            return;
+
+        ctx.movement.ApplyImpulseFromSkill(
+            ctx.skillSystem.ImpulseHeight
+        );
+    }
 
     //========================================================//
     // SHOOT
@@ -260,4 +283,7 @@ public class PlayerAnimation : NetworkBehaviour
 
         ctx.animator.SetTrigger(DancingHash);
     }
+
+
+
 }

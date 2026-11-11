@@ -3,7 +3,12 @@ guid: 7ea3245a97394ed40a66191e45748517
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: lumenMaterial.001
+    second: {fileID: 2100000, guid: f3d0f9baf6af3b342b97df2262620c9b, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

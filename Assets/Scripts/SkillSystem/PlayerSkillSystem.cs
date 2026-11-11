@@ -28,6 +28,8 @@ namespace Duna.Player
         public int MaxEnergy => maxEnergy;
         public int CurrentEnergy => energy.Value;
 
+        public float ImpulseHeight => impulseHeight;
+
         public event Action<int, int> OnEnergyChanged;
 
         [Header("Celerity - Q")]
@@ -204,6 +206,7 @@ namespace Duna.Player
 
                 case Skill.Impulse:
                     HandleImpulseRequest();
+                    //playerContext.playerAnimation.PlayJumpAnimation();
                     break;
 
                 case Skill.Repel:
@@ -308,7 +311,8 @@ namespace Duna.Player
                     break;
 
                 case Skill.Impulse:
-                    movement.ApplyImpulseFromSkill(impulseHeight);
+                    playerContext.playerAnimation.PlayJumpAnimation();
+                    //movement.ApplyImpulseFromSkill(impulseHeight);
                     break;
 
                 case Skill.Repel:

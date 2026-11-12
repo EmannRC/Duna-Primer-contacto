@@ -68,6 +68,12 @@ public class PlayerMovement : NetworkBehaviour
 
     public bool IsMovementLocked { get; private set; }
 
+    private bool CanControlMovement =>
+    !IsMovementLocked &&
+    ctx != null &&
+    ctx.state != null &&
+    ctx.state.CanMove;
+
     public Vector3 MoveDirection => moveDirection;
 
     public float AnimationSpeed { get; private set; }
@@ -87,6 +93,27 @@ public class PlayerMovement : NetworkBehaviour
     {
         ctx = GetComponent<PlayerContext>();
 
+        if (ctx == null)
+        {
+            Debug.LogError("PlayerMovement: falta PlayerContext.", this);
+            enabled = false;
+            return;
+        }
+
+        if (ctx.controller == null)
+        {
+            Debug.LogError("PlayerMovement: falta CharacterController en PlayerContext.", this);
+            enabled = false;
+            return;
+        }
+
+        if (ctx.state == null)
+        {
+            Debug.LogError("PlayerMovement: falta PlayerState en PlayerContext.", this);
+            enabled = false;
+            return;
+        }
+
         standHeight = ctx.controller.height;
     }
 
@@ -102,6 +129,21 @@ public class PlayerMovement : NetworkBehaviour
 
         UpdateGrounded();
 
+        // Si el estado bloquea el movimiento:
+        if (!CanControlMovement)
+        {
+            StopMovementInput();
+
+            if (isDashing)
+                EndDash();
+
+            // La gravedad sigue funcionando.
+            UpdateGravity();
+            UpdateMovement();
+
+            return;
+        }
+
         UpdateDash();
 
         if (isDashing)
@@ -112,6 +154,15 @@ public class PlayerMovement : NetworkBehaviour
         UpdateMovement();
     }
 
+    private void StopMovementInput()
+    {
+        moveInput = Vector2.zero;
+        sprintHeld = false;
+        jumpPressed = false;
+
+        currentSpeed = 0f;
+        moveDirection = Vector3.zero;
+    }
 
     //========================================================//
     // MOVEMENT
@@ -119,10 +170,11 @@ public class PlayerMovement : NetworkBehaviour
 
     private void UpdateMovement()
     {
-        if (cameraTransform == null)
-            return;
+        if (cameraTransform != null && CanControlMovement)
+            CalculateMoveDirection();
+        else
+            moveDirection = Vector3.zero;
 
-        CalculateMoveDirection();
         UpdateSpeed();
 
         Vector3 horizontalVelocity =
@@ -167,7 +219,7 @@ public class PlayerMovement : NetworkBehaviour
 
         float targetSpeed = 0f;
 
-        if (!IsMovementLocked && isMoving)
+        if (CanControlMovement && isMoving)
         {   /*
             if (isCrouching)
             {
@@ -295,28 +347,26 @@ public class PlayerMovement : NetworkBehaviour
 
     public void SetMoveInput(Vector2 input)
     {
-        moveInput = input;
+        moveInput = CanControlMovement
+            ? input
+            : Vector2.zero;
     }
-
 
     public void SetJump(bool value)
     {
-        if (value)
+        if (value && CanControlMovement)
             jumpPressed = true;
     }
 
-
     public void SetSprint(bool value)
     {
-        sprintHeld = value;
+        sprintHeld = CanControlMovement && value;
     }
-
 
     public void SetCrouch(bool value)
     {
-        isCrouching = value;
+        isCrouching = CanControlMovement && value;
     }
-
 
     public void SetMovementLocked(bool locked)
     {
@@ -324,8 +374,10 @@ public class PlayerMovement : NetworkBehaviour
 
         if (locked)
         {
-            moveInput = Vector2.zero;
-            currentSpeed = 0f;
+            StopMovementInput();
+
+            if (isDashing)
+                EndDash();
         }
     }
 
@@ -334,7 +386,7 @@ public class PlayerMovement : NetworkBehaviour
         isAiming = aiming;
     }
 
-    
+
 
 
     //========================================================//
@@ -388,6 +440,10 @@ public class PlayerMovement : NetworkBehaviour
         wasGrounded = false;
 
         IsMovementLocked = false;
+
+        isDashing = false;
+        dashTimer = 0f;
+        dashDirection = Vector3.zero;
     }
     //========================================================//
     // DASH
@@ -418,8 +474,8 @@ public class PlayerMovement : NetworkBehaviour
 
     private bool CanDash()
     {
-        return !isDashing &&
-               !IsMovementLocked &&
+        return CanControlMovement &&
+               !isDashing &&
                !isCrouching;
     }
 
@@ -490,8 +546,13 @@ public class PlayerMovement : NetworkBehaviour
 
     public bool ApplyImpulseFromSkill(float height)
     {
-        if (!IsOwner || !IsGrounded || IsDashing)
+        if (!IsOwner ||
+            !CanControlMovement ||
+            !IsGrounded ||
+            IsDashing)
+        {
             return false;
+        }
 
         jumpPressed = false;
 

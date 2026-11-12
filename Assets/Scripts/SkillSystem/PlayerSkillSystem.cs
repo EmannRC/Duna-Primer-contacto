@@ -70,14 +70,23 @@ namespace Duna.Player
             GetCooldownRemaining(nextRepelTime);
 
         public bool CanUseCelerity =>
+            playerContext != null &&
+            playerContext.state != null &&
+            playerContext.state.CanUseSkills &&
             CurrentEnergy >= celerityCost &&
             CelerityCooldownRemaining <= 0f;
 
         public bool CanUseImpulse =>
+            playerContext != null &&
+            playerContext.state != null &&
+            playerContext.state.CanUseSkills &&
             CurrentEnergy >= impulseCost &&
             ImpulseCooldownRemaining <= 0f;
 
         public bool CanUseRepel =>
+            playerContext != null &&
+            playerContext.state != null &&
+            playerContext.state.CanUseSkills &&
             CurrentEnergy >= repelCost &&
             RepelCooldownRemaining <= 0f;
 
@@ -91,6 +100,18 @@ namespace Duna.Player
             if (playerContext != null)
                 playerContext.skillSystem = this;
         }
+
+        private void Update()
+        {
+            if (!IsOwner || playerContext == null || playerContext.state == null)
+                return;
+
+            Debug.Log(
+                $"[SkillSystem] Estado: {playerContext.state.CurrentState} | " +
+                $"Puede usar habilidades: {playerContext.state.CanUseSkills}"
+            );
+        }
+
 
         public override void OnNetworkSpawn()
         {
@@ -135,24 +156,41 @@ namespace Duna.Player
 
         public void TryCelerity()
         {
+            if (!CanRequestSkillLocally())
+                return;
+
             RequestSkillRpc((int)Skill.Celerity);
         }
 
         public void TryImpulse()
         {
+            if (!CanRequestSkillLocally())
+                return;
+
             RequestSkillRpc((int)Skill.Impulse);
         }
 
         public void TryRepel()
         {
+            if (!CanRequestSkillLocally())
+                return;
+
             RequestSkillRpc((int)Skill.Repel);
+        }
+
+        private bool CanRequestSkillLocally()
+        {
+            return IsOwner &&
+                   playerContext != null &&
+                   playerContext.state != null &&
+                   playerContext.state.CanUseSkills;
         }
 
         // --------------------------------------------------
         // ENERGY
         // --------------------------------------------------
 
-        
+
         public void AddEnergy(int amount)
         {
             if (!IsServer || amount <= 0)
@@ -196,6 +234,16 @@ namespace Duna.Player
 
             
             if (rpcParams.Receive.SenderClientId != OwnerClientId)
+                return;
+
+            if (playerContext == null ||
+                playerContext.state == null ||
+                !playerContext.state.CanUseSkills)
+            {
+                return;
+            }
+
+            if (!System.Enum.IsDefined(typeof(Skill), skill))
                 return;
 
             switch ((Skill)skill)
@@ -287,13 +335,20 @@ namespace Duna.Player
         // --------------------------------------------------
 
         [Rpc(
-            SendTo.Owner,
-            InvokePermission = RpcInvokePermission.Server
-        )]
+    SendTo.Owner,
+    InvokePermission = RpcInvokePermission.Server
+)]
         private void ExecuteSkillOnOwnerRpc(int skill)
         {
             if (!IsOwner)
                 return;
+
+            if (playerContext == null ||
+                playerContext.state == null ||
+                !playerContext.state.CanUseSkills)
+            {
+                return;
+            }
 
             if (movement == null)
             {
@@ -311,12 +366,14 @@ namespace Duna.Player
                     break;
 
                 case Skill.Impulse:
-                    //playerContext.playerAnimation.PlayJumpAnimation();
                     movement.ApplyImpulseFromSkill(impulseHeight);
                     break;
 
                 case Skill.Repel:
-                    playerContext.playerAnimation.PlayRepelAnimation();
+
+                    if (playerContext.playerAnimation != null)
+                        playerContext.playerAnimation.PlayRepelAnimation();
+
                     break;
             }
         }

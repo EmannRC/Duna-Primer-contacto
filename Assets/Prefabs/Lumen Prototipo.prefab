@@ -312,6 +312,7 @@ GameObject:
   - component: {fileID: 8856993663295447642}
   - component: {fileID: 3829707799618151525}
   - component: {fileID: 5039728482626361888}
+  - component: {fileID: 300493936484377518}
   m_Layer: 7
   m_Name: Lumen Prototipo
   m_TagString: Player
@@ -342,7 +343,6 @@ Transform:
   - {fileID: 164964073938159559}
   - {fileID: 2733062848769028646}
   - {fileID: 5677137736634202523}
-  - {fileID: 4301539769493874522}
   - {fileID: 6347476758434619964}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -358,6 +358,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d760af8ff5fc2c4438f1cbec38821daf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerContext
+  state: {fileID: 300493936484377518}
   stats: {fileID: 4953450847359807446}
   mana: {fileID: 2469992046821235202}
   equipment: {fileID: 6376156663814525750}
@@ -946,6 +947,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ff54a039a7059948af43b1e17fedb79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerRegistryMember
+  ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &300493936484377518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3192926551893178601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0da7fc69b8b2f9f498591fecffd0ae62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Duna.Player.PlayerState
   ShowTopMostFoldoutHeaderGroup: 1
 --- !u!1 &4815002570131256540
 GameObject:
@@ -1646,14 +1660,7 @@ MonoBehaviour:
   NetworkAnimatorExpanded: 0
   AuthorityMode: 1
   m_Animator: {fileID: 8396660476745707073}
-  TransitionStateInfoList:
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: -1136192928
-    DestinationState: 1137391654
-    TransitionDuration: 0.1
-    TriggerNameHash: 125937960
-    TransitionIndex: 1
+  TransitionStateInfoList: []
   AnimatorParameterEntries:
     ParameterEntries:
     - name: VelX
@@ -1734,216 +1741,6 @@ Transform:
 Animator:
   m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 7ea3245a97394ed40a66191e45748517, type: 3}
   m_PrefabInstance: {fileID: 2732694995331830736}
-  m_PrefabAsset: {fileID: 0}
---- !u!1001 &4339388511818383537
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 1231241095755832135}
-    m_Modifications:
-    - target: {fileID: -8679921383154817045, guid: 85f8e48af8e7b1542b56a878ec5e9c29, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 85f8e48af8e7b1542b56a878ec5e9c29, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.956
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 85f8e48af8e7b1542b56a878ec5e9c29, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 85f8e48af8e7b1542b56a878ec5e9c29, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 85f8e48af8e7b1542b56a878ec5e9c29, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 85f8e48af8e7b1542b56a878ec5e9c29, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 85f8e48af8e7b1542b56a878ec5e9c29, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 85f8e48af8e7b1542b56a878ec5e9c29, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 85f8e48af8e7b1542b56a878ec5e9c29, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 85f8e48af8e7b1542b56a878ec5e9c29, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 919132149155446097, guid: 85f8e48af8e7b1542b56a878ec5e9c29, type: 3}
-      propertyPath: m_Name
-      value: Lumen_animation blend
-      objectReference: {fileID: 0}
-    - target: {fileID: 919132149155446097, guid: 85f8e48af8e7b1542b56a878ec5e9c29, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 85f8e48af8e7b1542b56a878ec5e9c29, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1632163757098813233}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 85f8e48af8e7b1542b56a878ec5e9c29, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6047384830923352113}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 85f8e48af8e7b1542b56a878ec5e9c29, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7303475010272269174}
-  m_SourcePrefab: {fileID: 100100000, guid: 85f8e48af8e7b1542b56a878ec5e9c29, type: 3}
---- !u!1 &3529119022888369632 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 85f8e48af8e7b1542b56a878ec5e9c29, type: 3}
-  m_PrefabInstance: {fileID: 4339388511818383537}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &1632163757098813233
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3529119022888369632}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: b9af60d4832e54e41bba2b47aea11eae, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
---- !u!114 &6047384830923352113
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3529119022888369632}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04b1ed6d9dcc26945a4d48097b2761e4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimation
-  ShowTopMostFoldoutHeaderGroup: 1
---- !u!114 &7303475010272269174
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3529119022888369632}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkAnimator
-  ShowTopMostFoldoutHeaderGroup: 1
-  NetworkAnimatorExpanded: 0
-  AuthorityMode: 1
-  m_Animator: {fileID: 1632163757098813233}
-  TransitionStateInfoList:
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: -1136192928
-    DestinationState: 1137391654
-    TransitionDuration: 0.1
-    TriggerNameHash: 125937960
-    TransitionIndex: 1
-  AnimatorParameterEntries:
-    ParameterEntries:
-    - name: VelX
-      NameHash: 767982532
-      Synchronize: 1
-      ParameterType: 1
-    - name: VelY
-      NameHash: 1522617170
-      Synchronize: 1
-      ParameterType: 1
-    - name: IsGrounded
-      NameHash: 507951781
-      Synchronize: 1
-      ParameterType: 4
-    - name: Jump
-      NameHash: 125937960
-      Synchronize: 1
-      ParameterType: 9
-    - name: Speed
-      NameHash: -823668238
-      Synchronize: 1
-      ParameterType: 1
-    - name: VelocityY
-      NameHash: -303020060
-      Synchronize: 1
-      ParameterType: 1
-    - name: Die
-      NameHash: 20298039
-      Synchronize: 1
-      ParameterType: 9
-    - name: IsCrouching
-      NameHash: -1154928320
-      Synchronize: 1
-      ParameterType: 4
-    - name: IsJumping
-      NameHash: 1749078233
-      Synchronize: 1
-      ParameterType: 4
-    - name: IsFalling
-      NameHash: 268975031
-      Synchronize: 1
-      ParameterType: 4
-    - name: IsMoving
-      NameHash: 120489994
-      Synchronize: 1
-      ParameterType: 4
-    - name: Shoot
-      NameHash: -1316629574
-      Synchronize: 1
-      ParameterType: 9
-    - name: AttackAnimationSpeed
-      NameHash: 1765791331
-      Synchronize: 1
-      ParameterType: 1
-    - name: IsAlive
-      NameHash: -695135503
-      Synchronize: 1
-      ParameterType: 4
-    - name: Dancing
-      NameHash: -1900052137
-      Synchronize: 1
-      ParameterType: 9
-    - name: IsAiming
-      NameHash: 2025090383
-      Synchronize: 1
-      ParameterType: 4
-    - name: Repel
-      NameHash: -2139703738
-      Synchronize: 1
-      ParameterType: 9
-  AnimatorParametersExpanded: 0
---- !u!4 &4301539769493874522 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 85f8e48af8e7b1542b56a878ec5e9c29, type: 3}
-  m_PrefabInstance: {fileID: 4339388511818383537}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6889518995770590679
 PrefabInstance:
@@ -2783,14 +2580,7 @@ MonoBehaviour:
   NetworkAnimatorExpanded: 0
   AuthorityMode: 1
   m_Animator: {fileID: 9064551386282989938}
-  TransitionStateInfoList:
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: -1136192928
-    DestinationState: 1137391654
-    TransitionDuration: 0.1
-    TriggerNameHash: 125937960
-    TransitionIndex: 1
+  TransitionStateInfoList: []
   AnimatorParameterEntries:
     ParameterEntries:
     - name: VelX

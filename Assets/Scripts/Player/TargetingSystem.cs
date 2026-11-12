@@ -1,3 +1,4 @@
+using Duna.Player;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,6 +9,10 @@ public class TargetingSystem : MonoBehaviour
 
     public bool isAiming { get; private set; }
 
+    private bool CanAim =>
+        ctx != null &&
+        ctx.state != null &&
+        ctx.state.CurrentState == PlayerActionState.Normal;
 
     //========================================================//
     // INITIALIZATION
@@ -18,6 +23,17 @@ public class TargetingSystem : MonoBehaviour
         ctx = GetComponentInParent<PlayerContext>();
     }
 
+    //========================================================//
+    // STATE
+    //========================================================//
+
+    private void Update()
+    {
+        if (!CanAim && isAiming)
+        {
+            SetAiming(false);
+        }
+    }
 
     //========================================================//
     // AIM
@@ -25,6 +41,10 @@ public class TargetingSystem : MonoBehaviour
 
     public void SetAiming(bool aiming)
     {
+        // No permitir activar el apuntado en estados bloqueados.
+        if (aiming && !CanAim)
+            return;
+
         if (isAiming == aiming)
             return;
 
@@ -36,7 +56,6 @@ public class TargetingSystem : MonoBehaviour
         }
     }
 
-
     //========================================================//
     // CAMERA
     //========================================================//
@@ -46,7 +65,6 @@ public class TargetingSystem : MonoBehaviour
         cameraController = cam;
     }
 
-
     public void Look(Vector2 input)
     {
         if (cameraController == null)
@@ -54,7 +72,6 @@ public class TargetingSystem : MonoBehaviour
 
         cameraController.SetLookInput(input);
     }
-
 
     public void Zoom(float value)
     {

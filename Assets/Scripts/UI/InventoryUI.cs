@@ -57,6 +57,22 @@ public class InventoryUI : MonoBehaviour
         UpdateStatsUI();
     }
 
+    private void OnEnable()
+    {
+        RefreshUI();
+    }
+
+    private void RefreshUI()
+    {
+        if (inventory == null ||
+            stats == null ||
+            equipment == null)
+            return;
+
+        UpdateUI();
+        UpdateStatsUI();
+    }
+
     //===========================================================//
     void UpdateUI()
     {
@@ -110,6 +126,8 @@ public class InventoryUI : MonoBehaviour
             armorIcon.enabled = false;
         }
     }
+
+    
 
     //===========================================================//
     void OnDestroy()

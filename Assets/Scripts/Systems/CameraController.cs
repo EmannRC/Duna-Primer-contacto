@@ -1,3 +1,4 @@
+using Duna.Player;
 using UnityEngine;
 
 /// <summary>
@@ -55,6 +56,12 @@ public class CameraController : MonoBehaviour
     private float zoomInput;
     private Camera controlledCamera;
 
+    private PlayerState playerState;
+
+    private bool CanControlCamera =>
+        playerState != null &&
+        playerState.CurrentState == PlayerActionState.Normal;
+
     private void Awake()
     {
         controlledCamera = cam != null ? cam.GetComponent<Camera>() : null;
@@ -62,12 +69,24 @@ public class CameraController : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (target == null || pivot == null || cam == null || targetingSystem == null)
+        if (target == null || pivot == null ||
+            cam == null || targetingSystem == null)
             return;
 
         FollowTarget();
-        RotateCamera();
-        Zoom();
+
+        if (CanControlCamera)
+        {
+            RotateCamera();
+            Zoom();
+        }
+        else
+        {
+            // Evitar acumular entradas mientras está bloqueada.
+            lookInput = Vector2.zero;
+            zoomInput = 0f;
+        }
+
         HandleCollision();
         UpdateFieldOfView();
     }
@@ -75,13 +94,22 @@ public class CameraController : MonoBehaviour
     public void SetTarget(Transform newTarget)
     {
         target = newTarget;
-        targetingSystem = newTarget.GetComponentInChildren<TargetingSystem>(true);
 
-        // Evita el salto al primer frame al tomar como referencia la orientación actual.
+        targetingSystem =
+            newTarget.GetComponentInChildren<TargetingSystem>(true);
+
+        playerState =
+            newTarget.GetComponent<PlayerState>();
+
         Vector3 euler = pivot.rotation.eulerAngles;
+
         yRotation = euler.y;
         xRotation = NormalizeAngle(euler.x);
+
         currentDistance = distance;
+
+        lookInput = Vector2.zero;
+        zoomInput = 0f;
     }
 
     private void FollowTarget()
@@ -134,8 +162,27 @@ public class CameraController : MonoBehaviour
         controlledCamera.fieldOfView = Mathf.Lerp(controlledCamera.fieldOfView, desiredFov, fovSmooth * Time.deltaTime);
     }
 
-    public void SetLookInput(Vector2 input) => lookInput = input;
-    public void SetZoomInput(float input) => zoomInput = input;
+    public void SetLookInput(Vector2 input)
+    {
+        if (!CanControlCamera)
+        {
+            lookInput = Vector2.zero;
+            return;
+        }
+
+        lookInput = input;
+    }
+
+    public void SetZoomInput(float input)
+    {
+        if (!CanControlCamera)
+        {
+            zoomInput = 0f;
+            return;
+        }
+
+        zoomInput = input;
+    }
 
     private static float NormalizeAngle(float angle) => angle > 180f ? angle - 360f : angle;
 }

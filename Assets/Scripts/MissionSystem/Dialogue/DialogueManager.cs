@@ -1,3 +1,4 @@
+using Duna.Player;
 using Duna.QuestSystem;
 using UnityEngine;
 
@@ -29,6 +30,8 @@ namespace Duna.DialogueSystem
         public bool IsDialogueActive =>
             isDialogueActive;
 
+        private PlayerContext dialoguePlayer;
+
 
         //================================================//
         // AWAKE
@@ -57,52 +60,35 @@ namespace Duna.DialogueSystem
         //================================================//
 
         public void StartDialogue(
-            DialogueData dialogue,
-            DialogueController npc
-        )
+                DialogueData dialogue,
+                DialogueController npc,
+                PlayerContext player)
         {
-            if (
-                dialogue == null
-            )
+            if (dialogue == null)
             {
-                Debug.LogError(
-                    "DialogueData inválido."
-                );
-
+                Debug.LogError("DialogueData inválido.");
 
                 return;
             }
 
 
-            if (
-                npc == null
-            )
+            if (npc == null)
             {
-                Debug.LogError(
-                    "DialogueController inválido."
-                );
-
+                Debug.LogError("DialogueController inválido.");
 
                 return;
             }
 
 
-            if (
-                dialogueUI == null
-            )
+            if (dialogueUI == null)
             {
-                Debug.LogError(
-                    "DialogueUI no está asignado."
-                );
-
+                Debug.LogError("DialogueUI no está asignado.");
 
                 return;
             }
 
 
-            if (
-                isDialogueActive
-            )
+            if (isDialogueActive)
             {
                 return;
             }
@@ -124,6 +110,11 @@ namespace Duna.DialogueSystem
                 true;
 
 
+            dialoguePlayer = player;
+            dialoguePlayer.state.RequestLocalState(
+                PlayerActionState.InDialogue
+            );
+
             dialogueUI.Open();
 
 
@@ -131,15 +122,27 @@ namespace Duna.DialogueSystem
         }
 
 
+        public bool IsDialogueActiveFor(PlayerContext player)
+        {
+            return isDialogueActive &&
+                   dialoguePlayer == player;
+        }
+
+        public void AdvanceDialogue(PlayerContext player)
+        {
+            if (!IsDialogueActiveFor(player))
+                return;
+
+            AdvanceDialogue();
+        }
+
         //================================================//
         // SHOW CURRENT LINE
         //================================================//
 
         private void ShowCurrentLine()
         {
-            if (
-                currentDialogue == null
-            )
+            if (currentDialogue == null)
             {
                 EndDialogue();
 
@@ -219,43 +222,38 @@ namespace Duna.DialogueSystem
 
         public void EndDialogue()
         {
-            if (
-                !isDialogueActive
-            )
-            {
+            if (!isDialogueActive)
                 return;
-            }
 
-
-            isDialogueActive =
-                false;
-
+            isDialogueActive = false;
 
             dialogueUI.Close();
 
+            // Guardar referencias antes de limpiar.
+            DialogueController finishedNPC = currentNPC;
+            PlayerContext finishedPlayer = dialoguePlayer;
 
-            //============================================//
-            // AVISAR AL NPC
-            //============================================//
-
-            if (
-                currentNPC != null
-            )
+            // Restaurar estado del jugador.
+            if (finishedPlayer != null &&
+                finishedPlayer.state != null &&
+                finishedPlayer.state.CurrentState == PlayerActionState.InDialogue)
             {
-                currentNPC.DialogueFinished();
+                finishedPlayer.state.RequestLocalState(
+                    PlayerActionState.Normal
+                );
             }
 
+            // Limpiar diálogo.
+            currentDialogue = null;
+            currentNPC = null;
+            dialoguePlayer = null;
+            currentLineIndex = 0;
 
-            currentDialogue =
-                null;
-
-
-            currentNPC =
-                null;
-
-
-            currentLineIndex =
-                0;
+            // Avisar al NPC al finalizar.
+            if (finishedNPC != null)
+            {
+                finishedNPC.DialogueFinished();
+            }
         }
     }
 }

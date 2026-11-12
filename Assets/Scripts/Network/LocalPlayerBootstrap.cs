@@ -21,6 +21,8 @@ public class LocalPlayerBootstrap : MonoBehaviour
     [SerializeField] private MenuButtonUI menuButtonUI;
     [SerializeField] private PlayerSkillUI skillUI;
 
+    public PlayerContext LocalPlayer { get; private set; }
+
     //==========================================================//
     private void Awake()
     {
@@ -69,6 +71,16 @@ public class LocalPlayerBootstrap : MonoBehaviour
         if (!net.IsOwner)
             return;
 
+        LocalPlayer = ctx;
+
+        if (ctx.state == null)
+        {
+            Debug.LogError(
+                "[LocalPlayerBootstrap] PlayerState no está asignado."
+            );
+
+            return;
+        }
 
         if (questManager == null)
         {

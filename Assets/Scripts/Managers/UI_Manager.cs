@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections;
+using Unity.Netcode;
+using Duna.Player;
 
 public class UI_Manager : MonoBehaviour
 {
@@ -11,6 +13,7 @@ public class UI_Manager : MonoBehaviour
     [SerializeField] private GameObject statsUI;
     [SerializeField] private GameObject defeatMenu;
     [SerializeField] private GameObject interactiveMenu;
+    [SerializeField] public GameObject controlPanel;
 
 
     [Header("Buttons")]
@@ -33,96 +36,216 @@ public class UI_Manager : MonoBehaviour
     private void Start()
     {
         UpdateTabButtons(false);
+
+        StartCoroutine(ToggleControlPanelCoroutine());
     }
 
 
-    //=============================================================
-    public void ToggleUI(GameObject ui)
+    //========================================================
+    // ESTADOS DE UI
+    //========================================================
+
+    private void OpenUIState()
     {
-        if (currentOpenUI != null &&
-        !currentOpenUI.activeInHierarchy)
+        PlayerState state = GetLocalPlayerState();
+
+        if (state != null)
         {
-            currentOpenUI = null;
+            if (state.CurrentState == PlayerActionState.Normal ||
+                state.CurrentState == PlayerActionState.InMenu)
+            {
+                state.RequestLocalState(PlayerActionState.InMenu);
+            }
         }
 
-        bool isOpening = !ui.activeInHierarchy;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
 
-        // cerrar cualquier UI abierta
-        if (currentOpenUI != null && currentOpenUI != ui)
+    private void CloseUIState()
+    {
+        PlayerState state = GetLocalPlayerState();
+
+        if (state != null &&
+            state.CurrentState == PlayerActionState.InMenu)
         {
-            currentOpenUI.SetActive(false);
+            state.RequestLocalState(PlayerActionState.Normal);
         }
 
-        ui.SetActive(isOpening);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
+    private PlayerState GetLocalPlayerState()
+    {
+        if (NetworkManager.Singleton == null ||
+            NetworkManager.Singleton.LocalClient == null)
+        {
+            return null;
+        }
+
+        NetworkObject localPlayer =
+            NetworkManager.Singleton.LocalClient.PlayerObject;
+
+        if (localPlayer == null)
+            return null;
+
+        return localPlayer.GetComponent<PlayerState>();
+    }
+
+    //========================================================
+    // REGLAS DE BLOQUEO
+    //========================================================
+
+    private bool HasBlockingPanelOpen()
+    {
+        return defeatMenu.activeSelf ||
+               interactiveMenu.activeSelf ||
+               controlPanel.activeSelf;
+    }
+
+    private void CloseRegularPanels()
+    {
+        inventoryUI.SetActive(false);
+        craftingUI.SetActive(false);
+        statsUI.SetActive(false);
+
+        currentOpenUI = null;
+
+        UpdateTabButtons(false);
+    }
+
+    //========================================================
+    // PANELES NORMALES
+    //========================================================
+
+    private void ToggleRegularPanel(GameObject panel)
+    {
+        if (HasBlockingPanelOpen())
+            return;
+
+        // Si es una pestaña, utilizar ToggleTab.
+        if (panel == craftingUI)
+        {
+            ToggleTab(craftingUI, statsUI);
+            return;
+        }
+
+        if (panel == statsUI)
+        {
+            ToggleTab(statsUI, craftingUI);
+            return;
+        }
+
+        // Para otros paneles normales.
+        bool isOpening = !panel.activeSelf;
 
         if (isOpening)
         {
-            currentOpenUI = ui;
+            panel.SetActive(true);
+            currentOpenUI = panel;
             OpenUIState();
         }
         else
         {
-            currentOpenUI = null;
-            CloseUIState();
+            panel.SetActive(false);
+
+            if (!HasAnyMenuOpen())
+            {
+                currentOpenUI = null;
+                CloseUIState();
+            }
         }
     }
-    void OpenUIState()
+
+    private bool HasAnyMenuOpen()
     {
-        GameManager.Instance.SetState(GameState.InMenu);
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-        Time.timeScale = 0f;
+        return (inventoryUI != null && inventoryUI.activeInHierarchy) ||
+               (craftingUI != null && craftingUI.activeInHierarchy) ||
+               (statsUI != null && statsUI.activeInHierarchy) ||
+               (defeatMenu != null && defeatMenu.activeInHierarchy) ||
+               (interactiveMenu != null && interactiveMenu.activeInHierarchy) ||
+               (controlPanel != null && controlPanel.activeInHierarchy);
     }
 
-    void CloseUIState()
+    public void ToggleUI(GameObject ui)
     {
-        GameManager.Instance.SetState(GameState.Playing);
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-        Time.timeScale = 1f;
+        ToggleRegularPanel(ui);
     }
 
-    //============ Abrir menus ============//
     public void ToggleInventory()
     {
+        if (HasBlockingPanelOpen())
+            return;
+
         bool isOpening = !inventoryUI.activeSelf;
 
         inventoryUI.SetActive(isOpening);
 
         if (isOpening)
+        {
+            currentOpenUI = inventoryUI;
             OpenUIState();
+        }
         else
-            CloseUIState();
-    }
+        {
+            currentOpenUI = null;
 
-    void ToggleTab(GameObject panelToOpen, GameObject panelToClose)
-    {
-        bool isOpening = !panelToOpen.activeSelf;
-
-        panelToClose.SetActive(false);
-        panelToOpen.SetActive(isOpening);
-
-        bool craftingVisible =
-            craftingUI.activeSelf;
-
-        UpdateTabButtons(craftingVisible);
+            if (!HasAnyMenuOpen())
+                CloseUIState();
+        }
     }
 
     public void ToggleStats()
     {
-        ToggleTab(statsUI, craftingUI);
+        ToggleRegularPanel(statsUI);
     }
 
     public void ToggleCrafting()
     {
-        ToggleTab(craftingUI, statsUI);
+        ToggleRegularPanel(craftingUI);
     }
 
-    //============ Menu de derrota ============//
+    //========================================================
+    // MENÚ DE PAUSA / INTERACCIÓN
+    //========================================================
+
+    public void ToggleInteractiveMenu()
+    {
+        // No permitir abrir pausa durante derrota
+        // o mientras esté activo el panel de controles.
+        if (defeatMenu.activeSelf || controlPanel.activeSelf)
+            return;
+
+        if (interactiveMenu.activeSelf)
+        {
+            interactiveMenu.SetActive(false);
+            currentOpenUI = null;
+
+            CloseUIState();
+        }
+        else
+        {
+            ShowExclusivePanel(interactiveMenu);
+        }
+    }
+
+    //========================================================
+    // MENÚ DE DERROTA
+    //========================================================
+
     public void ShowDefeatMenu()
     {
         StartCoroutine(ShowDefeatMenuAfterDelay());
     }
+
+    IEnumerator ShowDefeatMenuAfterDelay(float delay = 3f)
+    {
+        yield return new WaitForSecondsRealtime(delay);
+
+        ShowExclusivePanel(defeatMenu);
+    }
+
     public void HideDefeatMenu()
     {
         defeatMenu.SetActive(false);
@@ -131,34 +254,87 @@ public class UI_Manager : MonoBehaviour
         CloseUIState();
     }
 
-    IEnumerator ShowDefeatMenuAfterDelay(float delay = 3f)
+    //========================================================
+    // PANEL DE CONTROLES
+    //========================================================
+
+    IEnumerator ToggleControlPanelCoroutine()
     {
-        yield return new WaitForSeconds(delay);
+        yield return new WaitForSecondsRealtime(1f);
 
-        // cerrar cualquier UI abierta
-        if (currentOpenUI != null)
-            currentOpenUI.SetActive(false);
+        ToggleControlPanel();
+    }
 
-        defeatMenu.SetActive(true);
-        currentOpenUI = defeatMenu;
+    public void ToggleControlPanel()
+    {
+        if (controlPanel.activeSelf)
+            return;
+
+        ShowExclusivePanel(controlPanel);
+    }
+
+    public void HideControlPanel()
+    {
+        controlPanel.SetActive(false);
+        currentOpenUI = null;
+
+        CloseUIState();
+    }
+
+    //========================================================
+    // PANEL PRIORITARIO
+    //========================================================
+
+    private void ShowExclusivePanel(GameObject panel)
+    {
+        // Cerrar todos los paneles normales.
+        CloseRegularPanels();
+
+        // Cerrar los otros paneles prioritarios.
+        defeatMenu.SetActive(false);
+        interactiveMenu.SetActive(false);
+        controlPanel.SetActive(false);
+
+        // Abrir únicamente el solicitado.
+        panel.SetActive(true);
+        currentOpenUI = panel;
 
         OpenUIState();
     }
 
-    //============ Menu interactivo ============//
-    public void ToggleInteractiveMenu()
+    private void ToggleTab(GameObject panelToOpen, GameObject panelToClose)
     {
-        bool isOpening = !interactiveMenu.activeSelf;
+        if (HasBlockingPanelOpen())
+            return;
 
-        interactiveMenu.SetActive(isOpening);
+        bool isOpening = !panelToOpen.activeSelf;
+
+        panelToClose.SetActive(false);
+        panelToOpen.SetActive(isOpening);
 
         if (isOpening)
+        {
+            currentOpenUI = panelToOpen;
             OpenUIState();
+        }
         else
-            CloseUIState();
+        {
+            currentOpenUI = inventoryUI.activeInHierarchy
+                ? inventoryUI
+                : null;
+
+            if (!HasAnyMenuOpen())
+                CloseUIState();
+        }
+
+        UpdateTabButtons(craftingUI.activeSelf);
     }
 
-    void UpdateTabButtons(bool showingCrafting)
+    //========================================================
+    // BOTONES DE PESTAÑAS
+    //========================================================
+
+    private void UpdateTabButtons(bool showingCrafting)
     {
         craftingButton.SetActive(!showingCrafting);
         statsButton.SetActive(showingCrafting);

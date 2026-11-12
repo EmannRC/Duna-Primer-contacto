@@ -1,7 +1,8 @@
+using Duna.Player;
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Collections;
 
 public class MenuButtonUI : MonoBehaviour
 {
@@ -25,9 +26,19 @@ public class MenuButtonUI : MonoBehaviour
         );
     }
 
-    private void Start()
+    private PlayerState GetLocalPlayerState()
     {
-        StartCoroutine(ToggleControlPanelCoroutine());
+        if (NetworkManager.Singleton == null ||
+            NetworkManager.Singleton.LocalClient == null)
+            return null;
+
+        NetworkObject localPlayer =
+            NetworkManager.Singleton.LocalClient.PlayerObject;
+
+        if (localPlayer == null)
+            return null;
+
+        return localPlayer.GetComponent<PlayerState>();
     }
 
     //========================================================//
@@ -36,7 +47,7 @@ public class MenuButtonUI : MonoBehaviour
 
     public void Restart()
     {
-        Time.timeScale = 1f;
+        //Time.timeScale = 1f;
 
         if (playerRespawn == null)
         {
@@ -87,23 +98,17 @@ public class MenuButtonUI : MonoBehaviour
     {
         controlPanel.SetActive(false);
 
+        PlayerState state = GetLocalPlayerState();
+
+        if (state != null &&
+            state.CurrentState == PlayerActionState.InMenu)
+        {
+            state.RequestLocalState(PlayerActionState.Normal);
+        }
+
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-        Time.timeScale = 1f;
     }
 
-    IEnumerator ToggleControlPanelCoroutine()
-    {
-        yield return new WaitForSeconds(2);
-
-        ToggleControlPanel();
-    }
-
-    public void ToggleControlPanel()
-    {
-        controlPanel.SetActive(true);
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
-        Time.timeScale = 0f;
-    }
+    
 }

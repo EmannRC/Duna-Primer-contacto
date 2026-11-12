@@ -1,3 +1,4 @@
+using Duna.Player;
 using System.Globalization;
 using Unity.Netcode;
 using UnityEngine;
@@ -9,21 +10,34 @@ public class PlayerRotation : NetworkBehaviour
     private bool attackRotation;
 
     //=======================================================//
+
+    private bool CanRotate =>
+        ctx != null &&
+        ctx.state != null &&
+        ctx.state.CurrentState == PlayerActionState.Normal;
+
+    //=======================================================//
+
     private void Awake()
     {
         ctx = GetComponent<PlayerContext>();
     }
 
     //=======================================================//
+
     private void Update()
     {
         if (!IsOwner)
+            return;
+
+        if (!CanRotate)
             return;
 
         Rotate();
     }
 
     //=======================================================//
+
     private void Rotate()
     {
         if (attackRotation)
@@ -38,26 +52,28 @@ public class PlayerRotation : NetworkBehaviour
             return;
         }
 
-        if (ctx.movement.MoveDirection.sqrMagnitude > 0.01f)
+        if (ctx.movement != null &&
+            ctx.movement.MoveDirection.sqrMagnitude > 0.01f)
         {
             FaceDirection(ctx.movement.MoveDirection);
         }
     }
 
     //=======================================================//
+
     private void FaceCamera()
     {
         if (ctx.mainCamera == null)
             return;
 
         Vector3 dir = ctx.mainCamera.transform.forward;
-
         dir.y = 0;
 
         FaceDirection(dir);
     }
 
     //=======================================================//
+
     private void FaceDirection(Vector3 dir)
     {
         dir.y = 0;
@@ -71,17 +87,23 @@ public class PlayerRotation : NetworkBehaviour
         transform.rotation = Quaternion.Slerp(
             transform.rotation,
             targetRotation,
-            Time.deltaTime * 10f);
+            Time.deltaTime * 10f
+        );
     }
 
     //=======================================================//
+
     public void LookAt(Vector3 direction)
     {
+        if (!CanRotate)
+            return;
+
         attackDirection = direction;
         attackRotation = true;
     }
 
     //=======================================================//
+
     public void StopAttackRotation()
     {
         attackRotation = false;

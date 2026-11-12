@@ -3,9 +3,13 @@ using Duna.Player;
 using Duna.QuestSystem;
 using System.Globalization;
 using UnityEngine;
+using UnityEngine.Playables;
 
 public class PlayerContext : MonoBehaviour
 {
+    [Header("State")]
+    public PlayerState state;
+
     [Header("Core")]
     public PlayerStatsManager stats;
     public PlayerMana mana;

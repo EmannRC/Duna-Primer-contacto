@@ -4,21 +4,24 @@ using UnityEngine;
 using UnityEngine.AI;
 
 
-[RequireComponent(typeof(NavMeshAgent))]
+[RequireComponent(typeof(EnemySteering))]
 public class GroundEnemyMovement : EnemyMovementBase
 {
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 3.5f;
-    [SerializeField] private float stoppingDistance = 2f;
-    [SerializeField] private float rotatSpeed = 720f;
 
-    private NavMeshAgent agent;
+    [Header("Gravity")]
+    [SerializeField] private float gravity = -20f;
+
+    private CharacterController controller;
+    private EnemySteering steering;
+
+    private float verticalVelocity;
 
     public Vector3 Velocity =>
-        agent != null
-            ? agent.velocity
+        controller != null
+            ? controller.velocity
             : Vector3.zero;
-
 
     //=======================================================//
     // AWAKE
@@ -28,39 +31,73 @@ public class GroundEnemyMovement : EnemyMovementBase
     {
         base.Awake();
 
-        agent = GetComponent<NavMeshAgent>();
-
-        agent.speed = moveSpeed;
-        agent.stoppingDistance = stoppingDistance;
-        agent.angularSpeed = rotatSpeed;
-
-        // La rotación la manejamos nosotros.
-        agent.updateRotation = false;
+        controller = GetComponent<CharacterController>();
+        steering = GetComponent<EnemySteering>();
     }
+
+    //=======================================================//
+    // UPDATE
+    //=======================================================//
 
     protected override void Update()
     {
         base.Update();
 
-        if (!IsServer || agent == null || !agent.isActiveAndEnabled)
+        if (!IsServer ||
+            controller == null ||
+            !controller.enabled)
             return;
 
-        if (IsBeingRepelled || movementLocked || IsMovementPaused)
+        if (IsBeingRepelled ||
+            movementLocked ||
+            IsMovementPaused)
             return;
 
-        Vector3 direction = agent.desiredVelocity;
-        direction.y = 0f;
+        // Gravity
+        if (controller.isGrounded && verticalVelocity < 0f)
+            verticalVelocity = -2f;
 
-        if (direction.sqrMagnitude < 0.01f)
+        verticalVelocity += gravity * Time.deltaTime;
+
+        Vector3 horizontalMovement = Vector3.zero;
+
+        if (hasDestination && !HasReachedDestination)
+        {
+            Vector3 direction = destination - transform.position;
+            direction.y = 0f;
+
+            direction.Normalize();
+
+            Vector3 finalDirection =
+                steering.CalculateDirection(direction);
+
+            horizontalMovement = finalDirection * moveSpeed;
+
+            RotateTowards(finalDirection);
+        }
+
+        Vector3 movement = horizontalMovement;
+        movement.y = verticalVelocity;
+
+        controller.Move(movement * Time.deltaTime);
+    }
+
+    //=======================================================//
+    // MOVEMENT
+    //=======================================================//
+
+    protected override void Move(Transform target)
+    {
+        if (target == null)
             return;
 
-        Quaternion targetRotation = Quaternion.LookRotation(direction);
+        destination = target.position;
+        hasDestination = true;
+    }
 
-        transform.rotation = Quaternion.Slerp(
-            transform.rotation,
-            targetRotation,
-            rotatSpeed * Time.deltaTime
-        );
+    protected override void MoveTowardsDestination()
+    {
+        // El movimiento se procesa en Update mediante CharacterController.
     }
 
     //=======================================================//
@@ -70,46 +107,7 @@ public class GroundEnemyMovement : EnemyMovementBase
     public override void SetMovementLocked(bool locked)
     {
         movementLocked = locked;
-
-        if (agent == null)
-            return;
-
-        if (!agent.isActiveAndEnabled ||
-            !agent.isOnNavMesh)
-        {
-            return;
-        }
-
-        agent.isStopped = locked;
-
-        if (locked)
-        {
-            agent.ResetPath();
-        }
     }
-
-
-    //=======================================================//
-    // MOVE
-    //=======================================================//
-
-    protected override void Move(Transform target)
-    {
-        if (movementLocked)
-            return;
-
-        if (agent == null ||
-            !agent.isActiveAndEnabled ||
-            !agent.isOnNavMesh)
-        {
-            return;
-        }
-
-        agent.isStopped = false;
-
-        agent.SetDestination(target.position);
-    }
-
 
     //=======================================================//
     // STOP
@@ -117,67 +115,17 @@ public class GroundEnemyMovement : EnemyMovementBase
 
     protected override void StopMovement()
     {
-        if (agent == null)
-            return;
-
-        if (!agent.isActiveAndEnabled ||
-            !agent.isOnNavMesh)
-        {
-            return;
-        }
-
-        agent.isStopped = true;
-        agent.ResetPath();
+        base.StopMovement();
     }
 
     //=======================================================//
-    // REPEAL
+    // REPEL
     //=======================================================//
 
     protected override void MoveDuringRepel(Vector3 displacement)
     {
-        if (agent != null &&
-            agent.isActiveAndEnabled &&
-            agent.isOnNavMesh)
-        {
-            agent.isStopped = true;
-            agent.ResetPath();
-            agent.Move(displacement);
-        }
-        else
-        {
-            transform.position += displacement;
-        }
-    }
-
-
-    public override void MoveToPosition(Vector3 position)
-    {
-        if (!IsServer || movementLocked)
-            return;
-
-        if (agent == null ||
-            !agent.isActiveAndEnabled ||
-            !agent.isOnNavMesh)
-            return;
-
-        agent.isStopped = false;
-        agent.SetDestination(position);
-    }
-
-    public override bool HasReachedDestination
-    {
-        get
-        {
-            if (agent == null ||
-                !agent.isActiveAndEnabled ||
-                !agent.isOnNavMesh)
-                return false;
-
-            return !agent.pathPending &&
-                   agent.hasPath &&
-                   agent.remainingDistance <= agent.stoppingDistance + 0.2f;
-        }
+        if (controller != null && controller.enabled)
+            controller.Move(displacement);
     }
 
     //=======================================================//

@@ -211,7 +211,7 @@ public class PlayerAnimation : NetworkBehaviour
     // SHOOT
     //========================================================//
 
-    public void PlayShootAnimation()
+    public void PlayShootAnimation(float attackSpeed)
     {
         if (!IsOwner)
             return;
@@ -219,15 +219,9 @@ public class PlayerAnimation : NetworkBehaviour
         if (ctx == null || ctx.animator == null)
             return;
 
-        float attackSpeed =
-            ctx.stats.GetStat(StatType.AttackSpeed);
-
-        if (attackSpeed <= 0f)
-            attackSpeed = 0.1f;
-
         ctx.animator.SetFloat(
             AttackAnimationSpeedHash,
-            attackSpeed);
+            Mathf.Max(0.1f, attackSpeed));
 
         ctx.animator.SetTrigger(ShootHash);
     }

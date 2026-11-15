@@ -5,30 +5,50 @@ using UnityEngine.InputSystem;
 public class PlayerCombat : MonoBehaviour
 {
     [Header("Shooting")]
-    [Tooltip("Mantiene el disparo ligado al modo de apuntado.")]
     [SerializeField] private bool requireAimToShoot = true;
-
-    private float nextShootTime;
-    private bool isAttacking;
 
     private PlayerContext ctx;
 
-
-    //========================================================//
-    // AWAKE
-    //========================================================//
+    private bool shootInputHeld;
+    private bool isAttacking;
+    private bool projectileFired;
 
     private void Awake()
     {
         ctx = GetComponentInParent<PlayerContext>();
     }
 
+    //========================================================//
+    // INPUT
+    //========================================================//
+
+    public void SetShootInput(bool isPressed)
+    {
+        shootInputHeld = isPressed;
+    }
+
+    private void Update()
+    {
+        if (ctx == null)
+            return;
+
+        if (ctx.health.IsDead.Value)
+        {
+            shootInputHeld = false;
+            return;
+        }
+
+        if (!shootInputHeld)
+            return;
+
+        TryShoot();
+    }
 
     //========================================================//
     // TRY SHOOT
     //========================================================//
 
-    public void TryShoot()
+    private void TryShoot()
     {
         if (ctx == null)
             return;
@@ -39,20 +59,9 @@ public class PlayerCombat : MonoBehaviour
         if (isAttacking)
             return;
 
-        //====================================================//
-        // AIM
-        //====================================================//
-
         if (requireAimToShoot &&
-            (ctx.targeting == null ||
-             !ctx.targeting.isAiming))
-        {
+            (ctx.targeting == null || !ctx.targeting.isAiming))
             return;
-        }
-
-        //====================================================//
-        // ATTACK SPEED
-        //====================================================//
 
         float attackSpeed =
             ctx.stats.GetStat(StatType.AttackSpeed);
@@ -60,27 +69,13 @@ public class PlayerCombat : MonoBehaviour
         if (attackSpeed <= 0f)
             return;
 
-        float cooldown =
-            1f / attackSpeed;
-
-        if (Time.time < nextShootTime)
-            return;
-
-        nextShootTime =
-            Time.time + cooldown;
-
-        //====================================================//
-        // START ATTACK
-        //====================================================//
-
         isAttacking = true;
+        projectileFired = false;
 
-
-        Debug.Log("DISPARO: NotifyShoot llamado");
-
-        ctx.playerAnimation.PlayShootAnimation();
+        // La velocidad de la animación controla
+        // directamente la cadencia de disparo.
+        ctx.playerAnimation.PlayShootAnimation(attackSpeed);
     }
-
 
     //========================================================//
     // ANIMATION EVENT - FIRE
@@ -88,26 +83,18 @@ public class PlayerCombat : MonoBehaviour
 
     public void FireProjectile()
     {
-        if (ctx == null)
+        if (!isAttacking || projectileFired)
             return;
 
-        if (ctx.equipment.weapon == null)
+        if (ctx == null ||
+            ctx.shooter == null ||
+            ctx.equipment.weapon == null)
             return;
 
-        if (ctx.shooter == null)
-        {
-            Debug.LogError(
-                "PlayerCombat: No se encontró ShootController."
-            );
+        projectileFired = true;
 
-            return;
-        }
-
-        // Este método es llamado directamente
-        // desde un Animation Event.
         ctx.shooter.Shoot();
     }
-
 
     //========================================================//
     // ANIMATION EVENT - END ATTACK
@@ -115,20 +102,16 @@ public class PlayerCombat : MonoBehaviour
 
     public void EndAttack()
     {
+        if (!isAttacking)
+            return;
+
         isAttacking = false;
 
         if (ctx == null)
             return;
 
-        if (ctx.movement != null)
-        {
-            ctx.movement.SetAiming(false);
-        }
-
         if (ctx.rotation != null)
-        {
             ctx.rotation.StopAttackRotation();
-        }
     }
 }
 

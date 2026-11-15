@@ -141,21 +141,28 @@ public class PlayerInputEvents : MonoBehaviour
 
     public void OnShoot(InputAction.CallbackContext input)
     {
-        if (!input.performed)
-            return;
-
         if (ctx == null)
             return;
 
         if (ctx.health.IsDead.Value)
+        {
+            ctx.combat?.SetShootInput(false);
             return;
+        }
 
         if (ctx.combat == null)
             return;
 
-        Debug.Log("SHOOT INPUT RECIBIDO");
-
-        ctx.combat.TryShoot();
+        if (input.performed)
+        {
+            Debug.Log("SHOOT INPUT PRESSED");
+            ctx.combat.SetShootInput(true);
+        }
+        else if (input.canceled)
+        {
+            Debug.Log("SHOOT INPUT RELEASED");
+            ctx.combat.SetShootInput(false);
+        }
     }
 
     //=====================//

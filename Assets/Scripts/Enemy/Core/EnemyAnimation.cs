@@ -98,6 +98,11 @@ public class EnemyAnimation : NetworkBehaviour
         ctx.meleeCombat.AnimationEventDealDamage();
     }
 
+    public void AnimationEventFinishDamage()
+    {
+        ctx.meleeCombat.AnimationEventFinishAttack();
+    }
+
     public void AnimationEventFireLaser()
     {
         if (ctx.laserAttack == null)

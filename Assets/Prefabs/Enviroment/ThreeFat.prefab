@@ -345,7 +345,7 @@ MonoBehaviour:
   farmController: {fileID: 1544983998417850193}
   radialFill: {fileID: 4426418744858333514}
   timerText: {fileID: 6786429450137375458}
-  showOnlyDuringCooldown: 0
+  showOnlyDuringCooldown: 1
 --- !u!1 &3256937003386084260
 GameObject:
   m_ObjectHideFlags: 0

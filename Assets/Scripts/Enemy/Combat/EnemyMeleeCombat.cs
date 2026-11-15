@@ -8,7 +8,6 @@ public class EnemyMeleeCombat : NetworkBehaviour
     [SerializeField] private int damage = 10;
     [SerializeField] private float attackRange = 1.5f;
     [SerializeField] private float attackCooldown = 1f;
-    [SerializeField, Min(0.1f)] private float attackFailsafeDuration = 1.1f;
 
     private EnemyContext ctx;
 
@@ -25,7 +24,6 @@ public class EnemyMeleeCombat : NetworkBehaviour
         ctx = GetComponent<EnemyContext>();
     }
 
-
     //========================================================//
     // UPDATE
     //========================================================//
@@ -41,24 +39,21 @@ public class EnemyMeleeCombat : NetworkBehaviour
         if (Time.time < nextAttackTime)
             return;
 
-        Transform target =
-            ctx.targeting.CurrentTarget;
+        Transform target = ctx.targeting.CurrentTarget;
 
         if (!IsValidTarget(target))
             return;
 
-        float distance =
-            Vector3.Distance(
-                transform.position,
-                target.position
-            );
+        float distance = Vector3.Distance(
+            transform.position,
+            target.position
+        );
 
         if (distance > attackRange)
             return;
 
         StartAttack();
     }
-
 
     //========================================================//
     // START ATTACK
@@ -68,62 +63,42 @@ public class EnemyMeleeCombat : NetworkBehaviour
     {
         isAttacking = true;
 
-        nextAttackTime =
-            Time.time + attackCooldown;
+        nextAttackTime = Time.time + attackCooldown;
 
-        // BLOQUEAR MOVIMIENTO
         ctx.movement.SetMovementLocked(true);
 
         if (ctx.enemyAnimation != null)
         {
             ctx.enemyAnimation.NotifyAttack();
-            // Fallback for clips without an AnimationEvent.
-            StartCoroutine(FinishAttackAfterAnimation());
-            return;
         }
-
-        // Si no existe animación,
-        // terminamos inmediatamente.
-        FinishAttack();
     }
-
 
     //========================================================//
-    private IEnumerator FinishAttackAfterAnimation()
-    {
-        yield return new WaitForSeconds(attackFailsafeDuration);
-
-        if (!isAttacking)
-            yield break;
-
-        Transform target = ctx.targeting != null ? ctx.targeting.CurrentTarget : null;
-        if (IsValidTarget(target))
-            DealDamage(target);
-
-        FinishAttack();
-    }
-    // ANIMATION EVENT
+    // ANIMATION EVENT - DAMAGE
     //========================================================//
 
     public void AnimationEventDealDamage()
     {
-        if (!IsServer)
+        if (!IsServer || !isAttacking)
             return;
 
-        if (!isAttacking)
-            return;
-
-        Transform target =
-            ctx.targeting.CurrentTarget;
+        Transform target = ctx.targeting.CurrentTarget;
 
         if (IsValidTarget(target))
-        {
             DealDamage(target);
-        }
+    }
+
+    //========================================================//
+    // ANIMATION EVENT - FINISH
+    //========================================================//
+
+    public void AnimationEventFinishAttack()
+    {
+        if (!IsServer || !isAttacking)
+            return;
 
         FinishAttack();
     }
-
 
     //========================================================//
     // FINISH ATTACK
@@ -133,10 +108,8 @@ public class EnemyMeleeCombat : NetworkBehaviour
     {
         isAttacking = false;
 
-        // VOLVER A PERMITIR MOVIMIENTO
         ctx.movement.SetMovementLocked(false);
     }
-
 
     //========================================================//
     // TARGET
@@ -148,14 +121,11 @@ public class EnemyMeleeCombat : NetworkBehaviour
             return false;
 
         if (!target.TryGetComponent<PlayerHealth>(
-                out PlayerHealth health))
-        {
+            out PlayerHealth health))
             return false;
-        }
 
         return !health.IsDead.Value;
     }
-
 
     //========================================================//
     // DAMAGE
@@ -163,30 +133,22 @@ public class EnemyMeleeCombat : NetworkBehaviour
 
     private void DealDamage(Transform target)
     {
-        if (!IsServer)
+        if (!IsServer || !IsValidTarget(target))
             return;
 
-        if (!IsValidTarget(target))
-            return;
-
-        float distance =
-            Vector3.Distance(
-                transform.position,
-                target.position
-            );
+        float distance = Vector3.Distance(
+            transform.position,
+            target.position
+        );
 
         if (distance > attackRange)
             return;
 
-        PlayerHealth health =
-            target.GetComponent<PlayerHealth>();
+        PlayerHealth health = target.GetComponent<PlayerHealth>();
 
         if (health != null)
-        {
             health.TakeDamage(damage);
-        }
     }
-
 
     //========================================================//
     // CANCEL
@@ -194,11 +156,11 @@ public class EnemyMeleeCombat : NetworkBehaviour
 
     public void CancelAttack()
     {
-        isAttacking = false;
+        if (!IsServer)
+            return;
 
-        ctx.movement.SetMovementLocked(false);
+        FinishAttack();
     }
-
 
     //========================================================//
     // GIZMOS

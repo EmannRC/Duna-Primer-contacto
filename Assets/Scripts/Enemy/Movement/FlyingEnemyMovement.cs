@@ -5,92 +5,87 @@ public class FlyingEnemyMovement : EnemyMovementBase
 {
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 4f;
-    [SerializeField] private float stoppingDistance = 2f;
 
-    [Header("Height")]
+    [Header("Hover")]
     [SerializeField] private float hoverHeight = 3f;
     [SerializeField] private float heightAdjustSpeed = 5f;
     [SerializeField] private float groundCheckDistance = 20f;
     [SerializeField] private LayerMask groundMask;
 
-    [Header("Formation")]
-    [SerializeField] private float formationRadius = 3f;
+    //=======================================================//
+    // UPDATE
+    //=======================================================//
 
+    protected override void Update()
+    {
+        bool wasBeingRepelled = IsBeingRepelled;
+
+        base.Update();
+
+        if (!IsServer || wasBeingRepelled || IsBeingRepelled)
+            return;
+
+        if (movementLocked || IsMovementPaused)
+            return;
+
+        MaintainHoverHeight();
+
+        MoveTowardsDestination();
+    }
 
     //=======================================================//
     // MOVEMENT LOCK
     //=======================================================//
 
-    public override void SetMovementLocked(
-        bool locked)
+    public override void SetMovementLocked(bool locked)
     {
         movementLocked = locked;
     }
-
 
     //=======================================================//
     // MOVE
     //=======================================================//
 
-    protected override void Move(
-        Transform target)
+    protected override void Move(Transform target)
     {
-        Vector3 position =
-            transform.position;
+        if (target == null)
+            return;
 
-        Vector3 targetPosition =
-            GetFormationTargetPosition(target);
+        destination = target.position;
+        hasDestination = true;
+    }
 
-        Vector3 direction =
-            targetPosition - position;
+    protected override void MoveTowardsDestination()
+    {
+        if (!hasDestination || HasReachedDestination)
+            return;
 
+        Vector3 direction = destination - transform.position;
+
+        // Movimiento horizontal.
         direction.y = 0f;
 
-        float distance =
-            direction.magnitude;
+        if (direction.sqrMagnitude < 0.001f)
+            return;
 
-        if (distance > stoppingDistance)
-        {
-            position +=
-                direction.normalized *
-                moveSpeed *
-                Time.deltaTime;
-        }
+        direction.Normalize();
 
-        MaintainHeight(
-            ref position
-        );
+        transform.position +=
+            direction * moveSpeed * Time.deltaTime;
 
-        transform.position =
-            position;
+        RotateTowards(direction);
     }
 
-
     //=======================================================//
-    // STOP MOVEMENT
+    // HOVER HEIGHT
     //=======================================================//
 
-    protected override void StopMovement()
+    private void MaintainHoverHeight()
     {
-        // El enemigo volador no usa
-        // NavMeshAgent, por lo que no
-        // necesita ResetPath().
-    }
-
-
-    //=======================================================//
-    // MAINTAIN HEIGHT
-    //=======================================================//
-
-    private void MaintainHeight(
-        ref Vector3 position)
-    {
-        Vector3 rayOrigin =
-            position +
-            Vector3.up * 10f;
+        Vector3 origin = transform.position + Vector3.up * 0.5f;
 
         if (!Physics.Raycast(
-            rayOrigin,
+            origin,
             Vector3.down,
             out RaycastHit hit,
             groundCheckDistance,
@@ -100,70 +95,37 @@ public class FlyingEnemyMovement : EnemyMovementBase
             return;
         }
 
-        float desiredY =
-            hit.point.y +
-            hoverHeight;
+        float targetHeight = hit.point.y + hoverHeight;
 
-        position.y =
-            Mathf.MoveTowards(
-                position.y,
-                desiredY,
-                heightAdjustSpeed *
-                Time.deltaTime
-            );
-    }
-
-
-    //=======================================================//
-    // FORMATION
-    //=======================================================//
-
-    private Vector3 GetFormationTargetPosition(
-        Transform target)
-    {
-        if (ctx.formation == null)
-            return target.position;
-
-        int count =
-            EnemyFormation.ActiveEnemies.Count;
-
-        if (count <= 1)
-        {
-            Vector3 direction =
-                transform.position -
-                target.position;
-
-            direction.y = 0f;
-
-            if (direction.sqrMagnitude < 0.01f)
-                direction = -target.forward;
-
-            return target.position +
-                   direction.normalized *
-                   formationRadius;
-        }
-
-        float angle =
-            (360f / count) *
-            ctx.formation.SlotIndex;
-
-        Vector3 offset = new Vector3(
-            Mathf.Cos(angle * Mathf.Deg2Rad),
-            0f,
-            Mathf.Sin(angle * Mathf.Deg2Rad)
+        float newHeight = Mathf.Lerp(
+            transform.position.y,
+            targetHeight,
+            heightAdjustSpeed * Time.deltaTime
         );
 
-        offset *= formationRadius;
+        Vector3 position = transform.position;
+        position.y = newHeight;
 
-        return target.position +
-               offset;
+        transform.position = position;
     }
+
+    //=======================================================//
+    // STOP MOVEMENT
+    //=======================================================//
+
+    protected override void StopMovement()
+    {
+        base.StopMovement();
+    }
+
+    //=======================================================//
+    // REPEL
+    //=======================================================//
 
     protected override void MoveDuringRepel(Vector3 displacement)
     {
         transform.position += displacement;
     }
-
 
     //=======================================================//
     // GIZMOS
@@ -171,11 +133,18 @@ public class FlyingEnemyMovement : EnemyMovementBase
 
     private void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.cyan;
+        Gizmos.color = Color.green;
+
+        Gizmos.DrawRay(
+            transform.position + Vector3.up * 0.5f,
+            Vector3.down * groundCheckDistance
+        );
+
+        Gizmos.color = Color.yellow;
 
         Gizmos.DrawWireSphere(
             transform.position,
-            formationRadius
+            stoppingDistance
         );
     }
 }

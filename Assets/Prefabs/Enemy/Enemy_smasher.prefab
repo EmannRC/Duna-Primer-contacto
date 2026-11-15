@@ -198,6 +198,7 @@ GameObject:
   - component: {fileID: 4864680385536553775}
   - component: {fileID: 6680293724693646326}
   - component: {fileID: 7132943774002280425}
+  - component: {fileID: 8889871211250356159}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -264,6 +265,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &8889871211250356159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2919495839041079128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 504d8aa8088212c4c851c0c5afad9dd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BillboardUI
+  targetCamera: {fileID: 0}
 --- !u!1 &2979038007382677406
 GameObject:
   m_ObjectHideFlags: 0
@@ -413,11 +427,11 @@ GameObject:
   m_Component:
   - component: {fileID: 9193243368075713811}
   - component: {fileID: 3982346607036504590}
+  - component: {fileID: 3955782390435442581}
   - component: {fileID: 1544584619796742886}
   - component: {fileID: 4952323103554228072}
   - component: {fileID: 7356638292224768656}
   - component: {fileID: -4485702869038451152}
-  - component: {fileID: 6737502161468156323}
   - component: {fileID: 3333912315767043015}
   - component: {fileID: 9181602100196363287}
   - component: {fileID: 3079263357289275601}
@@ -428,7 +442,6 @@ GameObject:
   - component: {fileID: 2639620326216377468}
   - component: {fileID: 7046065972693295573}
   - component: {fileID: 590912870287348789}
-  - component: {fileID: 3955782390435442581}
   m_Layer: 6
   m_Name: Enemy_smasher
   m_TagString: Untagged
@@ -477,6 +490,31 @@ CapsuleCollider:
   m_Height: 1.3
   m_Direction: 1
   m_Center: {x: 0, y: 0.5997133, z: 0}
+--- !u!143 &3955782390435442581
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5380689604958732842}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Height: 1
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0.45, z: 0}
 --- !u!114 &1544584619796742886
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -585,28 +623,6 @@ MonoBehaviour:
   - prefab: {fileID: -3468917201845883158, guid: 27433b4cb5bb6fe41998db0a1e27ebee, type: 3}
     weight: 100
   dropPoint: {fileID: 3743706927994978619}
---- !u!195 &6737502161468156323
-NavMeshAgent:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5380689604958732842}
-  m_Enabled: 0
-  m_AgentTypeID: 0
-  m_Radius: 0.55
-  m_Speed: 3.5
-  m_Acceleration: 8
-  avoidancePriority: 50
-  m_AngularSpeed: 120
-  m_StoppingDistance: 2
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
-  m_AutoRepath: 1
-  m_Height: 0.8
-  m_BaseOffset: 0
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
 --- !u!114 &3333912315767043015
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -806,31 +822,6 @@ MonoBehaviour:
   obstacleMask:
     serializedVersion: 2
     m_Bits: 1
---- !u!143 &3955782390435442581
-CharacterController:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5380689604958732842}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Height: 1
-  m_Radius: 0.5
-  m_SlopeLimit: 45
-  m_StepOffset: 0.3
-  m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0.45, z: 0}
 --- !u!1 &5524716683594068159
 GameObject:
   m_ObjectHideFlags: 0

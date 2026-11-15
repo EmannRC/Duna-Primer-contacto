@@ -1,3 +1,4 @@
+using GLTFast.Schema;
 using System.Globalization;
 using Unity.Netcode;
 using UnityEngine;
@@ -262,7 +263,11 @@ public class PlayerAnimation : NetworkBehaviour
         if (ctx == null || ctx.animator == null)
             return;
 
-        ctx.animator.SetBool(IsAliveHash, true);
+        ctx.animator.ResetTrigger("Death");
+        ctx.animator.ResetTrigger("Revive");
+
+        ctx.animator.SetTrigger("Revive");
+        //ctx.animator.SetBool(IsAliveHash, true);
     }
 
     //========================================================//

@@ -108,7 +108,7 @@ public class UI_Manager : MonoBehaviour
     {
         inventoryUI.SetActive(false);
         craftingUI.SetActive(false);
-        statsUI.SetActive(false);
+        
 
         currentOpenUI = null;
 
@@ -212,8 +212,6 @@ public class UI_Manager : MonoBehaviour
 
     public void ToggleInteractiveMenu()
     {
-        // No permitir abrir pausa durante derrota
-        // o mientras esté activo el panel de controles.
         if (defeatMenu.activeSelf || controlPanel.activeSelf)
             return;
 
@@ -223,11 +221,10 @@ public class UI_Manager : MonoBehaviour
             currentOpenUI = null;
 
             CloseUIState();
+            return;
         }
-        else
-        {
-            ShowExclusivePanel(interactiveMenu);
-        }
+
+        ShowExclusivePanel(interactiveMenu);
     }
 
     //========================================================
@@ -287,16 +284,15 @@ public class UI_Manager : MonoBehaviour
 
     private void ShowExclusivePanel(GameObject panel)
     {
-        // Cerrar todos los paneles normales.
-        CloseRegularPanels();
+        inventoryUI.SetActive(false);
+        craftingUI.SetActive(false);
 
-        // Cerrar los otros paneles prioritarios.
         defeatMenu.SetActive(false);
         interactiveMenu.SetActive(false);
         controlPanel.SetActive(false);
 
-        // Abrir únicamente el solicitado.
         panel.SetActive(true);
+
         currentOpenUI = panel;
 
         OpenUIState();

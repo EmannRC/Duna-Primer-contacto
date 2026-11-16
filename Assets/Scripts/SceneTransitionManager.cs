@@ -17,10 +17,10 @@ public class SceneTransitionManager : MonoBehaviour
 
     private void Start()
     {
-        animator.SetTrigger("StartFadeIn");
+        StartFadeIn();
     }
 
-    public void StartTransition()
+    public void StartFadeOut()
     {
         if (animator == null)
         {
@@ -33,6 +33,13 @@ public class SceneTransitionManager : MonoBehaviour
 
      
         animator.SetTrigger("StartFadeOut");
+    }
+
+    public void StartFadeIn()
+    {
+        
+
+        animator.SetTrigger("StartFadeIn");
     }
 
 }

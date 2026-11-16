@@ -4,6 +4,7 @@ using UnityEngine;
 public class TeleportZone : MonoBehaviour
 {
     [SerializeField] private Transform destination;
+    [SerializeField] private SceneTransitionManager sceneTransition;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -17,6 +18,7 @@ public class TeleportZone : MonoBehaviour
 
         if (!networkObject.IsPlayerObject)
             return;
+
 
         CharacterController controller =
             networkObject.GetComponent<CharacterController>();

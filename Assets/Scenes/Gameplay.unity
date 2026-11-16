@@ -1118,8 +1118,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 76, y: 360, z: 1046}
-  m_Center: {x: 25.5, y: 53.5, z: 209.5}
+  m_Size: {x: 78.095215, y: 369.92468, z: 1074.8367}
+  m_Center: {x: 24.452393, y: 53.5, z: 209.5}
 --- !u!1001 &36316192
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1951,8 +1951,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 76, y: 360, z: 1046}
-  m_Center: {x: 25.5, y: 53.5, z: 209.5}
+  m_Size: {x: 82.24627, y: 389.5876, z: 1131.9684}
+  m_Center: {x: 28.623135, y: 53.5, z: 209.5}
 --- !u!1 &78758366
 GameObject:
   m_ObjectHideFlags: 0
@@ -7817,6 +7817,10 @@ PrefabInstance:
       propertyPath: destination
       value: 
       objectReference: {fileID: 5320246889301109973}
+    - target: {fileID: 9052375488907472581, guid: 70eb980e013fcbc47810b5e435eff07e, type: 3}
+      propertyPath: sceneTransition
+      value: 
+      objectReference: {fileID: 78758367}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -15204,8 +15208,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 76, y: 360, z: 1046}
-  m_Center: {x: 25.5, y: 53.5, z: 209.5}
+  m_Size: {x: 103.14047, y: 488.56012, z: 1419.5386}
+  m_Center: {x: 39.07024, y: 53.5, z: 209.5}
 --- !u!1001 &598372278
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19460,8 +19464,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 76, y: 360, z: 1046}
-  m_Center: {x: 25.5, y: 53.5, z: 209.5}
+  m_Size: {x: 88.01888, y: 416.93158, z: 1211.418}
+  m_Center: {x: 19.490557, y: 53.5, z: 209.5}
 --- !u!1001 &759385653
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -54759,7 +54763,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 212631fb1e8be334d9f990ce456062b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TeleportZone
+  ShowTopMostFoldoutHeaderGroup: 1
   destination: {fileID: 1603517993}
+  sceneTransition: {fileID: 0}
+  transitionDuration: 1
 --- !u!1001 &601334108815261709
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -55284,9 +55291,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4019540886773372254}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.17373756, z: 0}
-  m_LocalScale: {x: 0, y: 0.625, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 696446131435559326}
@@ -56365,6 +56372,10 @@ PrefabInstance:
       propertyPath: destination
       value: 
       objectReference: {fileID: 287142751}
+    - target: {fileID: 9052375488907472581, guid: 70eb980e013fcbc47810b5e435eff07e, type: 3}
+      propertyPath: sceneTransition
+      value: 
+      objectReference: {fileID: 78758367}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

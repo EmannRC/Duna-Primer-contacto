@@ -173,7 +173,7 @@ public class MainMenuUI : MonoBehaviour
     IEnumerator StartGameAfterTransition()
     {
         // 1. Reproducir transición
-        SceneTransitionManager.Instance.StartTransition();
+        SceneTransitionManager.Instance.StartFadeOut();
 
         // 2. Esperar a que termine el efecto
         yield return new WaitForSeconds(1f);

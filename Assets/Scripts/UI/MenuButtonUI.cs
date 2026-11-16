@@ -83,7 +83,7 @@ public class MenuButtonUI : MonoBehaviour
     }
     IEnumerator ReturnAfterTransition()
     {
-        SceneTransitionManager.Instance.StartTransition();
+        SceneTransitionManager.Instance.StartFadeOut();
 
         yield return new WaitForSeconds(1f);
 

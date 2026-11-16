@@ -78,11 +78,15 @@ public class PlayerMovement : NetworkBehaviour
 
     public float AnimationSpeed { get; private set; }
 
+    public float AnimationPlaybackSpeed { get; private set; }
+
     public bool IsGrounded => groundedTimer > 0f;
 
     public float VerticalVelocity => velocity.y;
 
     public bool IsCrouching => isCrouching;
+
+    
 
 
     //========================================================//
@@ -256,8 +260,13 @@ public class PlayerMovement : NetworkBehaviour
 
         AnimationSpeed =
             moveSpeed > 0f
-                ? currentSpeed / (moveSpeed * sprintMultiplier)
-                : 0f;
+            ? currentSpeed / (moveSpeed * sprintMultiplier)
+            : 0f;
+
+        AnimationPlaybackSpeed =
+            moveSpeed > 0f
+            ? currentSpeed / moveSpeed
+            : 0f;
     }
 
 

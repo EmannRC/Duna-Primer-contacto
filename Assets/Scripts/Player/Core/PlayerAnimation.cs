@@ -21,6 +21,9 @@ public class PlayerAnimation : NetworkBehaviour
     private static readonly int IsMovingHash =
         Animator.StringToHash("IsMoving");
 
+    private static readonly int MovementPlaybackSpeedHash =
+        Animator.StringToHash("MovementPlaybackSpeed");
+
     private static readonly int IsGroundedHash =
         Animator.StringToHash("IsGrounded");
 
@@ -58,7 +61,18 @@ public class PlayerAnimation : NetworkBehaviour
         Animator.StringToHash("Repel");
 
     private static readonly int JumpHash =
-    Animator.StringToHash("Jump");
+        Animator.StringToHash("Jump");
+
+
+
+    private static readonly int HasWeaponHash =
+         Animator.StringToHash("HasWeapon");
+
+    private static readonly int EquipWeaponHash =
+        Animator.StringToHash("EquipWeapon");
+
+    private static readonly int UnequipWeaponHash =
+        Animator.StringToHash("UnequipWeapon");
 
 
     //========================================================//
@@ -141,6 +155,10 @@ public class PlayerAnimation : NetworkBehaviour
         ctx.animator.SetBool(
             IsAimingHash,
             ctx.movement.IsAiming);
+
+        ctx.animator.SetFloat(
+            MovementPlaybackSpeedHash,
+            ctx.movement.AnimationPlaybackSpeed);
 
     }
 
@@ -282,6 +300,34 @@ public class PlayerAnimation : NetworkBehaviour
             return;
 
         ctx.animator.SetTrigger(DancingHash);
+    }
+
+
+
+    public void PlayEquipWeaponAnimation()
+    {
+        if (!IsOwner || ctx == null || ctx.animator == null)
+            return;
+
+        ctx.animator.SetBool(HasWeaponHash, true);
+        ctx.animator.SetTrigger(EquipWeaponHash);
+    }
+
+    public void PlayUnequipWeaponAnimation()
+    {
+        if (!IsOwner || ctx == null || ctx.animator == null)
+            return;
+
+        ctx.animator.SetTrigger(UnequipWeaponHash);
+        ctx.animator.SetBool(HasWeaponHash, false);
+    }
+
+    public void SetWeaponState(bool hasWeapon)
+    {
+        if (ctx == null || ctx.animator == null)
+            return;
+
+        ctx.animator.SetBool(HasWeaponHash, hasWeapon);
     }
 
 

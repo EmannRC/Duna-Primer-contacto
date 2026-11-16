@@ -133,6 +133,14 @@ public class PlayerEquipment : NetworkBehaviour
 
         RefreshWeaponVisual();
 
+        if (IsOwner && ctx != null && ctx.playerAnimation != null)
+        {
+            if (weapon != null)
+                ctx.playerAnimation.PlayEquipWeaponAnimation();
+            else
+                ctx.playerAnimation.PlayUnequipWeaponAnimation();
+        }
+
         OnEquipmentChanged?.Invoke();
     }
 
@@ -157,6 +165,11 @@ public class PlayerEquipment : NetworkBehaviour
         if (!string.IsNullOrEmpty(armorId.Value.ToString()))
         {
             armor = itemDatabase.GetByItemId(armorId.Value.ToString()) as Armor;
+        }
+
+        if (IsOwner && ctx.playerAnimation != null)
+        {
+            ctx.playerAnimation.SetWeaponState(weapon != null);
         }
 
         RefreshWeaponVisual();

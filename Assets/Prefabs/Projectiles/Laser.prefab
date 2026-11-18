@@ -123,14 +123,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Projectile
   ShowTopMostFoldoutHeaderGroup: 1
-  speed: 10
+  speed: 12
   lifeTime: 2
   damage: 5
   radius: 0.1
   damageableLayer:
     serializedVersion: 2
     m_Bits: 128
-  destroyEffect: {fileID: 0}
+  destroyEffect: {fileID: 358637981425055526, guid: 0484eb57310d4aa48ba6ddb2c50a279d, type: 3}
 --- !u!114 &2250254904431273833
 MonoBehaviour:
   m_ObjectHideFlags: 0

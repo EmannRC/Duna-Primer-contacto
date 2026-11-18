@@ -6,6 +6,10 @@ public class HealthController : NetworkBehaviour
 {
     [Header("Vida")]
     [SerializeField] private float maxHealth = 100f;
+
+    [Header("Healing VFX")]
+    [SerializeField] private GameObject healingVFXPrefab;
+    [SerializeField] private Transform healingVFXPoint;
     public virtual float MaxHealth => maxHealth;
 
     public float HealthPercent =>
@@ -102,17 +106,36 @@ public class HealthController : NetworkBehaviour
 
     public void Heal(float amount)
     {
-        if (!IsServer || IsDead.Value)
+        if (!IsServer || IsDead.Value || amount <= 0f)
             return;
+
+        float previousHealth = CurrentHealth.Value;
 
         CurrentHealth.Value = Mathf.Min(
             CurrentHealth.Value + amount,
             MaxHealth
         );
 
+        // Solo reproducir si realmente recuperó vida.
+        if (CurrentHealth.Value > previousHealth)
+            PlayHealingVFXRpc();
+    }
 
+    [Rpc(SendTo.ClientsAndHost)]
+    private void PlayHealingVFXRpc()
+    {
+        if (healingVFXPrefab == null)
+            return;
 
-        
+        Vector3 position = healingVFXPoint != null
+            ? healingVFXPoint.position
+            : transform.position;
+
+        Instantiate(
+            healingVFXPrefab,
+            position,
+            Quaternion.identity
+        );
     }
 
 

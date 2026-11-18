@@ -14,6 +14,10 @@ public class PlayerLevelSystem : NetworkBehaviour
 
     private PlayerContext ctx;
 
+    [Header("Level Up VFX")]
+    [SerializeField] private GameObject levelUpVFXPrefab;
+    [SerializeField] private Transform levelUpVFXPoint;
+
     //==================================================//
     void Awake()
     {
@@ -47,7 +51,7 @@ public class PlayerLevelSystem : NetworkBehaviour
     //==================================================//
     public void AddXP(float amount)
     {
-        if (!IsServer)
+        if (!IsServer || amount <= 0f)
             return;
 
         currentXp.Value += amount;
@@ -61,6 +65,9 @@ public class PlayerLevelSystem : NetworkBehaviour
             ctx.stats.ApplyLevelBonus(level.Value);
 
             xpToNextLevel.Value *= 1.25f;
+
+            // Efecto visual de subida de nivel.
+            PlayLevelUpVFXRpc();
         }
 
         OnXpChanged?.Invoke();
@@ -73,5 +80,26 @@ public class PlayerLevelSystem : NetworkBehaviour
             return 0;
 
         return currentXp.Value / xpToNextLevel.Value;
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void PlayLevelUpVFXRpc()
+    {
+        if (levelUpVFXPrefab == null)
+            return;
+
+        Vector3 position = levelUpVFXPoint != null
+            ? levelUpVFXPoint.position
+            : transform.position;
+
+        Quaternion rotation = levelUpVFXPoint != null
+            ? levelUpVFXPoint.rotation
+            : transform.rotation;
+
+        Instantiate(
+            levelUpVFXPrefab,
+            position,
+            rotation
+        );
     }
 }

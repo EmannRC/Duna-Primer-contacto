@@ -13,6 +13,9 @@ public class EnemyRangeCombat : NetworkBehaviour
     [SerializeField] private Transform leftCannon;
     [SerializeField] private Transform rightCannon;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource attackSound;
+
     private float nextShotTime;
     private bool useLeftCannon = true;
 
@@ -113,6 +116,9 @@ public class EnemyRangeCombat : NetworkBehaviour
         projectile.Initialize(direction);
 
         projectileObject.Spawn();
+
+        if (attackSound != null)
+            attackSound.Play();
     }
 
     //================================================//

@@ -34,6 +34,12 @@ public class PlayerMovement : NetworkBehaviour
     [Header("Dash")]
     [SerializeField, Min(0.1f)] private float dashDistance = 4.5f;
     [SerializeField, Min(0.01f)] private float dashDuration = 0.25f;
+    [SerializeField] private float dashFallMultiplier = 5f;
+    [SerializeField] private float dashFallDuration = 0.35f;
+
+    private float dashFallTimer;
+    private bool isDashFalling;
+
 
     private bool isDashing;
     private float dashTimer;
@@ -332,15 +338,31 @@ public class PlayerMovement : NetworkBehaviour
 
     private void UpdateGravity()
     {
-        float gravityMultiplier =
-            velocity.y < 0f
-                ? fallMultiplier
-                : 1f;
+        float gravityMultiplier = 1f;
 
-        velocity.y +=
-            gravity *
-            gravityMultiplier *
+        if (isDashFalling)
+        {
+            gravityMultiplier = dashFallMultiplier;
+        }
+        else if (velocity.y < 0f)
+        {
+            gravityMultiplier = fallMultiplier;
+        }
+
+        velocity.y += gravity * gravityMultiplier *
             Time.deltaTime;
+
+        // Finalizar efecto de caída del dash.
+        if (isDashFalling)
+        {
+            dashFallTimer -= Time.deltaTime;
+
+            if (dashFallTimer <= 0f || IsGrounded)
+            {
+                isDashFalling = false;
+                dashFallTimer = 0f;
+            }
+        }
     }
 
 
@@ -453,6 +475,9 @@ public class PlayerMovement : NetworkBehaviour
         isDashing = false;
         dashTimer = 0f;
         dashDirection = Vector3.zero;
+
+        isDashFalling = false;
+        dashFallTimer = 0f;
     }
     //========================================================//
     // DASH
@@ -501,7 +526,7 @@ public class PlayerMovement : NetworkBehaviour
         isDashing = true;
         dashTimer = 0f;
 
-        sprintHeld = false;
+        //sprintHeld = false;
         //currentSpeed = 0f;
 
         dashDirection = CalculateDashDirection();
@@ -520,7 +545,13 @@ public class PlayerMovement : NetworkBehaviour
     {
         isDashing = false;
         dashTimer = 0f;
-        //currentSpeed = 0f;
+
+        // Activar caída rápida si estamos en el aire.
+        if (!IsGrounded)
+        {
+            isDashFalling = true;
+            dashFallTimer = dashFallDuration;
+        }
 
         OnDashEnded();
     }

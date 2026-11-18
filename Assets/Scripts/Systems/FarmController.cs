@@ -10,7 +10,6 @@ public class FarmController : NetworkBehaviour
     }
 
     [Header("Resource Settings")]
-    [SerializeField] private string resourceId = "wood";
     [SerializeField] private int maxHits = 3;
 
     [Header("Pickup Settings")]

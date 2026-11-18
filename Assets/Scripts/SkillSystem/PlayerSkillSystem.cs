@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using static Duna.Player.PlayerSkillSystem;
 
 namespace Duna.Player
 {
@@ -51,6 +52,31 @@ namespace Duna.Player
 
         [Header("References")]
         [SerializeField] private PlayerMovement movement;
+
+        [Header("Skill VFX")]
+
+        [Header("Celerity")]
+        [SerializeField] private GameObject celerityVFXPrefab;
+        [SerializeField] private Transform celerityVFXPoint;
+
+        [Header("Impulse")]
+        [SerializeField] private GameObject impulseVFXPrefab;
+        [SerializeField] private Transform impulseVFXPoint;
+
+        [Header("Repel")]
+        [SerializeField] private GameObject repelVFXPrefab;
+        [SerializeField] private Transform repelVFXPoint;
+
+        [Header("Skill SFX")]
+
+        [Header("Celerity sound")]
+        [SerializeField] private AudioSource celeritySound;
+
+        [Header("Impulse sound")]
+        [SerializeField] private AudioSource impulseSound;
+
+        [Header("Repel sound")]
+        [SerializeField] private AudioSource repelSound;
 
         private PlayerContext playerContext;
 
@@ -221,18 +247,12 @@ namespace Duna.Player
         // NETWORK REQUEST
         // --------------------------------------------------
 
-        [Rpc(
-            SendTo.Server,
-            InvokePermission = RpcInvokePermission.Owner
-        )]
-        private void RequestSkillRpc(
-            int skill,
-            RpcParams rpcParams = default)
+        [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
+        private void RequestSkillRpc(int skill, RpcParams rpcParams = default)
         {
             if (!IsServer || !isInitialized)
                 return;
 
-            
             if (rpcParams.Receive.SenderClientId != OwnerClientId)
                 return;
 
@@ -254,7 +274,6 @@ namespace Duna.Player
 
                 case Skill.Impulse:
                     HandleImpulseRequest();
-                    //playerContext.playerAnimation.PlayJumpAnimation();
                     break;
 
                 case Skill.Repel:
@@ -279,6 +298,8 @@ namespace Duna.Player
 
             nextCelerityTime = now + celerityCooldown;
 
+            PlaySkillVFXRpc((int)Skill.Celerity);
+            PlaySkillSoundRpc((int)Skill.Celerity);
             ExecuteSkillOnOwnerRpc((int)Skill.Celerity);
         }
 
@@ -298,6 +319,8 @@ namespace Duna.Player
 
             nextImpulseTime = now + impulseCooldown;
 
+            PlaySkillVFXRpc((int)Skill.Impulse);
+            PlaySkillSoundRpc((int)Skill.Impulse);
             ExecuteSkillOnOwnerRpc((int)Skill.Impulse);
         }
 
@@ -318,8 +341,6 @@ namespace Duna.Player
                     return;
             }
 
-            
-
             if (!TrySpendEnergy(repelCost))
                 return;
 
@@ -327,6 +348,8 @@ namespace Duna.Player
 
             ExecuteRepelOnServer();
 
+            PlaySkillVFXRpc((int)Skill.Repel);
+            PlaySkillSoundRpc((int)Skill.Repel);
             ExecuteSkillOnOwnerRpc((int)Skill.Repel);
         }
 
@@ -334,10 +357,7 @@ namespace Duna.Player
         // OWNER EXECUTION
         // --------------------------------------------------
 
-        [Rpc(
-    SendTo.Owner,
-    InvokePermission = RpcInvokePermission.Server
-)]
+        [Rpc(SendTo.Owner,InvokePermission = RpcInvokePermission.Server)]
         private void ExecuteSkillOnOwnerRpc(int skill)
         {
             if (!IsOwner)
@@ -387,8 +407,6 @@ namespace Duna.Player
             if (!IsServer)
                 return;
 
-            
-
             Collider[] hits = Physics.OverlapSphere(
                 transform.position,
                 repelRadius,
@@ -414,6 +432,70 @@ namespace Duna.Player
                     repelForce,
                     repelDuration
                 );
+            }
+        }
+
+        //VFX
+        [Rpc(SendTo.ClientsAndHost)]
+        private void PlaySkillVFXRpc(int skill)
+        {
+            GameObject prefab = null;
+            Transform vfxPoint = null;
+
+            switch ((Skill)skill)
+            {
+                case Skill.Celerity:
+                    prefab = celerityVFXPrefab;
+                    vfxPoint = celerityVFXPoint;
+                    //celeritySound.Play();
+                    break;
+
+                case Skill.Impulse:
+                    prefab = impulseVFXPrefab;
+                    vfxPoint = impulseVFXPoint;
+                    //impulseSound.Play();
+                    break;
+
+                case Skill.Repel:
+                    prefab = repelVFXPrefab;
+                    vfxPoint = repelVFXPoint;
+                    //repelSound.Play();
+                    break;
+            }
+
+            if (prefab == null)
+                return;
+
+            Vector3 position = vfxPoint != null
+                ? vfxPoint.position
+                : transform.position;
+
+            Quaternion rotation = vfxPoint != null
+                ? vfxPoint.rotation
+                : transform.rotation;
+
+            Instantiate(prefab, position, rotation);
+        }
+
+        [Rpc(SendTo.ClientsAndHost)]
+        private void PlaySkillSoundRpc(int skill)
+        {
+            switch ((Skill)skill)
+            {
+                case Skill.Celerity:
+                    if (celeritySound != null)
+                        celeritySound.Play();
+                    break;
+
+                case Skill.Impulse:
+                    if (impulseSound != null)
+                        impulseSound.Play();
+                    break;
+
+                case Skill.Repel:
+                    if (repelSound != null)
+                        repelSound.Play();
+                    break;
             }
         }
 

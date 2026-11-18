@@ -13,8 +13,8 @@ public abstract class EnemyMovementBase : NetworkBehaviour
     [SerializeField] private float repelResistance = 1f;
 
     protected EnemyContext ctx;
-    protected bool movementLocked;
 
+    protected bool movementLocked;
     protected Vector3 destination;
     protected bool hasDestination;
 
@@ -23,6 +23,8 @@ public abstract class EnemyMovementBase : NetworkBehaviour
     private float repelRemaining;
 
     public bool IsBeingRepelled => repelRemaining > 0f;
+
+    protected virtual bool IsMovementPaused => false;
 
     //=======================================================//
     // AWAKE
@@ -44,21 +46,30 @@ public abstract class EnemyMovementBase : NetworkBehaviour
 
         if (IsBeingRepelled)
         {
-            float delta = Mathf.Min(
-                Time.deltaTime,
-                repelRemaining
-            );
-
-            MoveDuringRepel(
-                repelDirection * repelSpeed * delta
-            );
-
-            repelRemaining -= delta;
-
-            if (repelRemaining <= 0f)
-                OnRepelFinished();
-
+            UpdateRepel();
             return;
+        }
+
+        UpdateMovement();
+    }
+
+    private void UpdateRepel()
+    {
+        float delta = Mathf.Min(
+            Time.deltaTime,
+            repelRemaining
+        );
+
+        MoveDuringRepel(
+            repelDirection * repelSpeed * delta
+        );
+
+        repelRemaining -= delta;
+
+        if (repelRemaining <= 0f)
+        {
+            repelRemaining = 0f;
+            OnRepelFinished();
         }
     }
 
@@ -66,11 +77,9 @@ public abstract class EnemyMovementBase : NetworkBehaviour
     // MOVEMENT
     //=======================================================//
 
-    protected abstract void Move(Transform target);
+    protected abstract void UpdateMovement();
 
     protected abstract void MoveTowardsDestination();
-
-    protected virtual bool IsMovementPaused => false;
 
     //=======================================================//
     // DESTINATION
@@ -78,14 +87,29 @@ public abstract class EnemyMovementBase : NetworkBehaviour
 
     public virtual void MoveToPosition(Vector3 position)
     {
-        if (!IsServer ||
-            movementLocked ||
-            IsMovementPaused ||
-            IsBeingRepelled)
+        if (!CanReceiveMovementCommand())
             return;
 
         destination = position;
         hasDestination = true;
+    }
+
+    public void MoveTo(Transform target)
+    {
+        if (target == null ||
+            !CanReceiveMovementCommand())
+            return;
+
+        destination = target.position;
+        hasDestination = true;
+    }
+
+    private bool CanReceiveMovementCommand()
+    {
+        return IsServer &&
+               !movementLocked &&
+               !IsMovementPaused &&
+               !IsBeingRepelled;
     }
 
     public virtual bool HasReachedDestination
@@ -144,22 +168,21 @@ public abstract class EnemyMovementBase : NetworkBehaviour
     // MOVEMENT LOCK
     //=======================================================//
 
-    public abstract void SetMovementLocked(bool locked);
-
-    //=======================================================//
-    // MOVEMENT COMMANDS
-    //=======================================================//
-
-    public void MoveTo(Transform target)
+    public virtual void SetMovementLocked(bool locked)
     {
-        if (!IsServer ||
-            movementLocked ||
-            IsMovementPaused ||
-            IsBeingRepelled ||
-            target == null)
+        if (!IsServer)
             return;
 
-        Move(target);
+        if (movementLocked == locked)
+            return;
+
+        movementLocked = locked;
+
+        if (locked)
+        {
+            StopMovement();
+            //OnMovementLocked();
+        }
     }
 
     //=======================================================//
@@ -173,8 +196,7 @@ public abstract class EnemyMovementBase : NetworkBehaviour
     {
         if (!IsServer ||
             duration <= 0f ||
-            force <= 0f ||
-            movementLocked)
+            force <= 0f)
             return;
 
         repelDirection =
@@ -183,7 +205,15 @@ public abstract class EnemyMovementBase : NetworkBehaviour
         repelDirection.y = 0f;
 
         if (repelDirection.sqrMagnitude < 0.001f)
-            repelDirection = transform.forward;
+        {
+            // Si ambos pivotes coinciden, el enemigo suele estar mirando
+            // hacia el jugador; empujarlo hacia atrás evita un vector nulo.
+            repelDirection = -transform.forward;
+            repelDirection.y = 0f;
+        }
+
+        if (repelDirection.sqrMagnitude < 0.001f)
+            repelDirection = Vector3.back;
 
         repelDirection.Normalize();
 
@@ -205,6 +235,10 @@ public abstract class EnemyMovementBase : NetworkBehaviour
     }
 
     protected virtual void OnRepelFinished()
+    {
+    }
+
+    public virtual void OnDeath()
     {
     }
 }

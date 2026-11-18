@@ -1,5 +1,6 @@
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class ShootController : NetworkBehaviour
 {
@@ -8,7 +9,7 @@ public class ShootController : NetworkBehaviour
     [SerializeField] private LayerMask aimLayers = ~0;
 
     [Header("Audio")]
-    [SerializeField] private AudioSource shootSound;
+    [SerializeField] private AudioSource audioSource;
 
     private PlayerContext ctx;
 
@@ -141,11 +142,26 @@ public class ShootController : NetworkBehaviour
         }
 
         networkObject.Spawn();
-    
 
-        if (shootSound != null)
-        {
-            shootSound.Play();
-        }
+        PlayShootSoundRpc();
+        //if (shootSound != null)
+        //{
+        //shootSound.Play();
+        //}
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void PlayShootSoundRpc()
+    {
+        if (ctx == null || audioSource == null)
+            return;
+
+        if (ctx.equipment.weapon == null)
+            return;
+
+        AudioClip clip = ctx.equipment.weapon.shootSound;
+
+        if (clip != null)
+            audioSource.PlayOneShot(clip);
     }
 }

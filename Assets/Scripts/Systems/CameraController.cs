@@ -93,6 +93,12 @@ public class CameraController : MonoBehaviour
 
     public void SetTarget(Transform newTarget)
     {
+        if (newTarget == null)
+        {
+            Debug.LogError("[CameraController] Target es NULL.");
+            return;
+        }
+
         target = newTarget;
 
         targetingSystem =
@@ -101,15 +107,26 @@ public class CameraController : MonoBehaviour
         playerState =
             newTarget.GetComponent<PlayerState>();
 
+        if (targetingSystem == null)
+        {
+            Debug.LogError("[CameraController] No se encontró TargetingSystem.");
+            return;
+        }
+
         Vector3 euler = pivot.rotation.eulerAngles;
 
         yRotation = euler.y;
         xRotation = NormalizeAngle(euler.x);
 
         currentDistance = distance;
+        currentOffset = Vector3.zero;
 
         lookInput = Vector2.zero;
         zoomInput = 0f;
+
+        Debug.Log(
+            $"[CameraController] Target asignado: {newTarget.name}"
+        );
     }
 
     private void FollowTarget()

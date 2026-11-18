@@ -33,8 +33,7 @@ public class MainMenuUI : MonoBehaviour
     [Header("Lobby")]
     [SerializeField] private Button startGameButton;
 
-    [Header("Network Scene Loading")]
-    [SerializeField] private NetworkSceneLoadingUI networkSceneLoadingUI;
+    
 
     private bool isStartingSession;
 

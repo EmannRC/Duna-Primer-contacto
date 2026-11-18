@@ -59,7 +59,6 @@ public class DeathController : NetworkBehaviour
 
         deathHandled = true;
 
-
         PlayDeathVFXClientRpc();
 
         if (entityType == EntityType.Player)
@@ -74,12 +73,10 @@ public class DeathController : NetworkBehaviour
         if (deathSound != null)
             deathSound.Play();
 
-        // Los Players NO se destruyen.
-        // Los enemigos sí pueden destruirse.
-        if (destroyOnDeath &&
-            entityType == EntityType.Enemy)
+        // Destruir enemigos para todos los jugadores.
+        if (destroyOnDeath && entityType == EntityType.Enemy)
         {
-            Destroy(gameObject, destroyDelay);
+            StartCoroutine(DestroyEnemyAfterDelay());
         }
     }
 
@@ -141,20 +138,36 @@ public class DeathController : NetworkBehaviour
         if (enemyCtx == null)
             return;
 
-        if (enemyCtx.rb != null)
-            enemyCtx.rb.useGravity = true;
-
-        // Bloquear movimiento.
-        if (disableMovement &&
-            enemyCtx.movement != null)
+        if (enemyCtx.movement != null)
         {
-            enemyCtx.movement.SetMovementLocked(true);
+            // Activar comportamiento específico de muerte.
+            enemyCtx.movement.OnDeath();
+
+            // Bloquear movimiento normal.
+            if (disableMovement)
+            {
+                enemyCtx.movement.SetMovementLocked(true);
+            }
         }
 
-        // Animación de muerte del enemigo.
         if (enemyCtx.enemyAnimation != null)
         {
             enemyCtx.enemyAnimation.PlayDeathAnimation();
+        }
+    }
+
+    private IEnumerator DestroyEnemyAfterDelay()
+    {
+        yield return new WaitForSeconds(destroyDelay);
+
+        if (!IsServer)
+            yield break;
+
+        NetworkObject networkObject = GetComponent<NetworkObject>();
+
+        if (networkObject != null && networkObject.IsSpawned)
+        {
+            networkObject.Despawn(true);
         }
     }
 

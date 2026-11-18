@@ -69,12 +69,20 @@ public class EnemyAIController : NetworkBehaviour
         {
             case AIState.Patrol:
                 movement.Stop();
+
+                if (movement is GroundEnemyMovement groundMovement)
+                    groundMovement.SetChasing(false);
+
                 patrolInitialized = false;
                 waitTimer = 0f;
                 break;
 
             case AIState.Chase:
                 movement.Stop();
+
+                if (movement is GroundEnemyMovement groundMovementChase)
+                    groundMovementChase.SetChasing(true);
+
                 break;
         }
     }

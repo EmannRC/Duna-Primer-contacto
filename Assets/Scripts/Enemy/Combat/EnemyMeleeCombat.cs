@@ -14,6 +14,13 @@ public class EnemyMeleeCombat : NetworkBehaviour
     private bool isAttacking;
     private float nextAttackTime;
 
+    [Header("Hit Effect")]
+    [SerializeField] private GameObject hitParticlePrefab;
+    [SerializeField] private Transform hitEffectPoint;
+
+    [Header("SFX")]
+    [SerializeField] private AudioSource attackSound;
+
 
     //========================================================//
     // AWAKE
@@ -148,6 +155,13 @@ public class EnemyMeleeCombat : NetworkBehaviour
 
         if (health != null)
             health.TakeDamage(damage);
+
+        if (health != null)
+        {
+            health.TakeDamage(damage);
+            SpawnHitParticle();
+            attackSound.Play();
+        }
     }
 
     //========================================================//
@@ -160,6 +174,20 @@ public class EnemyMeleeCombat : NetworkBehaviour
             return;
 
         FinishAttack();
+    }
+
+    private void SpawnHitParticle()
+    {
+        if (hitParticlePrefab == null || hitEffectPoint == null)
+            return;
+
+        GameObject particle = Instantiate(
+            hitParticlePrefab,
+            hitEffectPoint.position,
+            hitEffectPoint.rotation
+        );
+
+        Destroy(particle, 3f);
     }
 
     //========================================================//

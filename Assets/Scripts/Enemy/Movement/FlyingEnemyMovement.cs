@@ -12,47 +12,33 @@ public class FlyingEnemyMovement : EnemyMovementBase
     [SerializeField] private float groundCheckDistance = 20f;
     [SerializeField] private LayerMask groundMask;
 
+    [Header("Death Fall")]
+    [SerializeField] private float gravity = -20f;
+    [SerializeField] private float groundOffset = 0.5f;
+
+    private bool isFalling;
+    private bool hasLanded;
+
+    private float verticalVelocity;
+
     //=======================================================//
-    // UPDATE
+    // MOVEMENT
     //=======================================================//
 
-    protected override void Update()
+    protected override void UpdateMovement()
     {
-        bool wasBeingRepelled = IsBeingRepelled;
-
-        base.Update();
-
-        if (!IsServer || wasBeingRepelled || IsBeingRepelled)
+        // Prioridad: caída por muerte.
+        if (isFalling)
+        {
+            UpdateFall();
             return;
+        }
 
         if (movementLocked || IsMovementPaused)
             return;
 
         MaintainHoverHeight();
-
         MoveTowardsDestination();
-    }
-
-    //=======================================================//
-    // MOVEMENT LOCK
-    //=======================================================//
-
-    public override void SetMovementLocked(bool locked)
-    {
-        movementLocked = locked;
-    }
-
-    //=======================================================//
-    // MOVE
-    //=======================================================//
-
-    protected override void Move(Transform target)
-    {
-        if (target == null)
-            return;
-
-        destination = target.position;
-        hasDestination = true;
     }
 
     protected override void MoveTowardsDestination()
@@ -60,9 +46,9 @@ public class FlyingEnemyMovement : EnemyMovementBase
         if (!hasDestination || HasReachedDestination)
             return;
 
-        Vector3 direction = destination - transform.position;
+        Vector3 direction =
+            destination - transform.position;
 
-        // Movimiento horizontal.
         direction.y = 0f;
 
         if (direction.sqrMagnitude < 0.001f)
@@ -77,12 +63,67 @@ public class FlyingEnemyMovement : EnemyMovementBase
     }
 
     //=======================================================//
+    // DEATH
+    //=======================================================//
+
+    public override void OnDeath()
+    {
+        isFalling = true;
+        hasLanded = false;
+
+        verticalVelocity = 0f;
+    }
+
+    private void UpdateFall()
+    {
+        if (hasLanded)
+            return;
+
+        // Aplicar gravedad.
+        verticalVelocity += gravity * Time.deltaTime;
+
+        Vector3 position = transform.position;
+
+        position.y += verticalVelocity * Time.deltaTime;
+
+        // Comprobar suelo.
+        Vector3 origin =
+            transform.position + Vector3.up * 0.5f;
+
+        if (Physics.Raycast(
+            origin,
+            Vector3.down,
+            out RaycastHit hit,
+            groundCheckDistance,
+            groundMask,
+            QueryTriggerInteraction.Ignore))
+        {
+            float targetHeight =
+                hit.point.y + groundOffset;
+
+            // Comprobar si llegó al suelo.
+            if (position.y <= targetHeight)
+            {
+                position.y = targetHeight;
+
+                verticalVelocity = 0f;
+
+                hasLanded = true;
+                isFalling = false;
+            }
+        }
+
+        transform.position = position;
+    }
+
+    //=======================================================//
     // HOVER HEIGHT
     //=======================================================//
 
     private void MaintainHoverHeight()
     {
-        Vector3 origin = transform.position + Vector3.up * 0.5f;
+        Vector3 origin =
+            transform.position + Vector3.up * 0.5f;
 
         if (!Physics.Raycast(
             origin,
@@ -95,7 +136,8 @@ public class FlyingEnemyMovement : EnemyMovementBase
             return;
         }
 
-        float targetHeight = hit.point.y + hoverHeight;
+        float targetHeight =
+            hit.point.y + hoverHeight;
 
         float newHeight = Mathf.Lerp(
             transform.position.y,
@@ -107,24 +149,6 @@ public class FlyingEnemyMovement : EnemyMovementBase
         position.y = newHeight;
 
         transform.position = position;
-    }
-
-    //=======================================================//
-    // STOP MOVEMENT
-    //=======================================================//
-
-    protected override void StopMovement()
-    {
-        base.StopMovement();
-    }
-
-    //=======================================================//
-    // REPEL
-    //=======================================================//
-
-    protected override void MoveDuringRepel(Vector3 displacement)
-    {
-        transform.position += displacement;
     }
 
     //=======================================================//

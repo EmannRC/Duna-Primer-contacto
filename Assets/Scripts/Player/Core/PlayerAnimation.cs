@@ -74,6 +74,8 @@ public class PlayerAnimation : NetworkBehaviour
     private static readonly int UnequipWeaponHash =
         Animator.StringToHash("UnequipWeapon");
 
+    [SerializeField] private int attackLayer = 1;
+
 
     //========================================================//
     // AWAKE
@@ -270,6 +272,9 @@ public class PlayerAnimation : NetworkBehaviour
         if (ctx == null || ctx.animator == null)
             return;
 
+        // Desactivar las capas superiores
+        ctx.animator.SetLayerWeight(attackLayer, 0f);
+
         ctx.animator.SetTrigger(DieHash);
     }
 
@@ -285,6 +290,7 @@ public class PlayerAnimation : NetworkBehaviour
         ctx.animator.ResetTrigger("Revive");
 
         ctx.animator.SetTrigger("Revive");
+        ctx.animator.SetLayerWeight(attackLayer, 1f);
         //ctx.animator.SetBool(IsAliveHash, true);
     }
 

@@ -3,22 +3,17 @@ using UnityEngine;
 
 public class EnemyLaserAttack : NetworkBehaviour
 {
-    [Header("Laser")]
-    [SerializeField] private int damage = 15;
+    [Header("Combat")]
     [SerializeField] private float minLaserRange = 3f;
     [SerializeField] private float maxLaserRange = 10f;
     [SerializeField] private float attackCooldown = 3f;
-    [SerializeField] private LayerMask damageLayers;
 
     [Header("Aim")]
     [SerializeField] private float turnSpeed = 90f;
 
     [Header("References")]
     [SerializeField] private Transform firePoint;
-    [SerializeField] private LineRenderer lineRenderer;
-
-    [Header("Visual")]
-    [SerializeField] private float laserDuration = 0.15f;
+    [SerializeField] private NetworkObject projectilePrefab;
 
     private EnemyContext ctx;
 
@@ -27,33 +22,32 @@ public class EnemyLaserAttack : NetworkBehaviour
     private bool isAttacking;
     private Transform attackTarget;
 
-
-    //========================================================//
+    //================================================//
     // AWAKE
-    //========================================================//
+    //================================================//
 
     private void Awake()
     {
         ctx = GetComponentInParent<EnemyContext>();
-
-        if (lineRenderer != null)
-            lineRenderer.enabled = false;
     }
 
-
-    //========================================================//
+    //================================================//
     // UPDATE
-    //========================================================//
+    //================================================//
 
     private void Update()
     {
         if (!IsServer)
             return;
 
-        // Durante la preparación del láser
-        // puede girar, pero NO caminar.
         if (isAttacking)
         {
+            if (!IsValidTarget(attackTarget))
+            {
+                CancelAttack();
+                return;
+            }
+
             AimAtTarget();
             return;
         }
@@ -61,40 +55,31 @@ public class EnemyLaserAttack : NetworkBehaviour
         if (Time.time < nextAttackTime)
             return;
 
-        Transform target =
-            ctx.targeting.CurrentTarget;
+        Transform target = ctx.targeting.CurrentTarget;
 
         if (!IsValidTarget(target))
             return;
 
-        float distance =
-            Vector3.Distance(
-                transform.position,
-                target.position
-            );
+        float distance = Vector3.Distance(
+            transform.position,
+            target.position
+        );
 
         if (distance < minLaserRange ||
             distance > maxLaserRange)
-        {
             return;
-        }
 
         StartLaserAttack(target);
     }
 
-
-    //========================================================//
+    //================================================//
     // AIM
-    //========================================================//
+    //================================================//
 
     private void AimAtTarget()
     {
-        if (!IsValidTarget(attackTarget))
-            return;
-
         Vector3 direction =
-            attackTarget.position -
-            transform.position;
+            attackTarget.position - transform.position;
 
         direction.y = 0f;
 
@@ -112,20 +97,17 @@ public class EnemyLaserAttack : NetworkBehaviour
             );
     }
 
-
-    //========================================================//
+    //================================================//
     // START ATTACK
-    //========================================================//
+    //================================================//
 
     private void StartLaserAttack(Transform target)
     {
         isAttacking = true;
         attackTarget = target;
 
-        nextAttackTime =
-            Time.time + attackCooldown;
+        nextAttackTime = Time.time + attackCooldown;
 
-        // BLOQUEAR MOVIMIENTO
         ctx.movement.SetMovementLocked(true);
 
         if (ctx.enemyAnimation != null)
@@ -138,29 +120,25 @@ public class EnemyLaserAttack : NetworkBehaviour
         }
     }
 
-
-    //========================================================//
-    // ANIMATION EVENT
-    //========================================================//
+    //================================================//
+    // ANIMATION EVENT - FIRE
+    //================================================//
 
     public void AnimationEventFireLaser()
     {
-        if (!IsServer)
+        if (!IsServer || !isAttacking)
             return;
 
-        if (!isAttacking)
-            return;
-
-        if (firePoint == null ||
-            attackTarget == null)
+        if (!IsValidTarget(attackTarget) ||
+            firePoint == null ||
+            projectilePrefab == null)
         {
             CancelAttack();
             return;
         }
 
         Vector3 direction =
-            attackTarget.position -
-            firePoint.position;
+            attackTarget.position - firePoint.position;
 
         if (direction.sqrMagnitude < 0.001f)
         {
@@ -168,101 +146,52 @@ public class EnemyLaserAttack : NetworkBehaviour
             return;
         }
 
-        direction.Normalize();
-
-        FireLaser(direction);
-    }
-
-
-    //========================================================//
-    // FIRE LASER
-    //========================================================//
-
-    private void FireLaser(Vector3 direction)
-    {
-        Vector3 start =
-            firePoint.position;
-
-        Vector3 end =
-            start +
-            direction *
-            maxLaserRange;
-
-        if (Physics.Raycast(
-                start,
-                direction,
-                out RaycastHit hit,
-                maxLaserRange,
-                damageLayers))
-        {
-            end = hit.point;
-
-            PlayerHealth health =
-                hit.collider.GetComponentInParent<PlayerHealth>();
-
-            if (health != null &&
-                !health.IsDead.Value)
-            {
-                health.TakeDamage(damage);
-            }
-        }
-
-        ShowLaserRpc(start, end);
+        SpawnProjectile(direction.normalized);
 
         CancelAttack();
     }
 
+    //================================================//
+    // SPAWN PROJECTILE
+    //================================================//
 
-    //========================================================//
-    // VISUAL
-    //========================================================//
-
-    [Rpc(SendTo.ClientsAndHost)]
-    private void ShowLaserRpc(
-        Vector3 start,
-        Vector3 end)
+    private void SpawnProjectile(Vector3 direction)
     {
-        if (lineRenderer == null)
-            return;
-
-        lineRenderer.SetPosition(0, start);
-        lineRenderer.SetPosition(1, end);
-
-        lineRenderer.enabled = true;
-
-        CancelInvoke(nameof(HideLaser));
-
-        Invoke(
-            nameof(HideLaser),
-            laserDuration
+        NetworkObject projectileObject = Instantiate(
+            projectilePrefab,
+            firePoint.position,
+            Quaternion.LookRotation(direction)
         );
+
+        Projectile projectile =
+            projectileObject.GetComponent<Projectile>();
+
+        if (projectile == null)
+        {
+            Destroy(projectileObject.gameObject);
+            return;
+        }
+
+        projectile.Initialize(direction);
+
+        projectileObject.Spawn();
     }
 
-
-    private void HideLaser()
-    {
-        if (lineRenderer != null)
-            lineRenderer.enabled = false;
-    }
-
-
-    //========================================================//
+    //================================================//
     // CANCEL
-    //========================================================//
+    //================================================//
 
     private void CancelAttack()
     {
         isAttacking = false;
         attackTarget = null;
 
-        // VOLVER A PERMITIR MOVIMIENTO
         ctx.movement.SetMovementLocked(false);
     }
 
-
-    //========================================================//
+    //================================================//
     // VALIDATION
-    //========================================================//
+    //================================================//
 
     private bool IsValidTarget(Transform target)
     {
@@ -270,18 +199,15 @@ public class EnemyLaserAttack : NetworkBehaviour
             return false;
 
         if (!target.TryGetComponent<PlayerHealth>(
-                out PlayerHealth health))
-        {
+            out PlayerHealth health))
             return false;
-        }
 
         return !health.IsDead.Value;
     }
 
-
-    //========================================================//
+    //================================================//
     // GIZMOS
-    //========================================================//
+    //================================================//
 
     private void OnDrawGizmosSelected()
     {

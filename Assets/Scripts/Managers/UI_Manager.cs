@@ -14,6 +14,7 @@ public class UI_Manager : MonoBehaviour
     [SerializeField] private GameObject defeatMenu;
     [SerializeField] private GameObject interactiveMenu;
     [SerializeField] public GameObject controlPanel;
+    [SerializeField] public GameObject misionPanel;
 
 
     [Header("Buttons")]
@@ -102,17 +103,6 @@ public class UI_Manager : MonoBehaviour
         return defeatMenu.activeSelf ||
                interactiveMenu.activeSelf ||
                controlPanel.activeSelf;
-    }
-
-    private void CloseRegularPanels()
-    {
-        inventoryUI.SetActive(false);
-        craftingUI.SetActive(false);
-        
-
-        currentOpenUI = null;
-
-        UpdateTabButtons(false);
     }
 
     //========================================================
@@ -324,6 +314,11 @@ public class UI_Manager : MonoBehaviour
         }
 
         UpdateTabButtons(craftingUI.activeSelf);
+    }
+
+    private void HideMissionPanel()
+    {
+
     }
 
     //========================================================

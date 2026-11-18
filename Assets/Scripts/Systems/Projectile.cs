@@ -16,6 +16,8 @@ public class Projectile : NetworkBehaviour
 
     [Header("Effects")]
     [SerializeField] private GameObject destroyEffect;
+    //[SerializeField] private AudioSource shootSound;
+
 
     private Vector3 direction;
 
@@ -29,8 +31,10 @@ public class Projectile : NetworkBehaviour
 
         if (this.direction.sqrMagnitude > 0.001f)
         {
-            transform.rotation =
-                Quaternion.LookRotation(this.direction);
+            transform.rotation = Quaternion.LookRotation(this.direction);
+
+            //if(shootSound != null)
+               //shootSound.Play();
         }
     }
 

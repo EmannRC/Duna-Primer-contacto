@@ -13,6 +13,12 @@ public class GroundEnemyMovement : EnemyMovementBase
     [Header("Gravity")]
     [SerializeField] private float gravity = -20f;
 
+    [Header("Chase Speed")]
+    [SerializeField] private bool accelerateWhenChasing = true;
+    [SerializeField] private float chaseSpeedMultiplier = 1.5f;
+
+    private float currentMoveSpeed;
+
     private CharacterController controller;
     private EnemySteering steering;
 
@@ -33,27 +39,20 @@ public class GroundEnemyMovement : EnemyMovementBase
 
         controller = GetComponent<CharacterController>();
         steering = GetComponent<EnemySteering>();
+
+        currentMoveSpeed = moveSpeed;
     }
 
     //=======================================================//
-    // UPDATE
+    // MOVEMENT
     //=======================================================//
 
-    protected override void Update()
+    protected override void UpdateMovement()
     {
-        base.Update();
-
-        if (!IsServer ||
-            controller == null ||
-            !controller.enabled)
+        if (controller == null || !controller.enabled)
             return;
 
-        if (IsBeingRepelled ||
-            movementLocked ||
-            IsMovementPaused)
-            return;
-
-        // Gravity
+        // Gravedad siempre activa.
         if (controller.isGrounded && verticalVelocity < 0f)
             verticalVelocity = -2f;
 
@@ -61,19 +60,10 @@ public class GroundEnemyMovement : EnemyMovementBase
 
         Vector3 horizontalMovement = Vector3.zero;
 
-        if (hasDestination && !HasReachedDestination)
+        // Movimiento horizontal.
+        if (!movementLocked && !IsMovementPaused)
         {
-            Vector3 direction = destination - transform.position;
-            direction.y = 0f;
-
-            direction.Normalize();
-
-            Vector3 finalDirection =
-                steering.CalculateDirection(direction);
-
-            horizontalMovement = finalDirection * moveSpeed;
-
-            RotateTowards(finalDirection);
+            horizontalMovement = CalculateHorizontalMovement();
         }
 
         Vector3 movement = horizontalMovement;
@@ -82,40 +72,33 @@ public class GroundEnemyMovement : EnemyMovementBase
         controller.Move(movement * Time.deltaTime);
     }
 
-    //=======================================================//
-    // MOVEMENT
-    //=======================================================//
-
-    protected override void Move(Transform target)
+    private Vector3 CalculateHorizontalMovement()
     {
-        if (target == null)
-            return;
+        if (!hasDestination || HasReachedDestination)
+            return Vector3.zero;
 
-        destination = target.position;
-        hasDestination = true;
+        Vector3 direction =
+            destination - transform.position;
+
+        direction.y = 0f;
+
+        if (direction.sqrMagnitude < 0.001f)
+            return Vector3.zero;
+
+        direction.Normalize();
+
+        Vector3 finalDirection =
+            steering.CalculateDirection(direction);
+
+        RotateTowards(finalDirection);
+
+        //return finalDirection * moveSpeed;
+        return finalDirection * currentMoveSpeed;
     }
 
     protected override void MoveTowardsDestination()
     {
-        // El movimiento se procesa en Update mediante CharacterController.
-    }
-
-    //=======================================================//
-    // MOVEMENT LOCK
-    //=======================================================//
-
-    public override void SetMovementLocked(bool locked)
-    {
-        movementLocked = locked;
-    }
-
-    //=======================================================//
-    // STOP
-    //=======================================================//
-
-    protected override void StopMovement()
-    {
-        base.StopMovement();
+        // El movimiento se procesa en UpdateMovement.
     }
 
     //=======================================================//
@@ -126,6 +109,20 @@ public class GroundEnemyMovement : EnemyMovementBase
     {
         if (controller != null && controller.enabled)
             controller.Move(displacement);
+    }
+
+
+    public void SetChasing(bool isChasing)
+    {
+        if (!accelerateWhenChasing)
+        {
+            currentMoveSpeed = moveSpeed;
+            return;
+        }
+
+        currentMoveSpeed = isChasing
+            ? moveSpeed * chaseSpeedMultiplier
+            : moveSpeed;
     }
 
     //=======================================================//

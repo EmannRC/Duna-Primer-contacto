@@ -73,61 +73,53 @@ public class LocalPlayerBootstrap : MonoBehaviour
 
         LocalPlayer = ctx;
 
-        if (ctx.state == null)
+        // Enlazar la cámara primero: la vista local no debe depender de que
+        // los sistemas de estado y misiones estén inicializados.
+        if (mainCamera == null || cameraController == null)
         {
             Debug.LogError(
-                "[LocalPlayerBootstrap] PlayerState no está asignado."
+                "[LocalPlayerBootstrap] Falta asignar Main Camera o CameraController."
             );
-
-            return;
         }
+        else
+        {
+            cameraController.SetTarget(playerRoot);
+            ctx.mainCamera = mainCamera;
+
+            if (ctx.movement != null)
+                ctx.movement.SetCameraTransform(mainCamera.transform);
+            else
+                Debug.LogError("[LocalPlayerBootstrap] PlayerMovement no está asignado.");
+
+            if (ctx.targeting != null)
+                ctx.targeting.Bind(cameraController);
+            else
+                Debug.LogError("[LocalPlayerBootstrap] TargetingSystem no está asignado.");
+        }
+
+        if (ctx.state == null)
+            Debug.LogError("[LocalPlayerBootstrap] PlayerState no está asignado.");
 
         if (questManager == null)
-        {
-            Debug.LogError(
-                "El Player no tiene QuestManager."
-            );
-
-            return;
-        }
+            Debug.LogError("[LocalPlayerBootstrap] El Player no tiene QuestManager.");
 
         //=========================
         // QUEST OBJECTIVE EVENTS
         //=========================
 
-        QuestObjectiveCompletionEvent[] objectiveEvents =
-            FindObjectsByType<QuestObjectiveCompletionEvent>(
-                FindObjectsSortMode.None
-            );
-
-        foreach (QuestObjectiveCompletionEvent objectiveEvent in objectiveEvents)
+        if (questManager != null)
         {
-            objectiveEvent.Initialize(questManager);
+            QuestObjectiveCompletionEvent[] objectiveEvents =
+                FindObjectsByType<QuestObjectiveCompletionEvent>(FindObjectsSortMode.None);
+
+            foreach (QuestObjectiveCompletionEvent objectiveEvent in objectiveEvents)
+                objectiveEvent.Initialize(questManager);
         }
 
 
         //=========================
         // CAMERA
         //=========================
-
-        cameraController.SetTarget(
-            playerRoot
-        );
-
-
-        ctx.movement.SetCameraTransform(
-            mainCamera.transform
-        );
-
-        // PlayerRotation usa esta referencia para que el personaje mire hacia
-        // donde apunta la cámara mientras se mantiene el botón de apuntado.
-        ctx.mainCamera = mainCamera;
-
-
-        ctx.targeting.Bind(
-            cameraController
-        );
-
 
         //=========================
         // INPUT
@@ -165,9 +157,8 @@ public class LocalPlayerBootstrap : MonoBehaviour
         );
 
 
-        questTrackerUI.Bind(
-            questManager
-        );
+        if (questTrackerUI != null && questManager != null)
+            questTrackerUI.Bind(questManager);
 
         //=========================
         // SKILL UI
@@ -247,10 +238,11 @@ public class LocalPlayerBootstrap : MonoBehaviour
         // NPC Marker
         //=========================
 
+        if (questManager == null)
+            return;
+
         QuestMarker[] markers =
-        FindObjectsByType<QuestMarker>(
-            FindObjectsSortMode.None
-        );
+            FindObjectsByType<QuestMarker>(FindObjectsSortMode.None);
 
         foreach (QuestMarker marker in markers)
         {

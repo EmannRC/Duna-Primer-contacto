@@ -26,3 +26,4 @@ MonoBehaviour:
   weaponPrefab: {fileID: 5788136192794371768, guid: 102df29755bb2ac4a8d27f22e527658e, type: 3}
   projectilePrefab: {fileID: 5795984549116863565, guid: aa3ca816d47cf87428898ad31a34fb9e, type: 3}
   manaCost: 5
+  shootSound: {fileID: 8300000, guid: a49effa739ed60d48b97cfa0b50a67d4, type: 3}

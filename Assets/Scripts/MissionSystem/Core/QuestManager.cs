@@ -1,379 +1,410 @@
-using System.Collections.Generic;
-using UnityEngine;
 using System;
+using System.Collections.Generic;
+using Unity.Netcode;
+using Unity.Services.Qos.V2.Models;
+using UnityEngine;
 
 namespace Duna.QuestSystem
 {
-    /// <summary>
-    /// Administra todas las misiones de un jugador.
-    /// </summary>
-    public class QuestManager : MonoBehaviour
+    public class QuestManager : NetworkBehaviour
     {
-        [Header("Database")]
-        [SerializeField]
-        private QuestDatabase questDatabase;
+        public static QuestManager Instance { get; private set; }
 
+        [Header("Database")]
+        [SerializeField] private QuestDatabase questDatabase;
         [SerializeField] private string startingQuestID;
 
-        [Header("Rewards")]
-        [SerializeField]
-        private QuestRewardManager rewardManager;
-
-
         private readonly List<QuestInstance> activeQuests = new();
-
         private readonly List<QuestInstance> completedQuests = new();
 
+        public IReadOnlyList<QuestInstance> ActiveQuests => activeQuests;
+        public IReadOnlyList<QuestInstance> CompletedQuests => completedQuests;
 
-        public IReadOnlyList<QuestInstance>
-            ActiveQuests =>
-            activeQuests;
+        // Eventos locales (se disparan en Host y Clients para actualizar UI y recompensas)
+        public event Action<QuestInstance> OnQuestAccepted;
+        public event Action<QuestInstance> OnQuestCompleted;
+        public event Action<QuestInstance> OnQuestTurnedIn;
+        public event Action<QuestInstance> OnQuestAbandoned;
+        public event Action<QuestInstance> OnObjectiveUpdated;
+        public event Action<QuestInstance, int, QuestObjectiveRuntime> OnObjectiveCompleted;
 
-
-        public IReadOnlyList<QuestInstance>
-            CompletedQuests =>
-            completedQuests;
-
-        
-        private void Start()
+        private void Awake()
         {
-            AcceptQuest(startingQuestID);
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            Instance = this;
         }
-        
+
+        public override void OnNetworkSpawn()
+        {
+            if (IsServer)
+            {
+                if (!string.IsNullOrWhiteSpace(startingQuestID))
+                {
+                    AcceptQuest(startingQuestID);
+                }
+            }
+            else
+            {
+                // El cliente pide las misiones activas justo cuando su QuestManager ya existe en escena
+                RequestFullSyncServerRpc();
+            }
+        }
+
+        public override void OnNetworkDespawn()
+        {
+            // Ya no dependemos de OnClientConnectedCallback
+        }
+
+
 
         //================================================//
-        // EVENTS
+        // LATE-JOIN SYNC (Jugador entra con partida empezada)
         //================================================//
 
-        public event Action<QuestInstance>
-            OnQuestAccepted;
+        private void HandleClientConnected(ulong clientId)
+        {
+            if (!IsServer || clientId == NetworkManager.ServerClientId)
+                return;
 
+            List<QuestSyncData> syncList = new();
 
-        public event Action<QuestInstance>
-            OnQuestCompleted;
+            foreach (var q in activeQuests)
+                syncList.Add(CreateSyncData(q));
 
+            foreach (var q in completedQuests)
+                syncList.Add(CreateSyncData(q));
 
-        public event Action<QuestInstance>
-            OnQuestTurnedIn;
+            // Nuevo RpcTarget en NGO 2.x para enviar a un cliente específico
+            SyncAllQuestsRpc(syncList.ToArray(), RpcTarget.Single(clientId, RpcTargetUse.Temp));
+        }
 
+        private QuestSyncData CreateSyncData(QuestInstance q)
+        {
+            return new QuestSyncData
+            {
+                QuestID = q.Data.QuestID,
+                CurrentObjectiveIndex = q.CurrentObjectiveIndex,
+                CurrentObjectiveAmount = q.CurrentObjective != null ? q.CurrentObjective.CurrentAmount : 0,
+                State = q.State
+            };
+        }
 
-        public event Action<QuestInstance>
-            OnQuestAbandoned;
+        [Rpc(SendTo.SpecifiedInParams)]
+        private void SyncAllQuestsRpc(QuestSyncData[] syncedQuests, RpcParams rpcParams = default)
+        {
+            if (IsServer) return;
 
+            activeQuests.Clear();
+            completedQuests.Clear();
 
-        public event Action<QuestInstance>
-            OnObjectiveUpdated;
+            foreach (var sync in syncedQuests)
+            {
+                QuestData data = questDatabase.GetQuest(sync.QuestID.ToString());
+                if (data == null) continue;
 
+                QuestInstance instance = new QuestInstance(data);
+                instance.ApplyNetworkState(sync.CurrentObjectiveIndex, sync.CurrentObjectiveAmount, sync.State);
 
-        /// <summary>
-        /// Se invoca una sola vez cuando un objetivo pasa a completado.
-        /// Incluye el índice y los datos del objetivo que lo originaron.
-        /// </summary>
-        public event Action<QuestInstance, int, QuestObjectiveRuntime>
-            OnObjectiveCompleted;
+                if (sync.State == QuestState.TurnedIn)
+                    completedQuests.Add(instance);
+                else
+                    activeQuests.Add(instance);
+            }
 
-      
+            // Notificar a la UI que las misiones iniciales llegaron
+            OnQuestAccepted?.Invoke(null);
+        }
+
         //================================================//
         // ACCEPT QUEST
         //================================================//
 
-        public bool AcceptQuest(
-            string questID)
+        public void RequestAcceptQuest(string questID)
         {
-            if (questDatabase == null)
+            if (IsServer)
+                AcceptQuest(questID);
+            else
+                AcceptQuestServerRpc(questID);
+        }
+
+        [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+        private void AcceptQuestServerRpc(string questID)
+        {
+            AcceptQuest(questID);
+        }
+
+        public bool AcceptQuest(string questID)
+        {
+            if (!IsServer)
             {
-                Debug.LogError("QuestManager no tiene una QuestDatabase asignada.");
+                RequestAcceptQuest(questID);
                 return false;
             }
 
-            if (string.IsNullOrWhiteSpace(questID))
-            {
-                Debug.LogWarning("No se puede aceptar una misiÃ³n sin ID.");
-                return false;
-            }
+            if (questDatabase == null || string.IsNullOrWhiteSpace(questID)) return false;
 
-            QuestData questData =
-                questDatabase.GetQuest(
-                    questID
-                );
+            QuestData questData = questDatabase.GetQuest(questID);
+            if (questData == null || HasQuest(questID)) return false;
+            if (!questData.Repeatable && IsQuestCompleted(questID)) return false;
 
+            QuestInstance quest = new QuestInstance(questData);
+            activeQuests.Add(quest);
 
-            if (questData == null)
-            {
-                Debug.LogWarning(
-                    $"Quest '{questID}' no existe."
-                );
+            // SendTo.NotServer evita tener que poner "if (IsServer) return;" dentro del RPC
+            AcceptQuestClientsRpc(questID);
+            OnQuestAccepted?.Invoke(quest);
 
-                return false;
-            }
-
-
-            if (HasQuest(questID))
-            {
-                Debug.LogWarning(
-                    $"La misiÃ³n '{questID}' ya estÃ¡ activa."
-                );
-
-                return false;
-            }
-
-            if (!questData.Repeatable && IsQuestCompleted(questID))
-            {
-                Debug.LogWarning(
-                    $"La misiÃ³n '{questID}' ya fue completada y no es repetible."
-                );
-
-                return false;
-            }
-
-
-            QuestInstance quest =
-                new QuestInstance(
-                    questData
-                );
-
-
-            activeQuests.Add(
-                quest
-            );
-
-
-            OnQuestAccepted?.Invoke(
-                quest
-            );
-
-
-           
             if (quest.IsCompleted)
             {
                 OnQuestCompleted?.Invoke(quest);
-
                 if (quest.Data.AutoComplete)
-                {
                     TurnInQuest(quest.Data.QuestID);
-                }
             }
 
-
             return true;
         }
 
-
-        //================================================//
-        // ABANDON QUEST
-        //================================================//
-
-        public bool AbandonQuest(
-            string questID)
+        [Rpc(SendTo.NotServer)]
+        private void AcceptQuestClientsRpc(string questID)
         {
-            QuestInstance quest =
-                GetActiveQuest(
-                    questID
-                );
+            QuestData questData = questDatabase.GetQuest(questID);
+            if (questData == null || HasQuest(questID)) return;
 
-
-            if (quest == null)
-                return false;
-
-
-            activeQuests.Remove(
-                quest
-            );
-
-
-            OnQuestAbandoned?.Invoke(
-                quest
-            );
-
-
-            return true;
+            QuestInstance quest = new QuestInstance(questData);
+            activeQuests.Add(quest);
+            OnQuestAccepted?.Invoke(quest);
         }
 
+        //================================================//
+        // PROGRESS OBJECTIVE (Solo el Server lo llama)
+        //================================================//
+
+        public void ReportProgress(ObjectiveType type, string targetID, int amount = 1)
+        {
+            if (!IsServer) return;
+
+            for (int i = activeQuests.Count - 1; i >= 0; i--)
+            {
+                QuestInstance quest = activeQuests[i];
+                if (quest.TryProgress(type, targetID, amount))
+                {
+                    int completedIndex = quest.LastCompletedObjectiveIndex;
+                    int newAmount = quest.CurrentObjective != null ? quest.CurrentObjective.CurrentAmount : 0;
+
+                    SyncProgressClientsRpc(
+                        quest.Data.QuestID,
+                        quest.CurrentObjectiveIndex,
+                        newAmount,
+                        quest.State,
+                        completedIndex
+                    );
+
+                    NotifyObjectiveUpdated(quest, completedIndex);
+                }
+            }
+        }
+
+        [Rpc(SendTo.NotServer)]
+        private void SyncProgressClientsRpc(
+            string questID,
+            int objectiveIndex,
+            int currentAmount,
+            QuestState newState,
+            int completedObjectiveIndex)
+        {
+            QuestInstance quest = GetActiveQuest(questID);
+
+            // Auto-crear la misión si el cliente aún no la tenía por timing de red
+            if (quest == null)
+            {
+                QuestData questData = questDatabase.GetQuest(questID);
+                if (questData == null) return;
+
+                quest = new QuestInstance(questData);
+                activeQuests.Add(quest);
+            }
+
+            quest.ApplyNetworkState(objectiveIndex, currentAmount, newState);
+            NotifyObjectiveUpdated(quest, completedObjectiveIndex);
+        }
 
         //================================================//
         // TURN IN QUEST
         //================================================//
 
-        public bool TurnInQuest(
-            string questID)
+        public void RequestTurnInQuest(string questID)
         {
-            QuestInstance quest =
-                GetActiveQuest(
-                    questID
-                );
+            if (IsServer)
+                TurnInQuest(questID);
+            else
+                TurnInQuestServerRpc(questID);
+        }
 
+        [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+        private void TurnInQuestServerRpc(string questID)
+        {
+            TurnInQuest(questID);
+        }
 
-            if (quest == null)
-                return false;
-
-
-            if (!quest.IsCompleted)
-                return false;
-
-
-            if (rewardManager != null)
+        public bool TurnInQuest(string questID)
+        {
+            if (!IsServer)
             {
-                rewardManager.GiveRewards(
-                    quest.Data
-                );
+                RequestTurnInQuest(questID);
+                return false;
             }
 
+            QuestInstance quest = GetActiveQuest(questID);
+            if (quest == null || !quest.IsCompleted) return false;
 
             quest.TurnIn();
+            activeQuests.Remove(quest);
+            completedQuests.Add(quest);
 
-
-            activeQuests.Remove(
-                quest
-            );
-
-
-            completedQuests.Add(
-                quest
-            );
-
-
-            OnQuestTurnedIn?.Invoke(
-                quest
-            );
-
+            TurnInQuestClientsRpc(questID);
+            OnQuestTurnedIn?.Invoke(quest);
 
             return true;
         }
 
-
-        //================================================//
-        // CHECK COMPLETED QUESTS
-        //================================================//
-
-        public void CheckCompletedQuests()
+        [Rpc(SendTo.NotServer)]
+        private void TurnInQuestClientsRpc(string questID)
         {
-            foreach (
-                QuestInstance quest
-                in activeQuests
-            )
-            {
-                if (
-                    quest.State
-                    != QuestState.Completed
-                )
-                {
-                    continue;
-                }
+            QuestInstance quest = GetActiveQuest(questID);
+            if (quest == null) return;
 
-
-                OnQuestCompleted?.Invoke(
-                    quest
-                );
-            }
+            quest.TurnIn();
+            activeQuests.Remove(quest);
+            completedQuests.Add(quest);
+            OnQuestTurnedIn?.Invoke(quest);
         }
 
-
         //================================================//
-        // QUERIES
+        // ABANDON & QUERIES
         //================================================//
 
-        public bool HasQuest(
-            string questID)
+        public bool AbandonQuest(string questID)
         {
-            return GetActiveQuest(
-                questID
-            ) != null;
-        }
-
-
-        public QuestInstance GetActiveQuest(
-            string questID)
-        {
-            foreach (
-                QuestInstance quest
-                in activeQuests
-            )
+            if (!IsServer)
             {
-                if (
-                    quest.Data.QuestID
-                    == questID
-                )
-                {
-                    return quest;
-                }
+                AbandonQuestServerRpc(questID);
+                return false;
             }
 
+            QuestInstance quest = GetActiveQuest(questID);
+            if (quest == null) return false;
 
-            return null;
+            activeQuests.Remove(quest);
+            AbandonQuestClientsRpc(questID);
+            OnQuestAbandoned?.Invoke(quest);
+            return true;
         }
 
+        [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+        private void AbandonQuestServerRpc(string questID) => AbandonQuest(questID);
 
-        public QuestInstance GetCompletedQuest(
-            string questID)
+        [Rpc(SendTo.NotServer)]
+        private void AbandonQuestClientsRpc(string questID)
         {
-            foreach (
-                QuestInstance quest
-                in completedQuests
-            )
+            QuestInstance quest = GetActiveQuest(questID);
+            if (quest == null) return;
+
+            activeQuests.Remove(quest);
+            OnQuestAbandoned?.Invoke(quest);
+        }
+
+        public bool HasQuest(string questID) => GetActiveQuest(questID) != null;
+        public bool IsQuestCompleted(string questID) => GetCompletedQuest(questID) != null;
+
+        public QuestInstance GetActiveQuest(string questID) =>
+            activeQuests.Find(q => q.Data.QuestID == questID);
+
+        public QuestInstance GetCompletedQuest(string questID) =>
+            completedQuests.Find(q => q.Data.QuestID == questID);
+
+        public void NotifyObjectiveUpdated(QuestInstance quest, int completedObjectiveIndex = -1)
+        {
+            if (quest == null) return;
+
+            if (completedObjectiveIndex >= 0 && completedObjectiveIndex < quest.Objectives.Count)
             {
-                if (
-                    quest.Data.QuestID
-                    == questID
-                )
-                {
-                    return quest;
-                }
+                OnObjectiveCompleted?.Invoke(quest, completedObjectiveIndex, quest.Objectives[completedObjectiveIndex]);
             }
 
+            OnObjectiveUpdated?.Invoke(quest);
 
-            return null;
-        }
-
-
-        public bool IsQuestCompleted(
-            string questID)
-        {
-            return GetCompletedQuest(
-                questID
-            ) != null;
-        }
-
-
-        //================================================//
-        // OBJECTIVE UPDATED
-        //================================================//
-
-        public void NotifyObjectiveUpdated(
-            QuestInstance quest,
-            int completedObjectiveIndex = -1)
-        {
-            if (quest == null)
-                return;
-
-            if (
-                completedObjectiveIndex >= 0 &&
-                completedObjectiveIndex < quest.Objectives.Count
-            )
+            if (quest.State == QuestState.Completed)
             {
-                OnObjectiveCompleted?.Invoke(
-                    quest,
-                    completedObjectiveIndex,
-                    quest.Objectives[completedObjectiveIndex]
-                );
-            }
+                OnQuestCompleted?.Invoke(quest);
 
-            OnObjectiveUpdated?.Invoke(
-                quest
-            );
-
-
-            if (
-                quest.State
-                == QuestState.Completed
-            )
-            {
-                OnQuestCompleted?.Invoke(
-                    quest
-                );
-
-                if (quest.Data.AutoComplete)
+                if (IsServer && quest.Data.AutoComplete)
                 {
                     TurnInQuest(quest.Data.QuestID);
+                }
+            }
+        }
+
+        [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+        private void RequestFullSyncServerRpc(RpcParams rpcParams = default)
+        {
+            ulong senderId = rpcParams.Receive.SenderClientId;
+
+            List<QuestSyncData> syncList = new();
+
+            foreach (var q in activeQuests)
+                syncList.Add(CreateSyncData(q));
+
+            foreach (var q in completedQuests)
+                syncList.Add(CreateSyncData(q));
+
+            SyncAllQuestsRpc(syncList.ToArray(), RpcTarget.Single(senderId, RpcTargetUse.Temp));
+        }
+
+        //================================================//
+        // SHARED DIALOGUE REWARDS
+        //================================================//
+
+        public void RequestSharedDialogueReward(string itemID, int amount)
+        {
+            if (string.IsNullOrWhiteSpace(itemID) || amount <= 0)
+                return;
+
+            if (IsServer)
+            {
+                DistributeDialogueRewardToLocalPlayer(itemID, amount);
+                GrantDialogueRewardClientsRpc(itemID, amount);
+            }
+            else
+            {
+                RequestDialogueRewardServerRpc(itemID, amount);
+            }
+        }
+
+        [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+        private void RequestDialogueRewardServerRpc(string itemID, int amount)
+        {
+            DistributeDialogueRewardToLocalPlayer(itemID, amount);
+            GrantDialogueRewardClientsRpc(itemID, amount);
+        }
+
+        [Rpc(SendTo.NotServer)]
+        private void GrantDialogueRewardClientsRpc(string itemID, int amount)
+        {
+            DistributeDialogueRewardToLocalPlayer(itemID, amount);
+        }
+
+        private void DistributeDialogueRewardToLocalPlayer(string itemID, int amount)
+        {
+            if (LocalPlayerBootstrap.Instance != null && LocalPlayerBootstrap.Instance.LocalPlayer != null)
+            {
+                Inventory localInv = LocalPlayerBootstrap.Instance.LocalPlayer.GetComponentInChildren<Inventory>();
+                if (localInv != null)
+                {
+                    localInv.RequestAddItem(itemID, amount);
                 }
             }
         }

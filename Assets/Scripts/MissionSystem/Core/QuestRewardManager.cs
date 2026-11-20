@@ -1,3 +1,5 @@
+using System.Globalization;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Duna.QuestSystem
@@ -5,14 +7,32 @@ namespace Duna.QuestSystem
     /// <summary>
     /// Gestiona la entrega de recompensas de las misiones.
     /// </summary>
-    public class QuestRewardManager : MonoBehaviour
+    public class QuestRewardManager : NetworkBehaviour
     {
         [Header("Player Inventory")]
         [SerializeField] private Inventory inventory;
 
-        /// <summary>
-        /// Entrega todas las recompensas de una misión.
-        /// </summary>
+        public override void OnNetworkSpawn()
+        {
+            // Solo el jugador dueño de este personaje recibe sus propias recompensas
+            if (IsOwner && QuestManager.Instance != null)
+            {
+                QuestManager.Instance.OnQuestTurnedIn += HandleQuestTurnedIn;
+            }
+        }
+
+        public override void OnNetworkDespawn()
+        {
+            if (IsOwner && QuestManager.Instance != null)
+            {
+                QuestManager.Instance.OnQuestTurnedIn -= HandleQuestTurnedIn;
+            }
+        }
+
+        private void HandleQuestTurnedIn(QuestInstance questInstance)
+        {
+            GiveRewards(questInstance.Data);
+        }
         public void GiveRewards(QuestData quest)
         {
             if (quest == null)

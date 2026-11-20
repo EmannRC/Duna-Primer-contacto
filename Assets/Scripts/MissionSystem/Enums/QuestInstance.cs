@@ -117,5 +117,27 @@ namespace Duna.QuestSystem
                 state = QuestState.TurnedIn;
             }
         }
+
+        public void ApplyNetworkState(int targetObjectiveIndex, int currentAmount, QuestState targetState)
+        {
+            state = targetState;
+            currentObjectiveIndex = targetObjectiveIndex;
+
+            for (int i = 0; i < objectives.Count; i++)
+            {
+                if (i < targetObjectiveIndex || targetState == QuestState.Completed || targetState == QuestState.TurnedIn)
+                {
+                    objectives[i].ForceComplete();
+                }
+                else if (i == targetObjectiveIndex)
+                {
+                    objectives[i].SetNetworkProgress(currentAmount);
+                }
+                else
+                {
+                    objectives[i].Reset();
+                }
+            }
+        }
     }
 }

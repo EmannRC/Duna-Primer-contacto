@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 1301433697221047480}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.087}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -193,8 +193,7 @@ MonoBehaviour:
   damageableLayer:
     serializedVersion: 2
     m_Bits: 64
-  destroyEffect: {fileID: 0}
-  shootSound: {fileID: 0}
+  destroyEffect: {fileID: 6155210867353427163, guid: 40940d9a81d4ddd44abec3abe2ab18c4, type: 3}
 --- !u!114 &6392499666131139740
 MonoBehaviour:
   m_ObjectHideFlags: 0

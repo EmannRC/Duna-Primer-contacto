@@ -50,10 +50,6 @@ public class LocalPlayerBootstrap : MonoBehaviour
         NetworkObject net = playerRoot.GetComponent<NetworkObject>();
 
 
-       // QuestManager questManager =
-            //ctx.questManager;
-
-
         if (ctx == null || net == null)
         {
             Debug.LogError(
@@ -64,14 +60,23 @@ public class LocalPlayerBootstrap : MonoBehaviour
             return;
         }
 
-        QuestManager questManager =
-            ctx.questManager;
-
-
         if (!net.IsOwner)
             return;
 
-        LocalPlayer = ctx;
+        // 1. Obtener el QuestManager compartido de la escena (en lugar de ctx.questManager)
+        QuestManager questManager = QuestManager.Instance;
+        if (questManager == null)
+        {
+            questManager = FindFirstObjectByType<QuestManager>();
+        }
+
+        // Opcional: si otros scripts aún leen ctx.questManager, lo asignamos en tiempo de ejecución
+        if (questManager != null)
+        {
+            ctx.questManager = questManager;
+        }
+
+        LocalPlayer = ctx; ;
 
         // Enlazar la cámara primero: la vista local no debe depender de que
         // los sistemas de estado y misiones estén inicializados.

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Duna.QuestSystem
@@ -7,78 +8,91 @@ namespace Duna.QuestSystem
     /// Escucha los eventos del juego y actualiza automáticamente
     /// el progreso de todas las misiones activas.
     /// </summary>
-    public class QuestTracker : MonoBehaviour
+    public class QuestTracker : NetworkBehaviour
     {
         [SerializeField] private QuestManager questManager;
 
-        private void OnEnable()
+        private void Awake()
         {
-            QuestEvents.OnTalkToNPC += OnTalkToNPC;
-            QuestEvents.OnCollectItem += OnCollectItem;
-            QuestEvents.OnDeliverItem += OnDeliverItem;
-            QuestEvents.OnKillEnemy += OnKillEnemy;
+            if (questManager == null)
+                questManager = QuestManager.Instance;
         }
 
-        private void OnDisable()
+        public override void OnNetworkSpawn()
+        {
+            if (questManager == null)
+                questManager = QuestManager.Instance;
+
+            // Eventos de interacción/UI (pueden ocurrir en cualquier cliente)
+            QuestEvents.OnTalkToNPC += OnTalkToNPC;
+            QuestEvents.OnDeliverItem += OnDeliverItem;
+
+            // Eventos autoritativos del mundo (solo el servidor los escucha para evitar duplicados)
+            if (IsServer)
+            {
+                QuestEvents.OnCollectItem += OnCollectItem;
+                QuestEvents.OnKillEnemy += OnKillEnemy;
+            }
+        }
+
+        public override void OnNetworkDespawn()
         {
             QuestEvents.OnTalkToNPC -= OnTalkToNPC;
-            QuestEvents.OnCollectItem -= OnCollectItem;
             QuestEvents.OnDeliverItem -= OnDeliverItem;
-            QuestEvents.OnKillEnemy -= OnKillEnemy;
+
+            if (IsServer)
+            {
+                QuestEvents.OnCollectItem -= OnCollectItem;
+                QuestEvents.OnKillEnemy -= OnKillEnemy;
+            }
         }
 
         //------------------------------------------------//
 
         private void OnTalkToNPC(string npcID)
         {
-            UpdateObjectives(ObjectiveType.Talk, npcID, 1);
-        }
-
-        private void OnCollectItem(string itemID, int amount)
-        {
-            UpdateObjectives(ObjectiveType.Collect, itemID, amount);
+            SendProgressToServer(ObjectiveType.Talk, npcID, 1);
         }
 
         private void OnDeliverItem(string itemID, int amount)
         {
-            UpdateObjectives(ObjectiveType.Deliver, itemID, amount);
+            SendProgressToServer(ObjectiveType.Deliver, itemID, amount);
+        }
+
+        private void OnCollectItem(string itemID, int amount)
+        {
+            SendProgressToServer(ObjectiveType.Collect, itemID, amount);
         }
 
         private void OnKillEnemy(string enemyID, int amount)
         {
-            Debug.Log(
-    $"[QuestTracker] Kill recibido: {enemyID} | Amount: {amount}"
-);
-            UpdateObjectives(ObjectiveType.Kill, enemyID, amount);
+            Debug.Log($"[QuestTracker] Kill recibido en Server: {enemyID} | Amount: {amount}");
+            SendProgressToServer(ObjectiveType.Kill, enemyID, amount);
         }
 
         //------------------------------------------------//
 
-        private void UpdateObjectives(ObjectiveType type, string targetID, int amount)
+        private void SendProgressToServer(ObjectiveType type, string targetID, int amount)
         {
             if (questManager == null || string.IsNullOrWhiteSpace(targetID) || amount <= 0)
                 return;
 
-            // NotifyObjectiveUpdated puede completar y retirar una misión
-            // automática. Recorremos una copia para no modificar la
-            // colección mientras se la está enumerando.
-            QuestInstance[] activeQuests =
-                new List<QuestInstance>(questManager.ActiveQuests).ToArray();
-
-
-            foreach (QuestInstance quest in activeQuests)
+            if (IsServer)
             {
-                bool progressed =
-                    quest.TryProgress(type, targetID, amount);
+                questManager.ReportProgress(type, targetID, amount);
+            }
+            else
+            {
+                ReportProgressServerRpc(type, targetID, amount);
+            }
+        }
 
-
-                if (progressed)
-                {
-                    questManager.NotifyObjectiveUpdated(
-                        quest,
-                        quest.LastCompletedObjectiveIndex
-                    );
-                }
+        [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+        private void ReportProgressServerRpc(ObjectiveType type, string targetID, int amount)
+        {
+            if (questManager != null)
+            {
+                questManager.ReportProgress(type, targetID, amount);
             }
         }
     }

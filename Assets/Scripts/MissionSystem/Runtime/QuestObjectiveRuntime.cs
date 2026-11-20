@@ -94,5 +94,15 @@ namespace Duna.QuestSystem
             currentAmount = 0;
             state = QuestObjectiveState.Inactive;
         }
+
+        public void SetNetworkProgress(int amount)
+        {
+            state = QuestObjectiveState.Active;
+            currentAmount = Mathf.Clamp(amount, 0, data.RequiredAmount);
+            if (currentAmount >= data.RequiredAmount)
+            {
+                state = QuestObjectiveState.Completed;
+            }
+        }
     }
 }

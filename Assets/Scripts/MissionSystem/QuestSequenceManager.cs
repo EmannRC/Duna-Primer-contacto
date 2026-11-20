@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Duna.QuestSystem
@@ -14,98 +15,83 @@ namespace Duna.QuestSystem
 
     public class QuestSequenceManager : MonoBehaviour
     {
-        [SerializeField]
-        private QuestManager questManager;
+        [SerializeField] private QuestManager questManager;
+        [SerializeField] private List<QuestSequence> sequences = new();
 
-        [SerializeField]
-        private List<QuestSequence> sequences = new();
-
+        //====================================================================//
+        private void Awake()
+        {
+            if (questManager == null)
+                questManager = QuestManager.Instance;
+        }
 
         private void OnEnable()
         {
+            if (questManager == null)
+                questManager = QuestManager.Instance;
+
             if (questManager != null)
             {
-                questManager.OnQuestTurnedIn +=
-                    HandleQuestTurnedIn;
+                questManager.OnQuestTurnedIn += HandleQuestTurnedIn;
             }
         }
-
 
         private void OnDisable()
         {
             if (questManager != null)
             {
-                questManager.OnQuestTurnedIn -=
-                    HandleQuestTurnedIn;
+                questManager.OnQuestTurnedIn -= HandleQuestTurnedIn;
             }
         }
 
-
         private void HandleQuestTurnedIn(QuestInstance quest)
         {
+            if (quest == null || questManager == null)
+                return;
+
+            // Solo el servidor tiene autoridad para encadenar la siguiente misión;
+            // QuestManager.AcceptQuest replicará el desbloqueo a todos los clientes.
+            if (NetworkManager.Singleton != null && !NetworkManager.Singleton.IsServer)
+                return;
+
             string completedID = quest.Data.QuestID;
 
-            Debug.Log(
-                $"[QuestSequence] Completada: {completedID}"
-            );
+            Debug.Log($"[QuestSequence] Completada: {completedID}");
 
             foreach (QuestSequence sequence in sequences)
             {
                 if (sequence.completedQuestID != completedID)
                     continue;
 
-                Debug.Log(
-                    $"[QuestSequence] " +
-                    $"{completedID}  {sequence.nextQuestID}"
-                );
+                Debug.Log($"[QuestSequence] {completedID} -> {sequence.nextQuestID}");
 
                 if (questManager.HasQuest(sequence.nextQuestID))
                 {
-                    Debug.LogWarning(
-                        $"[QuestSequence] " +
-                        $"'{sequence.nextQuestID}' ya está activa."
-                    );
-
+                    Debug.LogWarning($"[QuestSequence] '{sequence.nextQuestID}' ya está activa.");
                     return;
                 }
 
                 if (questManager.IsQuestCompleted(sequence.nextQuestID))
                 {
-                    Debug.LogWarning(
-                        $"[QuestSequence] " +
-                        $"'{sequence.nextQuestID}' ya fue completada."
-                    );
-
+                    Debug.LogWarning($"[QuestSequence] '{sequence.nextQuestID}' ya fue completada.");
                     return;
                 }
 
-                bool accepted =
-                    questManager.AcceptQuest(
-                        sequence.nextQuestID
-                    );
+                bool accepted = questManager.AcceptQuest(sequence.nextQuestID);
 
                 if (accepted)
                 {
-                    Debug.Log(
-                        $"[QuestSequence] " +
-                        $"'{sequence.nextQuestID}' desbloqueada."
-                    );
+                    Debug.Log($"[QuestSequence] '{sequence.nextQuestID}' desbloqueada.");
                 }
                 else
                 {
-                    Debug.LogError(
-                        $"[QuestSequence]  " +
-                        $"No se pudo aceptar '{sequence.nextQuestID}'."
-                    );
+                    Debug.LogError($"[QuestSequence] No se pudo aceptar '{sequence.nextQuestID}'.");
                 }
 
                 return;
             }
 
-            Debug.LogWarning(
-                $"[QuestSequence] No hay una secuencia " +
-                $"configurada para '{completedID}'."
-            );
+            Debug.LogWarning($"[QuestSequence] No hay una secuencia configurada para '{completedID}'.");
         }
     }
 }

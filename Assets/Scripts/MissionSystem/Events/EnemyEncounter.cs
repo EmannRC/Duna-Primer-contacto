@@ -19,40 +19,46 @@ public class EnemyEncounter : NetworkBehaviour
 
     public void ActivateEnemies()
     {
-        if (!IsServer)
-            return;
+        if (IsServer)
+        {
+            SpawnEnemiesOnServer();
+        }
+        else
+        {
+            ActivateEnemiesServerRpc();
+        }
+    }
 
-        if (activated)
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void ActivateEnemiesServerRpc()
+    {
+        SpawnEnemiesOnServer();
+    }
+
+    private void SpawnEnemiesOnServer()
+    {
+        if (!IsServer || activated)
             return;
 
         activated = true;
 
         foreach (EnemySpawn spawn in enemies)
         {
-            if (spawn.enemyPrefab == null)
+            if (spawn.enemyPrefab == null || spawn.spawnPoint == null)
                 continue;
 
-            if (spawn.spawnPoint == null)
-                continue;
+            GameObject enemy = Instantiate(
+                spawn.enemyPrefab,
+                spawn.spawnPoint.position,
+                spawn.spawnPoint.rotation
+            );
 
-            GameObject enemy =
-                Instantiate(
-                    spawn.enemyPrefab,
-                    spawn.spawnPoint.position,
-                    spawn.spawnPoint.rotation
-                );
-
-            NetworkObject networkObject =
-                enemy.GetComponent<NetworkObject>();
+            NetworkObject networkObject = enemy.GetComponent<NetworkObject>();
 
             if (networkObject == null)
             {
-                Debug.LogError(
-                    $"El prefab {spawn.enemyPrefab.name} no tiene NetworkObject."
-                );
-
+                Debug.LogError($"El prefab {spawn.enemyPrefab.name} no tiene NetworkObject.");
                 Destroy(enemy);
-
                 continue;
             }
 

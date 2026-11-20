@@ -31174,14 +31174,17 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1178575623}
+  - component: {fileID: 1178575624}
   - component: {fileID: 1178575622}
+  - component: {fileID: 1178575625}
+  - component: {fileID: 1178575626}
   m_Layer: 0
   m_Name: QuestManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1178575622
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31194,9 +31197,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d2c1808d2dab364783af6f499926f4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Duna.QuestSystem.QuestManager
+  ShowTopMostFoldoutHeaderGroup: 1
   questDatabase: {fileID: 11400000, guid: 41eb5b8cdc0159f4a8e2e4edc5643a75, type: 2}
-  startingQuestID: Quest-talk
-  rewardManager: {fileID: 0}
+  startingQuestID: Mission_talk_tree
 --- !u!4 &1178575623
 Transform:
   m_ObjectHideFlags: 0
@@ -31212,6 +31215,61 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1178575624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1178575621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 3047963803
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
+--- !u!114 &1178575625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1178575621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ab4ae9e8417f1741834cc5ca06622b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Duna.QuestSystem.QuestTracker
+  ShowTopMostFoldoutHeaderGroup: 1
+  questManager: {fileID: 1178575622}
+--- !u!114 &1178575626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1178575621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bbd06f4849efd04abaedb1150ce65a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Duna.QuestSystem.QuestSequenceManager
+  questManager: {fileID: 1178575622}
+  sequences:
+  - completedQuestID: Mission_destroy_cristals
+    nextQuestID: Quest_main
 --- !u!1001 &1179982426
 PrefabInstance:
   m_ObjectHideFlags: 0

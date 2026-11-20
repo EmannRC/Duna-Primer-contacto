@@ -201,6 +201,9 @@ namespace Duna.Player
             if (!CanRequestSkillLocally())
                 return;
 
+            if (movement != null && (!movement.IsGrounded || movement.IsDashing))
+                return;
+
             RequestSkillRpc((int)Skill.Repel);
         }
 
@@ -335,11 +338,8 @@ namespace Duna.Player
             if (now < nextRepelTime)
                 return;
 
-            if (movement != null)
-            {
-                if (!movement.IsGrounded || movement.IsDashing)
-                    return;
-            }
+            // Eliminado el chequeo de movement.IsGrounded / movement.IsDashing aquí,
+            // ya que PlayerMovement solo actualiza groundedTimer en IsOwner.
 
             if (!TrySpendEnergy(repelCost))
                 return;

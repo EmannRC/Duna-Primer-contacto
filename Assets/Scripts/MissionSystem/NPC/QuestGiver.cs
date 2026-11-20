@@ -21,7 +21,15 @@ namespace Duna.QuestSystem
             if (quest == null || questManager == null)
                 return false;
 
-            return questManager.AcceptQuest(quest.QuestID);
+            // Validar localmente antes de pedirlo al servidor para saber si la petición es válida
+            if (questManager.HasQuest(quest.QuestID))
+                return false;
+
+            if (!quest.Repeatable && questManager.IsQuestCompleted(quest.QuestID))
+                return false;
+
+            questManager.RequestAcceptQuest(quest.QuestID);
+            return true;
         }
 
         public void Interact(QuestManager questManager)

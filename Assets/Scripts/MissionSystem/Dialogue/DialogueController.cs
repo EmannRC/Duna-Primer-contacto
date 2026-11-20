@@ -1,7 +1,9 @@
 using Duna.InteractionSystem;
 using Duna.QuestSystem;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
+using System.Collections;
 
 namespace Duna.DialogueSystem
 {
@@ -9,6 +11,8 @@ namespace Duna.DialogueSystem
     {
         [Header("Dialogue - Default")]
         [SerializeField] private DialogueData defaultDialogue;
+
+        [SerializeField] private bool shareDialogueRewards = true;
 
         [Header("Dialogue Events")]
         [SerializeField] private UnityEvent onQuestDialogueFinished;
@@ -23,6 +27,17 @@ namespace Duna.DialogueSystem
         private enum DialogueState { None, Offer, Objective, Progress, Default }
 
 
+        //================================================//
+        // HELPERS DE RESOLUCIÓN
+        //================================================//
+
+        private QuestManager ResolveQuestManager(PlayerContext player)
+        {
+            if (player != null && player.questManager != null)
+                return player.questManager;
+
+            return QuestManager.Instance;
+        }
 
         //================================================//
         // INTERACTION
@@ -33,14 +48,20 @@ namespace Duna.DialogueSystem
             if (player == null || DialogueManager.Instance == null)
                 return;
 
-            currentPlayer = player.GetComponent<PlayerContext>();
-
-            if (currentPlayer == null ||
-                currentPlayer.questManager == null ||
-                currentPlayer.state == null)
+            PlayerContext interactingPlayer = player.GetComponent<PlayerContext>();
+            if (interactingPlayer == null || interactingPlayer.state == null)
                 return;
 
-            QuestManager manager = currentPlayer.questManager;
+            // En multijugador, asegurarnos de que solo el jugador local abra su propia UI de diálogo
+            NetworkObject netObj = interactingPlayer.GetComponent<NetworkObject>();
+            if (netObj != null && !netObj.IsOwner)
+                return;
+
+            QuestManager manager = ResolveQuestManager(interactingPlayer);
+            if (manager == null)
+                return;
+
+            currentPlayer = interactingPlayer;
 
             QuestGiver giver = GetComponent<QuestGiver>();
             QuestReceiver receiver = GetComponent<QuestReceiver>();
@@ -138,7 +159,6 @@ namespace Duna.DialogueSystem
                 Debug.LogWarning(
                     $"[{name}] El objetivo no tiene diálogo y el NPC tampoco tiene uno genérico."
                 );
-
                 return;
             }
 
@@ -170,7 +190,6 @@ namespace Duna.DialogueSystem
                     null,
                     DialogueState.Default
                 );
-
                 return;
             }
 
@@ -198,7 +217,11 @@ namespace Duna.DialogueSystem
             if (dialogue == null)
             {
                 if (state == DialogueState.Offer && quest != null)
-                    currentPlayer.questManager.AcceptQuest(quest.QuestID);
+                {
+                    QuestManager manager = ResolveQuestManager(currentPlayer);
+                    if (manager != null)
+                        manager.RequestAcceptQuest(quest.QuestID);
+                }
 
                 ResetDialogueState();
                 return;
@@ -221,14 +244,13 @@ namespace Duna.DialogueSystem
 
         public void DialogueFinished()
         {
-            if (currentPlayer == null ||
-                currentPlayer.questManager == null)
+            QuestManager manager = ResolveQuestManager(currentPlayer);
+
+            if (currentPlayer == null || manager == null)
             {
                 ResetDialogueState();
                 return;
             }
-
-            QuestManager manager = currentPlayer.questManager;
 
             QuestData quest = currentQuest;
             QuestObjectiveData objective = currentObjective;
@@ -236,16 +258,22 @@ namespace Duna.DialogueSystem
 
             QuestGiver giver = GetComponent<QuestGiver>();
             QuestReceiver receiver = GetComponent<QuestReceiver>();
-
             PlayerContext player = currentPlayer;
 
             if (state == DialogueState.Offer)
             {
-                bool accepted =
-                    giver != null && giver.GiveQuest(manager);
+                if (giver != null && giver.HasQuest())
+                {
+                    // Verificamos antes si ya está activa o completada para no duplicar recompensas
+                    bool canRequest = !manager.HasQuest(giver.Quest.QuestID) &&
+                                      (giver.Quest.Repeatable || !manager.IsQuestCompleted(giver.Quest.QuestID));
 
-                if (accepted && giver != null)
-                    GiveReward(giver.OfferReward, player);
+                    if (canRequest)
+                    {
+                        manager.RequestAcceptQuest(giver.Quest.QuestID);
+                        GiveReward(giver.OfferReward, player);
+                    }
+                }
 
                 onQuestDialogueFinished?.Invoke();
             }
@@ -262,27 +290,28 @@ namespace Duna.DialogueSystem
                      quest != null &&
                      objective != null)
             {
-                QuestInstance active =
-                    manager.GetActiveQuest(quest.QuestID);
-
-                bool newlyAccepted = false;
+                QuestInstance active = manager.GetActiveQuest(quest.QuestID);
+                bool newlyRequested = false;
 
                 if (active == null && giver != null && giver.Quest == quest)
-                    newlyAccepted = giver.GiveQuest(manager);
+                {
+                    if (quest.Repeatable || !manager.IsQuestCompleted(quest.QuestID))
+                    {
+                        manager.RequestAcceptQuest(quest.QuestID);
+                        newlyRequested = true;
+                    }
+                }
 
                 if (objective.ObjectiveType == ObjectiveType.Deliver &&
                     active != null &&
                     receiver != null &&
                     receiver.CanDeliver(manager))
                 {
-                    QuestItemDelivery delivery =
-                        GetComponent<QuestItemDelivery>();
+                    QuestItemDelivery delivery = GetComponent<QuestItemDelivery>();
 
                     if (delivery != null)
                     {
-                        QuestObjectiveRuntime runtimeObjective =
-                            active.CurrentObjective;
-
+                        QuestObjectiveRuntime runtimeObjective = active.CurrentObjective;
                         ResetDialogueState();
 
                         delivery.Deliver(
@@ -301,39 +330,18 @@ namespace Duna.DialogueSystem
                         return;
                     }
 
-                    Debug.LogError(
-                        $"[{name}] Falta QuestItemDelivery."
-                    );
+                    Debug.LogError($"[{name}] Falta QuestItemDelivery.");
                 }
                 else if (objective.ObjectiveType == ObjectiveType.Talk)
                 {
-                    if (active != null || newlyAccepted)
+                    if (active != null)
                     {
-                        QuestInstance talkingQuest =
-                            active ?? manager.GetActiveQuest(quest.QuestID);
-
-                        QuestObjectiveRuntime runtimeObjective =
-                            talkingQuest != null
-                                ? talkingQuest.CurrentObjective
-                                : null;
-
-                        RaiseTalkEvent();
-
-                        QuestInstance afterTalk =
-                            manager.GetActiveQuest(quest.QuestID);
-
-                        if (afterTalk != null &&
-                            afterTalk.IsCompleted &&
-                            !quest.AutoComplete)
-                        {
-                            manager.TurnInQuest(quest.QuestID);
-                        }
-
-                        if (runtimeObjective != null &&
-                            runtimeObjective.IsCompleted)
-                        {
-                            GiveReward(objective.Reward, player);
-                        }
+                        ProcessTalkObjectiveAsync(manager, quest, objective, player);
+                    }
+                    else if (newlyRequested)
+                    {
+                        // Si la misión se acaba de pedir como cliente, esperamos el RPC de aceptación del servidor
+                        StartCoroutine(WaitAcceptThenTalkRoutine(manager, quest, objective, player));
                     }
                 }
 
@@ -342,6 +350,86 @@ namespace Duna.DialogueSystem
             }
 
             ResetDialogueState();
+        }
+
+        //================================================//
+        // ASYNC NETWORK ROUTINES (Para Clientes y Host)
+        //================================================//
+
+        private IEnumerator WaitAcceptThenTalkRoutine(
+            QuestManager manager,
+            QuestData quest,
+            QuestObjectiveData objective,
+            PlayerContext player)
+        {
+            float timeout = 2.5f;
+            while (manager.GetActiveQuest(quest.QuestID) == null && timeout > 0f)
+            {
+                timeout -= Time.deltaTime;
+                yield return null;
+            }
+
+            if (manager.GetActiveQuest(quest.QuestID) != null)
+            {
+                ProcessTalkObjectiveAsync(manager, quest, objective, player);
+            }
+        }
+
+        private void ProcessTalkObjectiveAsync(
+            QuestManager manager,
+            QuestData quest,
+            QuestObjectiveData objective,
+            PlayerContext player)
+        {
+            QuestInstance current = manager.GetActiveQuest(quest.QuestID);
+            if (current == null || current.CurrentObjective == null)
+                return;
+
+            int targetObjIndex = current.CurrentObjectiveIndex;
+            bool isLastObjective = targetObjIndex >= quest.Objectives.Count - 1;
+
+            // Envía el progreso Talk al servidor (vía QuestEvents -> QuestTracker -> ServerRpc)
+            RaiseTalkEvent();
+
+            // Esperamos confirmación del servidor de que el objetivo avanzó o la misión se completó
+            StartCoroutine(WaitTalkConfirmationRoutine(
+                manager,
+                quest,
+                objective,
+                player,
+                targetObjIndex,
+                isLastObjective
+            ));
+        }
+
+        private IEnumerator WaitTalkConfirmationRoutine(
+            QuestManager manager,
+            QuestData quest,
+            QuestObjectiveData objective,
+            PlayerContext player,
+            int previousObjIndex,
+            bool isLastObjective)
+        {
+            float timeout = 2.5f;
+            while (timeout > 0f)
+            {
+                QuestInstance q = manager.GetActiveQuest(quest.QuestID);
+
+                // Si la misión se autocompletó y desapareció de activeQuests, o cambió de estado/índice:
+                if (q == null || q.IsCompleted || q.CurrentObjectiveIndex > previousObjIndex)
+                {
+                    GiveReward(objective.Reward, player);
+
+                    if (q != null && q.IsCompleted && !quest.AutoComplete)
+                    {
+                        manager.RequestTurnInQuest(quest.QuestID);
+                    }
+                    yield break;
+                }
+
+                timeout -= Time.deltaTime;
+                yield return null;
+            }
         }
 
         //================================================//
@@ -365,16 +453,20 @@ namespace Duna.DialogueSystem
         {
             if (reward == null ||
                 !reward.giveReward ||
-                player == null ||
                 string.IsNullOrWhiteSpace(reward.itemID) ||
                 reward.amount <= 0)
                 return;
 
-            Inventory inventory =
-                player.GetComponentInChildren<Inventory>();
-
-            if (inventory != null)
-                inventory.RequestAddItem(reward.itemID, reward.amount);
+            if (shareDialogueRewards && QuestManager.Instance != null)
+            {
+                QuestManager.Instance.RequestSharedDialogueReward(reward.itemID, reward.amount);
+            }
+            else if (player != null)
+            {
+                Inventory inventory = player.GetComponentInChildren<Inventory>();
+                if (inventory != null)
+                    inventory.RequestAddItem(reward.itemID, reward.amount);
+            }
         }
 
         private void HandleDeliveryCompleted(
@@ -391,24 +483,37 @@ namespace Duna.DialogueSystem
             {
                 GiveReward(objective.Reward, player);
 
-                QuestInstance active =
-                    manager.GetActiveQuest(quest.QuestID);
-
-                if (active != null &&
-                    active.IsCompleted &&
-                    !quest.AutoComplete)
+                // Esperar a que el servidor sincronice que la misión está completada antes de pedir TurnIn
+                if (!quest.AutoComplete)
                 {
-                    manager.TurnInQuest(quest.QuestID);
+                    StartCoroutine(WaitDeliveryTurnInRoutine(manager, quest.QuestID));
                 }
             }
             else
             {
-                Debug.LogWarning(
-                    $"[{name}] No se pudo realizar la entrega."
-                );
+                Debug.LogWarning($"[{name}] No se pudo realizar la entrega.");
             }
 
             onCompletionDialogueFinished?.Invoke();
+        }
+
+        private IEnumerator WaitDeliveryTurnInRoutine(QuestManager manager, string questID)
+        {
+            float timeout = 2.5f;
+            while (timeout > 0f)
+            {
+                QuestInstance active = manager.GetActiveQuest(questID);
+                if (active == null) yield break; // Ya fue entregada
+
+                if (active.IsCompleted)
+                {
+                    manager.RequestTurnInQuest(questID);
+                    yield break;
+                }
+
+                timeout -= Time.deltaTime;
+                yield return null;
+            }
         }
 
         private void ResetDialogueState()

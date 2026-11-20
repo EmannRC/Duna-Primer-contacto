@@ -25,6 +25,8 @@ public class ItemPickup : NetworkBehaviour
 
     private const string SkillCrystalItemId = "skill_crystal";
 
+    private bool _isPickedUp;
+
     //===========================================================================
     public override void OnNetworkSpawn()
     {
@@ -62,6 +64,8 @@ public class ItemPickup : NetworkBehaviour
     {
         Debug.Log($"Trigger: {other.name}");
 
+        if (!IsSpawned || !IsServer || _isPickedUp) return;
+
         if (!IsServer) return;
 
         PlayerContext ctx = other.GetComponent<PlayerContext>();
@@ -81,6 +85,10 @@ public class ItemPickup : NetworkBehaviour
         Item item = itemDatabase.GetByItemId(itemId);
 
         Debug.Log($"Item encontrado: {item}");
+
+        // Doble seguridad contra colisiones múltiples en el mismo frame
+        if (!IsSpawned || !IsServer || _isPickedUp) return;
+        _isPickedUp = true;
 
         if (itemId == SkillCrystalItemId)
         {

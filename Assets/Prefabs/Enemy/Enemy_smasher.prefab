@@ -960,7 +960,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2462690272
+  GlobalObjectIdHash: 2245230121
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -1114,7 +1114,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0eaef722073bad4468e0ccc9d07c2e6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyReward
-  xpReward: 10
+  xpReward: 20
   playerLevel: {fileID: 0}
 --- !u!114 &1034080239648445824
 MonoBehaviour:

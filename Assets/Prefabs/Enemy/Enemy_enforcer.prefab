@@ -1047,8 +1047,6 @@ MonoBehaviour:
   damageClip: {fileID: 8300000, guid: 2718a648878975248a7a0f9efef6693c, type: 3}
   reward: {fileID: 7680477722212220428}
   possibleDrops:
-  - prefab: {fileID: -5405766417531995736, guid: d3fe9e42e1a4aad4aba5cfe3214998d9, type: 3}
-    weight: 50
   - prefab: {fileID: -5405766417531995736, guid: ab222af88805f0b4abd6f8b3ab43ba00, type: 3}
     weight: 50
   - prefab: {fileID: 7657548515417732486, guid: ffade861ef406084eb10e9d260d4b171, type: 3}
@@ -1057,6 +1055,8 @@ MonoBehaviour:
     weight: 10
   - prefab: {fileID: -4294227757254934880, guid: 047bb487815d1ed47974aee8e36ed981, type: 3}
     weight: 20
+  - prefab: {fileID: -3468917201845883158, guid: 27433b4cb5bb6fe41998db0a1e27ebee, type: 3}
+    weight: 100
   - prefab: {fileID: -3468917201845883158, guid: 27433b4cb5bb6fe41998db0a1e27ebee, type: 3}
     weight: 100
   dropPoint: {fileID: 2600144279418139401}
@@ -2846,6 +2846,20 @@ MonoBehaviour:
     TransitionDuration: 0.1
     TriggerNameHash: 1080829965
     TransitionIndex: 0
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: 1080829965
+    DestinationState: 646380074
+    TransitionDuration: 0.25
+    TriggerNameHash: 646380074
+    TransitionIndex: 1
+  - IsCrossFadeExit: 0
+    Layer: 1
+    OriginatingState: 2083909115
+    DestinationState: 646380074
+    TransitionDuration: 0.25
+    TriggerNameHash: 646380074
+    TransitionIndex: 1
   AnimatorParameterEntries:
     ParameterEntries:
     - name: VelX
@@ -3003,6 +3017,20 @@ MonoBehaviour:
     TransitionDuration: 0.1
     TriggerNameHash: 1080829965
     TransitionIndex: 0
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: 1080829965
+    DestinationState: 646380074
+    TransitionDuration: 0.25
+    TriggerNameHash: 646380074
+    TransitionIndex: 1
+  - IsCrossFadeExit: 0
+    Layer: 1
+    OriginatingState: 2083909115
+    DestinationState: 646380074
+    TransitionDuration: 0.25
+    TriggerNameHash: 646380074
+    TransitionIndex: 1
   AnimatorParameterEntries:
     ParameterEntries:
     - name: VelX

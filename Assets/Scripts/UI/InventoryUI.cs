@@ -112,7 +112,7 @@ public class InventoryUI : MonoBehaviour
         }
         else
         {
-            weaponIcon.enabled = false;
+            //weaponIcon.enabled = false;
         }
 
         // PETO
@@ -123,7 +123,7 @@ public class InventoryUI : MonoBehaviour
         }
         else
         {
-            armorIcon.enabled = false;
+            //armorIcon.enabled = false;
         }
     }
 

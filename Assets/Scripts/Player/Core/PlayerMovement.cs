@@ -22,12 +22,6 @@ public class PlayerMovement : NetworkBehaviour
     [SerializeField] private LayerMask groundMask;
     [SerializeField] private float groundedGraceTime = 0.1f;
 
-    /*
-    [Header("Crouch")]
-    [SerializeField] private float crouchHeight = 1.3f;
-    [SerializeField] private float crouchSpeed = 1f;
-    */
-
     [Header("Aim Movement")]
     [SerializeField] private float aimMovementMultiplier = 0.6f;
 
@@ -89,11 +83,6 @@ public class PlayerMovement : NetworkBehaviour
     public bool IsGrounded => groundedTimer > 0f;
 
     public float VerticalVelocity => velocity.y;
-
-    public bool IsCrouching => isCrouching;
-
-    
-
 
     //========================================================//
     // INITIALIZATION

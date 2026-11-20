@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 213711519416176731}
+  - component: {fileID: -363965901262201295}
   - component: {fileID: 3549393325240679085}
   - component: {fileID: 5177090637838552873}
   - component: {fileID: 5220244900924312357}
@@ -36,6 +37,31 @@ Transform:
   - {fileID: 3716073125892769367}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: -221.243, z: 0}
+--- !u!114 &-363965901262201295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1281260565003036012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 4135867308
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!114 &3549393325240679085
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -48,8 +74,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 212631fb1e8be334d9f990ce456062b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TeleportZone
+  ShowTopMostFoldoutHeaderGroup: 1
   destination: {fileID: 0}
-  sceneTransition: {fileID: 0}
 --- !u!65 &5177090637838552873
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -108,7 +108,7 @@ public class PlayerAnimation : NetworkBehaviour
 
         UpdateLocomotion();
         UpdateAirState();
-        UpdateCrouch();
+        
     }
 
 
@@ -194,17 +194,6 @@ public class PlayerAnimation : NetworkBehaviour
             !grounded && vertical < 0);
     }
 
-
-    //========================================================//
-    // CROUCH
-    //========================================================//
-
-    private void UpdateCrouch()
-    {
-        ctx.animator.SetBool(
-            IsCrouchingHash,
-            ctx.movement.IsCrouching);
-    }
 
     //========================================================//
     // JUMP

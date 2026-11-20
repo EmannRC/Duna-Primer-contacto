@@ -22,15 +22,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: ca950b55a7dcbe843b14de1f42988e56, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 156.07532
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: ca950b55a7dcbe843b14de1f42988e56, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.00001
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: ca950b55a7dcbe843b14de1f42988e56, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 218.4221
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: ca950b55a7dcbe843b14de1f42988e56, type: 3}
       propertyPath: m_LocalRotation.w
@@ -193,6 +193,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
   ShowTopMostFoldoutHeaderGroup: 1
   maxHealth: 20
+  healingVFXPrefab: {fileID: 0}
+  healingVFXPoint: {fileID: 0}
   CurrentHealth:
     UpdateTraits:
       MinSecondsBetweenUpdates: 0

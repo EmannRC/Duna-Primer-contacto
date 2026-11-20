@@ -15,6 +15,8 @@ public class UI_Manager : MonoBehaviour
     [SerializeField] private GameObject interactiveMenu;
     [SerializeField] public GameObject controlPanel;
     [SerializeField] public GameObject misionPanel;
+    [SerializeField] public GameObject menuOptionsPanel;
+
 
 
     [Header("Buttons")]
@@ -239,6 +241,12 @@ public class UI_Manager : MonoBehaviour
         currentOpenUI = null;
 
         CloseUIState();
+    }
+
+    public void HideMenuOptionsPanel()
+    {
+        menuOptionsPanel.SetActive(false);
+        
     }
 
     //========================================================

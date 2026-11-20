@@ -75,7 +75,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemPickup
   ShowTopMostFoldoutHeaderGroup: 1
   itemId: Consumable_Potion_Health
-  amount: 1
+  energyAmount: 1
   itemDatabase: {fileID: 11400000, guid: 6a85018d77ef7d841bf8aeb9a7a8199d, type: 2}
   rotationSpeed: 60
   groundOffset: 1
@@ -103,7 +103,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.2
+  m_Radius: 0.5
   m_Center: {x: 0, y: 0.18, z: 0}
 --- !u!114 &4690495002918775191
 MonoBehaviour:

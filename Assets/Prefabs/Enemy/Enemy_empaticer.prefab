@@ -414,7 +414,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0eaef722073bad4468e0ccc9d07c2e6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyReward
-  xpReward: 25
+  xpReward: 35
   playerLevel: {fileID: 0}
 --- !u!114 &-8699905865848186037
 MonoBehaviour:

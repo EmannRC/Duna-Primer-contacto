@@ -1,4 +1,5 @@
 using UnityEngine;
+using static Duna.InteractionSystem.PlayerInteraction;
 
 namespace Duna.InteractionSystem
 {
@@ -8,8 +9,7 @@ namespace Duna.InteractionSystem
 
         private void Awake()
         {
-            interactable =
-                GetComponent<IInteractable>();
+            interactable = GetComponent<IInteractable>();
 
             if (interactable == null)
             {
@@ -27,8 +27,6 @@ namespace Duna.InteractionSystem
 
         private void OnTriggerStay(Collider other)
         {
-            // También cubre jugadores que aparecen ya dentro del área
-            // de interacción (por ejemplo, después de un respawn).
             SetPlayerInteractable(other);
         }
 

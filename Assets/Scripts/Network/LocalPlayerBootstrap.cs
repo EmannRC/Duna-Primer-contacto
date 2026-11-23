@@ -14,11 +14,9 @@ public class LocalPlayerBootstrap : MonoBehaviour
     [SerializeField] private PlayerHUD hud;
     [SerializeField] private InventoryUI inventoryUI;
     [SerializeField] private CraftingUI craftingUI;
-    //[SerializeField] private Transform crosshair;
     [SerializeField] private CrosshairUI crosshairUI;
     [SerializeField] private QuestTrackerUI questTrackerUI;
     [SerializeField] private UI_Manager deathMenu;
-    [SerializeField] private MenuButtonUI menuButtonUI;
     [SerializeField] private PlayerSkillUI skillUI;
 
     public PlayerContext LocalPlayer { get; private set; }
@@ -196,21 +194,6 @@ public class LocalPlayerBootstrap : MonoBehaviour
                 "[LocalPlayerBootstrap] El Player local no tiene PlayerRespawn."
             );
         }
-        else if (menuButtonUI == null)
-        {
-            Debug.LogError(
-                "[LocalPlayerBootstrap] MenuButtonUI no está asignado en el Inspector."
-            );
-        }
-        else
-        {
-            menuButtonUI.Bind(playerRespawn);
-
-            Debug.Log(
-                "[LocalPlayerBootstrap] PlayerRespawn vinculado correctamente al MenuButtonUI."
-            );
-        }
-
 
         //=========================
         // CROSSHAIR

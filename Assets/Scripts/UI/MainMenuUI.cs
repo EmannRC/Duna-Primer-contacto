@@ -1,9 +1,10 @@
+using System.Collections;
+using System.Collections.Generic;
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
-using System.Collections;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using TMPro;
 
 public class MainMenuUI : MonoBehaviour
 {
@@ -13,8 +14,9 @@ public class MainMenuUI : MonoBehaviour
     [Header("Buttons")]
     [SerializeField] private Button hostButton;
     [SerializeField] private Button joinButton;
+    [SerializeField] private Button startGameButton;
 
-    [Header("Relay")]
+    [Header("Relay & Profile")]
     [SerializeField] private TMP_Text roomCodeText;
     [SerializeField] private TMP_InputField joinCodeInput;
     [SerializeField] private TMP_InputField playerNameInput;
@@ -25,216 +27,86 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private GameObject playPanel;
     [SerializeField] private GameObject joinPanel;
     [SerializeField] private GameObject lobbyPanel;
+    [SerializeField] private GameObject settingsPanel; // <-- Tu nuevo panel de audio
 
     [Header("Loading")]
     [SerializeField] private GameObject loadingPanel;
     [SerializeField] private TMP_Text loadingText;
 
-    [Header("Lobby")]
-    [SerializeField] private Button startGameButton;
-
-    
-
+    private List<GameObject> allPanels;
     private bool isStartingSession;
-
     private bool isChangingPanel;
 
-    //======================================================================//
+    private void Awake()
+    {
+        // Guardamos todos los paneles en una lista para manejarlos fácil
+        allPanels = new List<GameObject>
+        {
+            mainPanel,
+            namePanel,
+            playPanel,
+            joinPanel,
+            lobbyPanel,
+            settingsPanel
+        };
+    }
+
     private void Start()
     {
-        mainPanel.SetActive(true);
+        ShowOnlyPanel(mainPanel);
+        HideLoading();
 
-        namePanel.SetActive(false);
-        playPanel.SetActive(false);
-        joinPanel.SetActive(false);
-        lobbyPanel.SetActive(false);
+        // Escuchar si nos desconectan a la fuerza (ej: el host cerró la sala)
+        if (NetworkManager.Singleton != null)
+        {
+            NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
+        }
+    }
 
-        loadingPanel.SetActive(false);
+    private void OnDestroy()
+    {
+        if (NetworkManager.Singleton != null)
+        {
+            NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
+        }
     }
 
     //======================================================================//
-    public async void HostGame()
+    // NAVEGACIÓN DE PANELES (Escalable y sin errores)
+    //======================================================================//
+
+    private void ShowOnlyPanel(GameObject targetPanel)
     {
-        if (isStartingSession)
-            return;
-
-        isStartingSession = true;
-
-        SetButtonsInteractable(false);
-        ShowLoading("Preparando sala...");
-
-        string joinCode =
-            await RelayManager.Instance.CreateRelay(4);
-
-        if (string.IsNullOrEmpty(joinCode))
-        {
-            HideLoading();
-            isStartingSession = false;
-            SetButtonsInteractable(true);
-            return;
-        }
-
-        bool success =
-            NetworkManager.Singleton.StartHost();
-
-        if (!success)
-        {
-            HideLoading();
-            isStartingSession = false;
-            SetButtonsInteractable(true);
-            return;
-        }
-
-        //networkSceneLoadingUI.SubscribeToSceneEvents();
-
-        roomCodeText.text =
-            $"Código de sala: {joinCode}";
-
-        isStartingSession = false;
-
-        HideLoading();
-
-        playPanel.SetActive(false);
-        lobbyPanel.SetActive(true);
-
-        UpdateStartButtonVisibility();
-    }
-
-    public async void JoinGame()
-    {
-        if (isStartingSession)
-            return;
-
-        string joinCode =
-            joinCodeInput.text.Trim();
-
-        if (string.IsNullOrEmpty(joinCode))
-        {
-            Debug.LogWarning("Ingrese un código.");
-            return;
-        }
-
-        isStartingSession = true;
-
-        SetButtonsInteractable(false);
-        ShowLoading("Conectando a la sala...");
-
-        bool relayConnected =
-            await RelayManager.Instance.JoinRelay(joinCode);
-
-        if (!relayConnected)
-        {
-            HideLoading();
-            isStartingSession = false;
-            SetButtonsInteractable(true);
-            return;
-        }
-
-        bool success =
-            NetworkManager.Singleton.StartClient();
-
-        if (!success)
-        {
-            Debug.LogError("No se pudo iniciar cliente.");
-
-            HideLoading();
-            isStartingSession = false;
-            SetButtonsInteractable(true);
-            return;
-        }
-
-        //networkSceneLoadingUI.SubscribeToSceneEvents();
-
-        isStartingSession = false;
-
-        HideLoading();
-
-        joinPanel.SetActive(false);
-        lobbyPanel.SetActive(true);
-
-        UpdateStartButtonVisibility();
-    }
-
-    public void StartGame()
-    {
-        if (isStartingSession)
-            return;
-
-        if (!NetworkManager.Singleton.IsServer)
-            return;
-
-        isStartingSession = true;
-
-        SetAllButtonsInteractable(false);
-
-        StartCoroutine(StartGameAfterTransition());
-    }
-    IEnumerator StartGameAfterTransition()
-    {
-        // 1. Reproducir transición
-        SceneTransitionManager.Instance.StartFadeOut();
-
-        // 2. Esperar a que termine el efecto
-        yield return new WaitForSeconds(1f);
-
-        // 3. Mostrar barra de carga
-        //NetworkSceneLoadingUI.Instance.ShowLoading("Cargando partida...");
-
-        // 4. Iniciar carga de Gameplay en todos los clientes
-        SceneEventProgressStatus status =
-            NetworkManager.Singleton.SceneManager.LoadScene(
-                gameplaySceneName,
-                LoadSceneMode.Single
-            );
-
-        
-    }
-
-    private void SetButtonsInteractable(bool value)
-    {
-        if (hostButton != null)
-            hostButton.interactable = value;
-
-        if (joinButton != null)
-            joinButton.interactable = value;
-    }
-
-    public void ShowNamePanel()
-    {
-        //mainPanel.SetActive(false);
-
-        //namePanel.SetActive(true);
-        ChangePanel(namePanel, mainPanel);
-    }
-
-    public void ShowJoinPanel()
-    {
-        playPanel.SetActive(false);
-
-        joinPanel.SetActive(true);
-        //ChangePanel(joinPanel, mainPanel);
-    }
-
-    public void BackToMain()
-    {
-        if (isChangingPanel)
-            return;
-
+        if (isChangingPanel) return;
         isChangingPanel = true;
 
-        namePanel.SetActive(false);
-        playPanel.SetActive(false);
-        lobbyPanel.SetActive(false);
-        joinPanel.SetActive(false);
-        mainPanel.SetActive(true);
+        foreach (var panel in allPanels)
+        {
+            if (panel != null)
+                panel.SetActive(panel == targetPanel);
+        }
 
         StartCoroutine(UnlockPanelButtons());
     }
 
+    public void ShowNamePanel() => ShowOnlyPanel(namePanel);
+    public void ShowJoinPanel() => ShowOnlyPanel(joinPanel);
+    public void ShowSettingsPanel() => ShowOnlyPanel(settingsPanel);
+
+    public void BackToMain()
+    {
+        // Si estaba en el lobby y vuelve atrás, desconectamos la red
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening)
+        {
+            NetworkManager.Singleton.Shutdown();
+        }
+
+        ShowOnlyPanel(mainPanel);
+    }
+
     public void ConfirmPlayerName()
     {
-        string playerName =
-            playerNameInput.text.Trim();
+        string playerName = playerNameInput.text.Trim();
 
         if (string.IsNullOrWhiteSpace(playerName))
         {
@@ -243,15 +115,125 @@ public class MainMenuUI : MonoBehaviour
         }
 
         PlayerProfile.PlayerName = playerName;
-
-        namePanel.SetActive(false);
-        playPanel.SetActive(true);
+        ShowOnlyPanel(playPanel);
     }
 
-    public void ExitGame()
+    private IEnumerator UnlockPanelButtons()
     {
-        Application.Quit();
+        yield return null;
+        isChangingPanel = false;
     }
+
+    //======================================================================//
+    // MULTIJUGADOR (Con protección de errores de red)
+    //======================================================================//
+
+    public async void HostGame()
+    {
+        if (isStartingSession) return;
+        isStartingSession = true;
+
+        SetAllButtonsInteractable(false);
+        ShowLoading("Preparando sala...");
+
+        try
+        {
+            string joinCode = await RelayManager.Instance.CreateRelay(4);
+            if (string.IsNullOrEmpty(joinCode)) return;
+
+            if (!NetworkManager.Singleton.StartHost()) return;
+
+            roomCodeText.text = $"Código de sala: {joinCode}";
+            ShowOnlyPanel(lobbyPanel);
+            UpdateStartButtonVisibility();
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error al crear sala: {e.Message}");
+        }
+        finally
+        {
+            // Pase lo que pase (éxito o error), siempre limpiamos el estado de carga
+            HideLoading();
+            isStartingSession = false;
+            SetAllButtonsInteractable(true);
+        }
+    }
+
+    public async void JoinGame()
+    {
+        if (isStartingSession) return;
+
+        string joinCode = joinCodeInput.text.Trim();
+        if (string.IsNullOrEmpty(joinCode))
+        {
+            Debug.LogWarning("Ingrese un código.");
+            return;
+        }
+
+        isStartingSession = true;
+        SetAllButtonsInteractable(false);
+        ShowLoading("Conectando a la sala...");
+
+        try
+        {
+            bool relayConnected = await RelayManager.Instance.JoinRelay(joinCode);
+            if (!relayConnected) return;
+
+            if (!NetworkManager.Singleton.StartClient())
+            {
+                Debug.LogError("No se pudo iniciar cliente.");
+                return;
+            }
+
+            ShowOnlyPanel(lobbyPanel);
+            UpdateStartButtonVisibility();
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error al unirse: {e.Message}");
+        }
+        finally
+        {
+            HideLoading();
+            isStartingSession = false;
+            SetAllButtonsInteractable(true);
+        }
+    }
+
+    private void OnClientDisconnected(ulong clientId)
+    {
+        // Si el que se desconectó soy yo mismo (ej: me expulsaron o cayó el host)
+        if (NetworkManager.Singleton != null && clientId == NetworkManager.Singleton.LocalClientId)
+        {
+            ShowOnlyPanel(mainPanel);
+        }
+    }
+
+    public void StartGame()
+    {
+        if (isStartingSession) return;
+        if (!NetworkManager.Singleton.IsServer) return;
+
+        isStartingSession = true;
+        SetAllButtonsInteractable(false);
+        StartCoroutine(StartGameAfterTransition());
+    }
+
+    private IEnumerator StartGameAfterTransition()
+    {
+        SceneTransitionManager.Instance.StartFadeOut();
+        yield return new WaitForSeconds(1f);
+
+        NetworkManager.Singleton.SceneManager.LoadScene(
+            gameplaySceneName,
+            LoadSceneMode.Single
+        );
+    }
+
+    //======================================================================//
+    // UTILIDADES UI
+    //======================================================================//
 
     private void ShowLoading(string message)
     {
@@ -266,43 +248,25 @@ public class MainMenuUI : MonoBehaviour
 
     private void UpdateStartButtonVisibility()
     {
-        if (startGameButton == null)
-            return;
-
-        bool isHost = NetworkManager.Singleton != null &&
-                      NetworkManager.Singleton.IsHost;
-
+        if (startGameButton == null) return;
+        bool isHost = NetworkManager.Singleton != null && NetworkManager.Singleton.IsHost;
         startGameButton.gameObject.SetActive(isHost);
+    }
+
+    public void HideSettingsPanel()
+    {
+        settingsPanel.SetActive(false);
     }
 
     private void SetAllButtonsInteractable(bool value)
     {
-        if (hostButton != null)
-            hostButton.interactable = value;
-
-        if (joinButton != null)
-            joinButton.interactable = value;
-
-        if (startGameButton != null)
-            startGameButton.interactable = value;
+        if (hostButton != null) hostButton.interactable = value;
+        if (joinButton != null) joinButton.interactable = value;
+        if (startGameButton != null) startGameButton.interactable = value;
     }
 
-    private void ChangePanel(GameObject panelToShow, GameObject panelToHide)
+    public void ExitGame()
     {
-        if (isChangingPanel)
-            return;
-
-        isChangingPanel = true;
-
-        panelToHide.SetActive(false);
-        panelToShow.SetActive(true);
-
-        StartCoroutine(UnlockPanelButtons());
-    }
-
-    private IEnumerator UnlockPanelButtons()
-    {
-        yield return null;
-        isChangingPanel = false;
+        Application.Quit();
     }
 }

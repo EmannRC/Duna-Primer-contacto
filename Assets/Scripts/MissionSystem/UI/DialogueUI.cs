@@ -1,6 +1,8 @@
-using TMPro;
-using UnityEngine;
+using Duna.Player;
 using System.Collections;
+using TMPro;
+using Unity.Netcode;
+using UnityEngine;
 
 namespace Duna.DialogueSystem
 {
@@ -43,13 +45,11 @@ namespace Duna.DialogueSystem
 
         private void Awake()
         {
-            // El panel debe empezar oculto. Esto evita que un panel vacío
-            // quede visible si la escena lo dejó activo por accidente.
-            Close();
+            if (dialoguePanel != null)
+                dialoguePanel.SetActive(false);
         }
 
 
-        //================================================//
         public void Open()
         {
             if (dialoguePanel == null)
@@ -58,47 +58,52 @@ namespace Duna.DialogueSystem
                 return;
             }
 
-            dialoguePanel.SetActive(
-                true
-            );
+            if (UI_Manager.Instance != null)
+                UI_Manager.Instance.CloseGameplayPanelsForDialogue();
 
+            SetLocalPlayerDialogueState(PlayerActionState.InDialogue);
 
-            if (
-                continueIndicator != null
-            )
-            {
-                continueIndicator.SetActive(
-                    false
-                );
-            }
+            dialoguePanel.SetActive(true);
+
+            if (continueIndicator != null)
+                continueIndicator.SetActive(false);
         }
-
-
-        //================================================//
+        //============================================================//
         public void Close()
         {
-            if (
-                typingCoroutine != null
-            )
+            if (typingCoroutine != null)
             {
-                StopCoroutine(
-                    typingCoroutine
-                );
-
-
-                typingCoroutine =
-                    null;
+                StopCoroutine(typingCoroutine);
+                typingCoroutine = null;
             }
 
-
             if (dialoguePanel != null)
-            {
                 dialoguePanel.SetActive(false);
+
+            SetLocalPlayerDialogueState(PlayerActionState.Normal);
+        }
+        //==============================================================//
+
+        private void SetLocalPlayerDialogueState(PlayerActionState targetState)
+        {
+            if (NetworkManager.Singleton == null || NetworkManager.Singleton.LocalClient == null)
+                return;
+
+            NetworkObject localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject;
+            if (localPlayer == null)
+                return;
+
+            if (localPlayer.TryGetComponent(out PlayerState playerState))
+            {
+                // Evita pisar estados prioritarios como Dead o Stunned al cerrar
+                if (targetState == PlayerActionState.Normal && playerState.CurrentState != PlayerActionState.InDialogue)
+                    return;
+
+                playerState.RequestLocalState(targetState);
             }
         }
 
-
-        //================================================//
+        //==============================================================//
         public void ShowLine(
             string speakerName,
             string text)

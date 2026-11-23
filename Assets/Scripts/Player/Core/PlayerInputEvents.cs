@@ -47,15 +47,6 @@ public class PlayerInputEvents : MonoBehaviour
         ctx.movement.SetSprint(input.ReadValueAsButton());
     }
 
-    public void OnCrouch(InputAction.CallbackContext input)
-    {
-        if (ctx == null) return;
-        if (ctx.health.IsDead.Value)
-            return;
-
-        ctx.movement.SetCrouch(input.ReadValueAsButton());
-    }
-
     //=====================//
     //====  INVENTORY  ====//
     //=====================//

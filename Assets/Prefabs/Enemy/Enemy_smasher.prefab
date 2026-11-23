@@ -535,7 +535,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 504d8aa8088212c4c851c0c5afad9dd7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BillboardUI
-  targetCamera: {fileID: 0}
+  billboardToRotate: {fileID: 2919495839041079128}
+  faceCamera: 1
 --- !u!1 &2979038007382677406
 GameObject:
   m_ObjectHideFlags: 0

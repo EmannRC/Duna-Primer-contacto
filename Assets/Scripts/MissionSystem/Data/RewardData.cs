@@ -2,6 +2,13 @@ using UnityEngine;
 
 namespace Duna.QuestSystem
 {
+    public enum RewardType
+    {
+        Experience,
+        Gold,
+        Item
+    }
+
     [System.Serializable]
     public class RewardData
     {

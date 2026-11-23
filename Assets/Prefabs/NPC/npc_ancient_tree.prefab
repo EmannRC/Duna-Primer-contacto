@@ -117,7 +117,6 @@ GameObject:
   - component: {fileID: 1169802310898638431}
   - component: {fileID: 8369465258601178683}
   - component: {fileID: 6694199661650724730}
-  - component: {fileID: 7766555142302427788}
   - component: {fileID: 8349954796083445548}
   m_Layer: 0
   m_Name: npc_ancient_tree
@@ -249,6 +248,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Duna.DialogueSystem.DialogueController
   defaultDialogue: {fileID: 11400000, guid: 583196926efe8274681b348a904af2ea, type: 2}
+  shareDialogueRewards: 1
   onQuestDialogueFinished:
     m_PersistentCalls:
       m_Calls:
@@ -270,19 +270,6 @@ MonoBehaviour:
   onCompletionDialogueFinished:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &7766555142302427788
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1248061856631207402}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ddcee3376d090b4eb8153f591c862e1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Duna.QuestSystem.UI.QuestMarker
-  markerVisual: {fileID: 1868356422726854057}
 --- !u!136 &8349954796083445548
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -317,7 +304,6 @@ GameObject:
   - component: {fileID: 6312192851413882597}
   - component: {fileID: 158553926884491126}
   - component: {fileID: 5006731191675806409}
-  - component: {fileID: 2104725236813527100}
   m_Layer: 0
   m_Name: Marker
   m_TagString: Untagged
@@ -382,18 +368,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &2104725236813527100
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1868356422726854057}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d9ff3fbbba98cbf4a9b98030bc10932c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Duna.QuestSystem.UI.QuestMarkerBillboard
 --- !u!1 &5630572755351582768
 GameObject:
   m_ObjectHideFlags: 0
@@ -542,6 +516,7 @@ GameObject:
   - component: {fileID: 3068412782237443266}
   - component: {fileID: 6720819303363539933}
   - component: {fileID: 5444024624453407690}
+  - component: {fileID: 6532890067127541332}
   m_Layer: 0
   m_Name: Panel
   m_TagString: Untagged
@@ -608,6 +583,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6532890067127541332
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6017778010159955958}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 504d8aa8088212c4c851c0c5afad9dd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BillboardUI
+  billboardToRotate: {fileID: 6017778010159955958}
+  faceCamera: 1
 --- !u!1001 &4974396241195273817
 PrefabInstance:
   m_ObjectHideFlags: 0

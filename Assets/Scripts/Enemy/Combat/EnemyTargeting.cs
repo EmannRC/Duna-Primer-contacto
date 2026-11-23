@@ -35,17 +35,15 @@ public class EnemyTargeting : NetworkBehaviour
         float closestDistance = detectionRange * detectionRange;
         PlayerContext closestPlayer = null;
 
-        foreach (PlayerContext player in PlayerRegistry.Players)
+        foreach (PlayerContext player in PlayerContext.ActivePlayers)
         {
             if (player == null)
                 continue;
 
-            if (player.TryGetComponent<PlayerHealth>(out PlayerHealth health)
-                && health.IsDead.Value)
+            if (player.health != null && player.health.IsDead.Value)
                 continue;
 
-            float distance =
-                (transform.position - player.transform.position).sqrMagnitude;
+            float distance = (transform.position - player.transform.position).sqrMagnitude;
 
             if (distance < closestDistance)
             {
@@ -54,9 +52,7 @@ public class EnemyTargeting : NetworkBehaviour
             }
         }
 
-        CurrentTarget = closestPlayer != null
-            ? closestPlayer.transform
-            : null;
+        CurrentTarget = closestPlayer != null ? closestPlayer.transform : null;
     }
 
     private void OnDrawGizmosSelected()

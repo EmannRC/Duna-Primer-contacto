@@ -13,18 +13,32 @@ public class LobbyPlayer : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        if (!IsOwner)
-            return;
+        PlayerName.OnValueChanged += OnNameChanged;
 
-        SubmitPlayerNameRpc(
-            new FixedString64Bytes(PlayerProfile.PlayerName)
-        );
+        if (LobbyManager.Instance != null)
+            LobbyManager.Instance.RegisterPlayer(this);
+
+        if (IsOwner)
+        {
+            SubmitPlayerNameRpc(new FixedString64Bytes(PlayerProfile.PlayerName));
+        }
     }
 
-    [Rpc(
-        SendTo.Server,
-        InvokePermission = RpcInvokePermission.Owner
-    )]
+    public override void OnNetworkDespawn()
+    {
+        PlayerName.OnValueChanged -= OnNameChanged;
+
+        if (LobbyManager.Instance != null)
+            LobbyManager.Instance.UnregisterPlayer(this);
+    }
+
+    private void OnNameChanged(FixedString64Bytes oldName, FixedString64Bytes newName)
+    {
+        if (LobbyManager.Instance != null)
+            LobbyManager.Instance.RefreshUI();
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
     private void SubmitPlayerNameRpc(FixedString64Bytes playerName)
     {
         string validatedName = playerName.ToString().Trim();

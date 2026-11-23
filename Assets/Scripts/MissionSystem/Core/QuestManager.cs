@@ -6,6 +6,29 @@ using UnityEngine;
 
 namespace Duna.QuestSystem
 {
+    public enum QuestState
+    {
+        Locked,
+        Available,
+        Active,
+        Completed,
+        TurnedIn,
+        Failed
+    }
+    public enum QuestObjectiveState
+    {
+        Inactive,
+        Active,
+        Completed
+    }
+    public enum ObjectiveType
+    {
+        Talk,
+        Collect,
+        Deliver,
+        Kill,
+        ReachArea
+    }
     public class QuestManager : NetworkBehaviour
     {
         public static QuestManager Instance { get; private set; }

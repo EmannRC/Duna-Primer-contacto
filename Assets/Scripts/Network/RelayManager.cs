@@ -81,13 +81,9 @@ public class RelayManager : MonoBehaviour
     {
         try
         {
-            JoinAllocation allocation =
-                await RelayService.Instance
-                    .JoinAllocationAsync(joinCode);
+            JoinAllocation allocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
 
-            UnityTransport transport =
-                NetworkManager.Singleton
-                    .GetComponent<UnityTransport>();
+            UnityTransport transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
 
             transport.SetClientRelayData(
                 allocation.RelayServer.IpV4,
@@ -101,9 +97,9 @@ public class RelayManager : MonoBehaviour
 
             return true;
         }
-        catch (System.Exception e)
+        catch (System.Exception error)
         {
-            Debug.LogError(e);
+            Debug.LogWarning($"Error al intentar unirse al Relay: {error.Message}");
             return false;
         }
     }

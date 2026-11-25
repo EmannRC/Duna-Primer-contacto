@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -27,19 +28,21 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private GameObject playPanel;
     [SerializeField] private GameObject joinPanel;
     [SerializeField] private GameObject lobbyPanel;
-    [SerializeField] private GameObject settingsPanel; // <-- Tu nuevo panel de audio
 
-    [Header("Loading")]
+    [Header("Loading & Feedback")]
     [SerializeField] private GameObject loadingPanel;
     [SerializeField] private TMP_Text loadingText;
+    [SerializeField] private GameObject errorPopupPanel;
+    [SerializeField] private TMP_Text errorPopupText;
+    [SerializeField] private float errorDisplayDuration = 3f;
 
     private List<GameObject> allPanels;
     private bool isStartingSession;
     private bool isChangingPanel;
+    private Coroutine errorCoroutine;
 
     private void Awake()
     {
-        // Guardamos todos los paneles en una lista para manejarlos fácil
         allPanels = new List<GameObject>
         {
             mainPanel,
@@ -47,16 +50,21 @@ public class MainMenuUI : MonoBehaviour
             playPanel,
             joinPanel,
             lobbyPanel,
-            settingsPanel
         };
+
+        if (joinCodeInput != null)
+        {
+            joinCodeInput.characterLimit = 6;
+            joinCodeInput.onValueChanged.AddListener(ForceUppercaseCode);
+        }
     }
 
     private void Start()
     {
         ShowOnlyPanel(mainPanel);
         HideLoading();
+        CloseErrorPopup();
 
-        // Escuchar si nos desconectan a la fuerza (ej: el host cerró la sala)
         if (NetworkManager.Singleton != null)
         {
             NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
@@ -72,7 +80,7 @@ public class MainMenuUI : MonoBehaviour
     }
 
     //======================================================================//
-    // NAVEGACIÓN DE PANELES (Escalable y sin errores)
+    // NAVEGACIÓN DE PANELES
     //======================================================================//
 
     private void ShowOnlyPanel(GameObject targetPanel)
@@ -90,17 +98,16 @@ public class MainMenuUI : MonoBehaviour
     }
 
     public void ShowNamePanel() => ShowOnlyPanel(namePanel);
-    public void ShowJoinPanel() => ShowOnlyPanel(joinPanel);
-    public void ShowSettingsPanel() => ShowOnlyPanel(settingsPanel);
+
+    public void ShowJoinPanel()
+    {
+        if (joinCodeInput != null) joinCodeInput.text = "";
+        ShowOnlyPanel(joinPanel);
+    }
 
     public void BackToMain()
     {
-        // Si estaba en el lobby y vuelve atrás, desconectamos la red
-        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening)
-        {
-            NetworkManager.Singleton.Shutdown();
-        }
-
+        SafeShutdownNetwork();
         ShowOnlyPanel(mainPanel);
     }
 
@@ -110,7 +117,7 @@ public class MainMenuUI : MonoBehaviour
 
         if (string.IsNullOrWhiteSpace(playerName))
         {
-            Debug.LogWarning("Ingrese un nombre.");
+            ShowError("Por favor, ingresá un nombre antes de continuar.");
             return;
         }
 
@@ -125,7 +132,7 @@ public class MainMenuUI : MonoBehaviour
     }
 
     //======================================================================//
-    // MULTIJUGADOR (Con protección de errores de red)
+    // MULTIJUGADOR (Validación estricta + Protección anti-crash)
     //======================================================================//
 
     public async void HostGame()
@@ -138,10 +145,25 @@ public class MainMenuUI : MonoBehaviour
 
         try
         {
-            string joinCode = await RelayManager.Instance.CreateRelay(4);
-            if (string.IsNullOrEmpty(joinCode)) return;
+            if (RelayManager.Instance == null || NetworkManager.Singleton == null)
+            {
+                ShowError("Error de red: faltan gestores en la escena.");
+                return;
+            }
 
-            if (!NetworkManager.Singleton.StartHost()) return;
+            string joinCode = await RelayManager.Instance.CreateRelay(4);
+            if (string.IsNullOrEmpty(joinCode))
+            {
+                ShowError("No se pudo crear la sala. Revisá tu conexión.");
+                return;
+            }
+
+            if (!NetworkManager.Singleton.StartHost())
+            {
+                SafeShutdownNetwork();
+                ShowError("No se pudo iniciar la sala como anfitrión.");
+                return;
+            }
 
             roomCodeText.text = $"Código de sala: {joinCode}";
             ShowOnlyPanel(lobbyPanel);
@@ -150,10 +172,11 @@ public class MainMenuUI : MonoBehaviour
         catch (System.Exception e)
         {
             Debug.LogError($"Error al crear sala: {e.Message}");
+            SafeShutdownNetwork();
+            ShowError("Ocurrió un error al crear la sala.");
         }
         finally
         {
-            // Pase lo que pase (éxito o error), siempre limpiamos el estado de carga
             HideLoading();
             isStartingSession = false;
             SetAllButtonsInteractable(true);
@@ -164,25 +187,42 @@ public class MainMenuUI : MonoBehaviour
     {
         if (isStartingSession) return;
 
-        string joinCode = joinCodeInput.text.Trim();
-        if (string.IsNullOrEmpty(joinCode))
+        string joinCode = joinCodeInput.text.Trim().ToUpper();
+
+        // 1. Filtro estricto antes de tocar Relay o Netcode
+        if (!IsValidRelayCode(joinCode))
         {
-            Debug.LogWarning("Ingrese un código.");
+            ShowError("Código inválido. Inténtalo de nuevo.");
             return;
         }
 
         isStartingSession = true;
         SetAllButtonsInteractable(false);
-        ShowLoading("Conectando a la sala...");
+        ShowLoading("Verificando código...");
 
         try
         {
-            bool relayConnected = await RelayManager.Instance.JoinRelay(joinCode);
-            if (!relayConnected) return;
+            if (RelayManager.Instance == null || NetworkManager.Singleton == null)
+            {
+                ShowError("Error de red: faltan gestores en la escena.");
+                return;
+            }
 
+            // 2. Primero validamos con Relay. Si falla, corta y NO llamas a StartClient()
+            bool relayConnected = await RelayManager.Instance.JoinRelay(joinCode);
+            if (!relayConnected)
+            {
+                SafeShutdownNetwork();
+                ShowError("El código no existe o la sala ya cerró.");
+                return;
+            }
+
+            // 3. Recién cuando Relay confirmó que la sala existe, inicia el cliente
+            ShowLoading("Entrando a la sala...");
             if (!NetworkManager.Singleton.StartClient())
             {
-                Debug.LogError("No se pudo iniciar cliente.");
+                SafeShutdownNetwork();
+                ShowError("No se pudo conectar con el anfitrión.");
                 return;
             }
 
@@ -192,6 +232,8 @@ public class MainMenuUI : MonoBehaviour
         catch (System.Exception e)
         {
             Debug.LogError($"Error al unirse: {e.Message}");
+            SafeShutdownNetwork();
+            ShowError("Código incorrecto o sala no disponible.");
         }
         finally
         {
@@ -201,12 +243,38 @@ public class MainMenuUI : MonoBehaviour
         }
     }
 
+    // Unity Relay usa un alfabeto específico de 6 caracteres (excluye 0, 1, I, L, O)
+    private bool IsValidRelayCode(string code)
+    {
+        if (string.IsNullOrEmpty(code) || code.Length != 6)
+            return false;
+
+        return Regex.IsMatch(code, "^[2-9A-HJ-KM-NP-Z]{6}$");
+    }
+
+    private void ForceUppercaseCode(string input)
+    {
+        string upper = input.ToUpper();
+        if (joinCodeInput.text != upper)
+        {
+            joinCodeInput.SetTextWithoutNotify(upper);
+        }
+    }
+
+    private void SafeShutdownNetwork()
+    {
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening)
+        {
+            NetworkManager.Singleton.Shutdown();
+        }
+    }
+
     private void OnClientDisconnected(ulong clientId)
     {
-        // Si el que se desconectó soy yo mismo (ej: me expulsaron o cayó el host)
         if (NetworkManager.Singleton != null && clientId == NetworkManager.Singleton.LocalClientId)
         {
             ShowOnlyPanel(mainPanel);
+            ShowError("Se perdió la conexión con la sala.");
         }
     }
 
@@ -232,18 +300,58 @@ public class MainMenuUI : MonoBehaviour
     }
 
     //======================================================================//
-    // UTILIDADES UI
+    // UTILIDADES UI Y CARTEL TEMPORAL
     //======================================================================//
+
+    public void ShowError(string message)
+    {
+        if (errorPopupPanel == null || errorPopupText == null)
+        {
+            Debug.LogWarning(message);
+            return;
+        }
+
+        errorPopupText.text = message;
+        errorPopupPanel.SetActive(true);
+
+        // Si ya había un cartel visible, reinicia el contador para que no se cierre antes de tiempo
+        if (errorCoroutine != null)
+        {
+            StopCoroutine(errorCoroutine);
+        }
+
+        errorCoroutine = StartCoroutine(AutoHideErrorPopup());
+    }
+
+    private IEnumerator AutoHideErrorPopup()
+    {
+        yield return new WaitForSeconds(errorDisplayDuration);
+        CloseErrorPopup();
+    }
+
+    public void CloseErrorPopup()
+    {
+        if (errorCoroutine != null)
+        {
+            StopCoroutine(errorCoroutine);
+            errorCoroutine = null;
+        }
+
+        if (errorPopupPanel != null)
+        {
+            errorPopupPanel.SetActive(false);
+        }
+    }
 
     private void ShowLoading(string message)
     {
-        loadingPanel.SetActive(true);
-        loadingText.text = message;
+        if (loadingPanel != null) loadingPanel.SetActive(true);
+        if (loadingText != null) loadingText.text = message;
     }
 
     private void HideLoading()
     {
-        loadingPanel.SetActive(false);
+        if (loadingPanel != null) loadingPanel.SetActive(false);
     }
 
     private void UpdateStartButtonVisibility()
@@ -251,11 +359,6 @@ public class MainMenuUI : MonoBehaviour
         if (startGameButton == null) return;
         bool isHost = NetworkManager.Singleton != null && NetworkManager.Singleton.IsHost;
         startGameButton.gameObject.SetActive(isHost);
-    }
-
-    public void HideSettingsPanel()
-    {
-        settingsPanel.SetActive(false);
     }
 
     private void SetAllButtonsInteractable(bool value)

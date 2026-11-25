@@ -103,7 +103,7 @@ AudioSource:
   m_GameObject: {fileID: 309773881255353434}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 7660162846360883489, guid: ce89c7ff497bfd943b1e8ade1436dc44, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 2718a648878975248a7a0f9efef6693c, type: 3}
   m_PlayOnAwake: 0
@@ -566,7 +566,7 @@ AudioSource:
   m_GameObject: {fileID: 2449157594695475284}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 7660162846360883489, guid: ce89c7ff497bfd943b1e8ade1436dc44, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: c50415316d595ef47888f08a2365e48e, type: 3}
   m_PlayOnAwake: 0
@@ -744,7 +744,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 504d8aa8088212c4c851c0c5afad9dd7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BillboardUI
-  targetCamera: {fileID: 0}
+  billboardToRotate: {fileID: 0}
+  faceCamera: 1
 --- !u!1 &2979038007382677406
 GameObject:
   m_ObjectHideFlags: 0
@@ -946,7 +947,7 @@ AudioSource:
   m_GameObject: {fileID: 3326201932139439672}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 7660162846360883489, guid: ce89c7ff497bfd943b1e8ade1436dc44, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: c648b37b9be0e874eb9faabf34857eed, type: 3}
   m_PlayOnAwake: 0
@@ -1744,21 +1745,29 @@ MonoBehaviour:
     ikTarget: {fileID: 843495925775044881}
     homeTransform: {fileID: 5700785425397431265}
     currentFootPos: {x: 0, y: 0, z: 0}
+    lastHomePos: {x: 0, y: 0, z: 0}
+    homeVelocity: {x: 0, y: 0, z: 0}
     isStepping: 0
   - name: LegFR
     ikTarget: {fileID: 3462289941150649615}
     homeTransform: {fileID: 1744855992408039056}
     currentFootPos: {x: 0, y: 0, z: 0}
+    lastHomePos: {x: 0, y: 0, z: 0}
+    homeVelocity: {x: 0, y: 0, z: 0}
     isStepping: 0
   - name: LegBL
     ikTarget: {fileID: 8708438180642427323}
     homeTransform: {fileID: 5451060332380471191}
     currentFootPos: {x: 0, y: 0, z: 0}
+    lastHomePos: {x: 0, y: 0, z: 0}
+    homeVelocity: {x: 0, y: 0, z: 0}
     isStepping: 0
   - name: LegBR
     ikTarget: {fileID: 3598450404808089902}
     homeTransform: {fileID: 6791325773992469414}
     currentFootPos: {x: 0, y: 0, z: 0}
+    lastHomePos: {x: 0, y: 0, z: 0}
+    homeVelocity: {x: 0, y: 0, z: 0}
     isStepping: 0
   stepDistance: 0.48
   stepHeight: 0.35
